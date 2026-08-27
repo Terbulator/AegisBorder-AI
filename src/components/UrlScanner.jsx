@@ -14,10 +14,10 @@ export default function UrlScanner({
   const [result, setResult] = useState(null);
 
   const sampleUrls = [
-    { label: "SBI Typosquat Phishing", url: "http://sbi-bank-kyc-update.top/login.php" },
-    { label: "Legitimate SBI Portal", url: "https://onlinesbi.sbi" },
+    { label: "SBI Phishing Page", url: "http://sbi-bank-kyc-update.top/login.php" },
+    { label: "Legitimate SBI", url: "https://onlinesbi.sbi" },
     { label: "Fake Jio 5G Recharge", url: "http://free-recharge-jio-5g.live" },
-    { label: "Legitimate HDFC Bank", url: "https://hdfcbank.com" }
+    { label: "Legitimate HDFC", url: "https://hdfcbank.com" }
   ];
 
   const handleScan = (urlToScan = inputUrl) => {
@@ -30,17 +30,17 @@ export default function UrlScanner({
     <div className="space-y-6">
       
       {/* Input Card */}
-      <div className="glass-panel rounded-3xl p-6 border border-slate-800 shadow-xl">
+      <div className="glass-panel rounded-2xl p-6 border border-white/[0.06]">
         <div className="flex items-center gap-2.5 mb-4">
-          <div className="p-2.5 rounded-xl bg-cyan-500/20 text-cyan-400">
+          <div className="p-2.5 rounded-xl bg-sky-500/12 text-sky-400">
             <Globe className="w-5 h-5" />
           </div>
           <div>
-            <h3 className="text-base font-bold text-white">
-              Banking & Phishing URL Inspector
+            <h3 className="text-base font-semibold text-white">
+              Link Safety Check
             </h3>
             <p className="text-xs text-slate-400">
-              Levenshtein Distance against Indian Banks, Homograph / Punycode & Risky TLD Parser
+              Enter any website link to check if it's legitimate or a phishing attempt
             </p>
           </div>
         </div>
@@ -51,15 +51,15 @@ export default function UrlScanner({
             type="text"
             value={inputUrl}
             onChange={(e) => setInputUrl(e.target.value)}
-            placeholder="Enter web link (e.g. sbi-bank-kyc-update.top or onlinesbi.sbi)"
-            className="w-full p-4 pl-11 rounded-2xl bg-black/40 border border-slate-700/80 text-slate-100 placeholder-slate-500 text-sm focus:outline-none focus:border-cyan-500/60 focus:ring-1 focus:ring-cyan-500/60 transition-all font-mono"
+            placeholder="Enter a website link (e.g. sbi-bank-kyc-update.top)"
+            className="w-full p-4 pl-11 rounded-xl bg-black/30 border border-white/[0.08] text-slate-100 placeholder-slate-500 text-sm focus:outline-none focus:border-cyber-accent/40 focus:ring-1 focus:ring-cyber-accent/20 transition-all font-mono"
           />
-          <Globe className="w-4 h-4 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2" />
+          <Globe className="w-4 h-4 text-slate-500 absolute left-4 top-1/2 -translate-y-1/2" />
         </div>
 
         {/* Sample Links */}
         <div className="flex flex-wrap items-center gap-2 mb-4">
-          <span className="text-[11px] text-slate-400 font-mono">Test Links:</span>
+          <span className="text-[11px] text-slate-400">Try a sample:</span>
           {sampleUrls.map((s, idx) => (
             <button
               key={idx}
@@ -67,7 +67,7 @@ export default function UrlScanner({
                 setInputUrl(s.url);
                 handleScan(s.url);
               }}
-              className="text-[11px] px-2.5 py-1 rounded-lg bg-slate-800/80 hover:bg-slate-700/80 text-cyan-300 border border-slate-700 transition-colors"
+              className="text-[11px] px-2.5 py-1 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] text-sky-300 border border-white/[0.08] transition-colors"
             >
               {s.label}
             </button>
@@ -81,17 +81,17 @@ export default function UrlScanner({
               setInputUrl('');
               setResult(null);
             }}
-            className="px-4 py-2 rounded-xl text-xs font-semibold text-slate-400 hover:text-slate-200 transition-colors"
+            className="px-4 py-2 rounded-lg text-xs font-medium text-slate-400 hover:text-slate-200 transition-colors"
           >
             Clear
           </button>
           <button
             onClick={() => handleScan()}
             disabled={!inputUrl.trim()}
-            className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 disabled:opacity-50 text-white text-xs font-bold transition-all shadow-[0_0_20px_rgba(6,182,212,0.3)]"
+            className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 disabled:opacity-40 text-white text-xs font-semibold transition-all"
           >
-            <Search className="w-4 h-4" />
-            <span>Verify Domain Security</span>
+            <Search className="w-3.5 h-3.5" />
+            <span>Check Link</span>
           </button>
         </div>
       </div>

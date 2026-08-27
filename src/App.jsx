@@ -111,16 +111,16 @@ export default function App() {
   };
 
   const tabs = [
-    { id: 'phone', label: 'Zero-Copy Phone Simulator', icon: Shield, badge: 'Android OS UX' },
-    { id: 'message', label: 'SMS & WhatsApp (Indic NLP)', icon: MessageSquare, badge: 'Hinglish/Tanglish' },
-    { id: 'url', label: 'Banking & URLs (Levenshtein)', icon: Globe, badge: 'Typosquatting' },
-    { id: 'qr', label: 'UPI QR & Pay (Micro-Gate)', icon: QrCode, badge: 'Debit Trap' },
-    { id: 'apk', label: 'APK & RAT Auditor', icon: ShieldAlert, badge: 'Permissions' },
-    { id: 'blockchain', label: 'PoA Consortium Explorer', icon: Database, badge: 'Sybil Immune' },
+    { id: 'phone', label: 'Phone Simulator', icon: Shield },
+    { id: 'message', label: 'Messages', icon: MessageSquare },
+    { id: 'url', label: 'Link Checker', icon: Globe },
+    { id: 'qr', label: 'QR & UPI', icon: QrCode },
+    { id: 'apk', label: 'App Scanner', icon: ShieldAlert },
+    { id: 'blockchain', label: 'Threat Ledger', icon: Database },
   ];
 
   return (
-    <div className="min-h-screen bg-cyber-dark text-slate-100 flex flex-col selection:bg-cyan-500 selection:text-black">
+    <div className="min-h-screen text-slate-100 flex flex-col">
       
       {/* Top Navbar */}
       <Header
@@ -135,14 +135,14 @@ export default function App() {
       {/* Main Content Area */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 lg:px-8 py-6">
         
-        {/* Hackathon Judge 1-Click Preset Evaluation Bench */}
+        {/* Quick Demo Bench */}
         <JudgePresetBar
           activePresetId={activePresetId}
           onSelectPreset={handleSelectPreset}
         />
 
         {/* Navigation Tabs */}
-        <div className="flex items-center gap-2 overflow-x-auto pb-3 mb-6 scrollbar-none border-b border-slate-800">
+        <div className="flex items-center gap-2 overflow-x-auto pb-4 mb-8 scrollbar-none border-b border-white/[0.06] px-1 pt-2 animate-fade-in stagger-2">
           {tabs.map((tab) => {
             const Icon = tab.icon;
             const isActive = activeTab === tab.id;
@@ -156,26 +156,21 @@ export default function App() {
                     setIsLedgerOpen(true);
                   }
                 }}
-                className={`flex items-center gap-2 px-4 py-3 rounded-2xl text-xs font-bold transition-all whitespace-nowrap border ${
+                className={`group flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-medium transition-all duration-200 whitespace-nowrap border ${
                   isActive
-                    ? 'bg-cyan-500/20 border-cyan-500/50 text-cyan-300 shadow-[0_0_20px_rgba(6,182,212,0.2)]'
-                    : 'bg-slate-900/60 hover:bg-slate-800/80 border-slate-800/80 text-slate-400 hover:text-slate-200'
+                    ? 'bg-cyber-accent/10 border-cyber-accent/30 text-cyber-accent'
+                    : 'bg-transparent hover:bg-white/[0.04] border-transparent hover:border-white/[0.08] text-slate-400 hover:text-slate-200'
                 }`}
               >
-                <Icon className={`w-4 h-4 ${isActive ? 'text-cyan-400' : 'text-slate-400'}`} />
+                <Icon className={`w-3.5 h-3.5 transition-colors ${isActive ? 'text-cyber-accent' : 'text-slate-500 group-hover:text-slate-300'}`} />
                 <span>{tab.label}</span>
-                <span className={`text-[9px] font-mono px-1.5 py-0.5 rounded-full ${
-                  isActive ? 'bg-cyan-500/30 text-cyan-200' : 'bg-slate-800 text-slate-400'
-                }`}>
-                  {tab.badge}
-                </span>
               </button>
             );
           })}
         </div>
 
         {/* Tab Views */}
-        <div className="animate-fade-in">
+        <div className="animate-fade-in stagger-3">
           {activeTab === 'phone' && (
             <PhoneSimulator
               currentLang={currentLang}
@@ -224,83 +219,77 @@ export default function App() {
           )}
 
           {activeTab === 'blockchain' && (
-            <div className="glass-panel rounded-3xl p-8 border border-slate-800 text-center space-y-4">
-              <div className="w-16 h-16 rounded-2xl bg-cyan-500/20 text-cyan-400 flex items-center justify-center mx-auto">
-                <Database className="w-8 h-8" />
+            <div className="glass-panel rounded-2xl p-8 border border-white/[0.06] text-center space-y-4">
+              <div className="w-14 h-14 rounded-xl bg-sky-500/12 text-sky-400 flex items-center justify-center mx-auto">
+                <Database className="w-7 h-7" />
               </div>
-              <h3 className="text-xl font-bold text-white">
-                Proof-of-Authority Consortium Blockchain Explorer
+              <h3 className="text-lg font-semibold text-white">
+                Threat Ledger Explorer
               </h3>
               <p className="text-sm text-slate-400 max-w-lg mx-auto">
-                Decentralized, Sybil-immune threat ledger verified by National Cyber Crime Cell, RBI Partner Banks, and Telecom authorities.
+                Decentralized, tamper-proof threat ledger verified by National Cyber Crime Cell, RBI Partner Banks, and Telecom authorities.
               </p>
               <button
                 onClick={() => setIsLedgerOpen(true)}
-                className="px-6 py-3 rounded-2xl bg-cyan-600 hover:bg-cyan-500 text-white font-bold text-xs transition-all shadow-[0_0_20px_rgba(6,182,212,0.3)]"
+                className="px-5 py-2.5 rounded-xl bg-cyber-accent/90 hover:bg-cyber-accent text-white font-semibold text-xs transition-all"
               >
-                Open Full Screen Explorer & Mint Blocks
+                Open Explorer
               </button>
             </div>
           )}
         </div>
 
-        {/* 5 Blind Spots Architecture Summary Card */}
-        <section className="mt-12 p-6 rounded-3xl bg-slate-900/60 border border-slate-800/80 shadow-2xl">
-          <div className="flex items-center gap-2 mb-4">
-            <Layers className="w-5 h-5 text-cyan-400" />
-            <h4 className="text-sm font-bold text-white uppercase tracking-wider font-mono">
-              The 5 Critical Domain Blind Spots Solved
+        {/* What We Protect Against */}
+        <section className="mt-14 p-6 rounded-2xl glass-panel relative overflow-hidden animate-fade-in stagger-4">
+          <div className="flex items-center gap-3 mb-5 relative z-10">
+            <div className="p-2 rounded-lg bg-cyber-neon/12 border border-cyber-neon/20 text-cyber-neon">
+              <Layers className="w-4 h-4" />
+            </div>
+            <h4 className="text-sm font-semibold text-white">
+              What We Protect Against
             </h4>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-3 text-xs">
-            <div className="p-3.5 rounded-2xl bg-black/40 border border-slate-800">
-              <div className="font-bold text-cyan-300 mb-1">1. UX Reality Check</div>
-              <p className="text-slate-400 text-[11px] leading-relaxed">
-                Passive OS notification interception simulator — zero manual copy-paste burden.
-              </p>
-            </div>
-            <div className="p-3.5 rounded-2xl bg-black/40 border border-slate-800">
-              <div className="font-bold text-cyan-300 mb-1">2. Code-Mixed NLP</div>
-              <p className="text-slate-400 text-[11px] leading-relaxed">
-                Phonetic N-gram engine for Hinglish, Tanglish & Telglish urgency scams.
-              </p>
-            </div>
-            <div className="p-3.5 rounded-2xl bg-black/40 border border-slate-800">
-              <div className="font-bold text-cyan-300 mb-1">3. APK & RAT Auditor</div>
-              <p className="text-slate-400 text-[11px] leading-relaxed">
-                Audits Accessibility & SMS reading rights before malicious sideloading.
-              </p>
-            </div>
-            <div className="p-3.5 rounded-2xl bg-black/40 border border-slate-800">
-              <div className="font-bold text-cyan-300 mb-1">4. Offline Resilience</div>
-              <p className="text-slate-400 text-[11px] leading-relaxed">
-                Sub-2ms compressed Bloom filter storing 50k+ threat hashes with zero network.
-              </p>
-            </div>
-            <div className="p-3.5 rounded-2xl bg-black/40 border border-slate-800">
-              <div className="font-bold text-cyan-300 mb-1">5. PoA Anti-Poisoning</div>
-              <p className="text-slate-400 text-[11px] leading-relaxed">
-                Multi-sig consortium consensus stops scammers from poisoning merchant trust.
-              </p>
-            </div>
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-3 text-xs relative z-10">
+            {[
+              { id: 1, title: 'Real-World UX', desc: 'Automatic notification interception — no copy-paste needed from users.' },
+              { id: 2, title: 'Regional Languages', desc: 'Understands Hinglish, Tanglish & Telglish urgency scam patterns.' },
+              { id: 3, title: 'Malicious Apps', desc: 'Detects dangerous permissions before harmful apps can be installed.' },
+              { id: 4, title: 'Offline Protection', desc: 'Works without internet using a compact on-device threat database.' },
+              { id: 5, title: 'Community Shield', desc: 'Verified threat reports shared across a trusted consortium network.' }
+            ].map((spot) => (
+              <div key={spot.id} className="group p-4 rounded-xl bg-white/[0.03] border border-white/[0.06] hover:bg-white/[0.06] hover:border-white/[0.12] transition-all duration-300 hover:-translate-y-0.5">
+                <div className="font-semibold text-cyber-accent mb-1.5 flex items-center gap-2">
+                  <span className="text-[10px] bg-cyber-accent/12 px-1.5 py-0.5 rounded text-cyber-accent opacity-60">{spot.id}</span>
+                  {spot.title}
+                </div>
+                <p className="text-slate-400 text-[11px] leading-relaxed group-hover:text-slate-300 transition-colors">
+                  {spot.desc}
+                </p>
+              </div>
+            ))}
           </div>
         </section>
 
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-slate-800/80 bg-cyber-dark px-4 py-4 mt-8">
-        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-slate-500 font-medium">
-          <div>
-            Rakshak AI • BC-01 Cybersecurity & Blockchain Solution
+      <footer className="border-t border-white/[0.05] bg-cyber-dark/50 backdrop-blur-md px-4 py-5 mt-10">
+        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-400">
+          <div className="flex items-center gap-2">
+            <Shield className="w-3.5 h-3.5 text-cyber-accent" />
+            <span className="text-slate-200 font-medium">Rakshak AI</span> 
+            <span className="opacity-40">• Cybersecurity & Blockchain Solution</span>
           </div>
-          <div className="flex items-center gap-4">
-            <span className="flex items-center gap-1">
-              <span className="w-2 h-2 rounded-full bg-emerald-400" />
-              On-Device Privacy Preserving
+          <div className="flex items-center gap-5">
+            <span className="flex items-center gap-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+              <span className="text-slate-400">On-Device Privacy</span>
             </span>
-            <span>National Cyber Helpline: <strong>1930</strong></span>
+            <span className="flex items-center gap-1.5">
+              <PhoneCall className="w-3.5 h-3.5 text-slate-500" />
+              Helpline: <strong className="text-slate-200">1930</strong>
+            </span>
           </div>
         </div>
       </footer>

@@ -13,85 +13,80 @@ export default function Header({
   const currentLangObj = SUPPORTED_LANGUAGES.find(l => l.code === currentLang) || SUPPORTED_LANGUAGES[0];
 
   return (
-    <header className="sticky top-0 z-40 border-b border-slate-800 bg-cyber-dark/90 backdrop-blur-xl px-4 lg:px-8 py-3.5 shadow-2xl">
+    <header className="sticky top-0 z-40 border-b border-white/[0.06] bg-cyber-dark/60 backdrop-blur-2xl px-4 lg:px-8 py-3.5">
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
         
-        {/* Brand & Badge */}
-        <div className="flex items-center gap-3">
-          <div className="relative flex items-center justify-center w-11 h-11 rounded-xl bg-gradient-to-br from-cyan-500/20 to-blue-600/30 border border-cyan-500/40 text-cyan-400 shadow-[0_0_20px_rgba(6,182,212,0.3)]">
-            <Shield className="w-6 h-6 animate-pulse" />
-            <div className="absolute -top-1 -right-1 w-3 h-3 rounded-full bg-emerald-500 ring-2 ring-cyber-dark animate-ping" />
+        {/* Brand */}
+        <div className="flex items-center gap-3.5 group cursor-pointer">
+          <div className="relative flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-cyber-accent/15 to-cyber-neon/20 border border-cyber-accent/25 text-cyber-accent transition-all duration-500 group-hover:border-cyber-accent/40">
+            <Shield className="w-5 h-5" />
+            <div className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-emerald-400 ring-2 ring-cyber-dark" />
           </div>
           <div>
-            <div className="flex items-center gap-2">
-              <h1 className="text-xl font-bold tracking-tight text-white flex items-center gap-2">
-                <span className="cyber-gradient-text">RAKSHAK AI</span>
-                <span className="text-[10px] px-2 py-0.5 rounded-full bg-cyan-950/80 border border-cyan-500/40 text-cyan-300 font-mono uppercase tracking-wider">
-                  BC-01 ON-DEVICE
-                </span>
-              </h1>
-            </div>
-            <p className="text-xs text-slate-400 font-medium hidden sm:block">
+            <h1 className="text-xl font-bold tracking-tight text-white">
+              <span className="cyber-gradient-text">Rakshak AI</span>
+            </h1>
+            <p className="text-[11px] text-slate-400 font-medium hidden sm:block mt-0.5">
               {REGIONAL_STRINGS.tagline[currentLang] || REGIONAL_STRINGS.tagline.en}
             </p>
           </div>
         </div>
 
-        {/* Right Controls: Offline Mode, Bloom Stats, Language Switcher, Consortium Button */}
+        {/* Right Controls */}
         <div className="flex flex-wrap items-center gap-2.5">
           
-          {/* Offline / Online Network Toggle */}
+          {/* Offline / Online Toggle */}
           <button
             onClick={onToggleOffline}
-            className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all border ${
+            className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-300 border ${
               isOfflineMode
-                ? 'bg-amber-500/10 border-amber-500/40 text-amber-300 shadow-[0_0_15px_rgba(245,158,11,0.15)]'
-                : 'bg-emerald-500/10 border-emerald-500/40 text-emerald-300 shadow-[0_0_15px_rgba(16,185,129,0.15)]'
+                ? 'bg-amber-500/8 border-amber-500/25 text-amber-300 hover:bg-amber-500/15'
+                : 'bg-emerald-500/8 border-emerald-500/25 text-emerald-300 hover:bg-emerald-500/15'
             }`}
-            title="Toggle between Zero-Network Local Bloom Filter and Live Consortium Node sync"
+            title="Toggle between offline protection and live sync"
           >
             {isOfflineMode ? (
               <>
                 <WifiOff className="w-3.5 h-3.5 text-amber-400" />
-                <span>Offline (Local Sub-2ms Filter)</span>
+                <span>Offline Mode</span>
               </>
             ) : (
               <>
                 <Wifi className="w-3.5 h-3.5 text-emerald-400" />
-                <span>Consortium Live Sync</span>
+                <span>Live Protection</span>
               </>
             )}
           </button>
 
-          {/* Bloom Filter Micro Pill */}
-          <div className="hidden lg:flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-slate-900/80 border border-slate-800 text-[11px] font-mono text-cyan-300">
-            <Cpu className="w-3.5 h-3.5 text-cyan-400" />
-            <span>Bloom: <strong>{(bloomStats.sizeBytes / 1024).toFixed(1)} KB</strong></span>
-            <span className="text-slate-600">|</span>
-            <Zap className="w-3.5 h-3.5 text-amber-400" />
-            <span>&lt;2ms Hash</span>
+          {/* Bloom Filter Micro Pill — simplified */}
+          <div className="hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/[0.04] border border-white/[0.08] text-[11px] text-slate-400">
+            <Cpu className="w-3 h-3 text-cyber-accent" />
+            <span><strong className="text-slate-200">{(bloomStats.sizeBytes / 1024).toFixed(1)} KB</strong> protected</span>
           </div>
 
-          {/* PoA Consortium Button */}
+          {/* PoA Ledger Button */}
           <button
             onClick={onOpenLedger}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800/80 hover:bg-slate-700/80 border border-slate-700 text-slate-200 transition-all hover:border-cyan-500/40"
+            className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08] text-slate-300 transition-all duration-300 hover:border-cyber-neon/30 hover:text-white"
           >
-            <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
-            <span>PoA Ledger</span>
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyber-accent opacity-50"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-cyber-accent"></span>
+            </span>
+            <span>Threat Ledger</span>
           </button>
 
-          {/* Regional Language Switcher */}
-          <div className="relative">
-            <div className="flex items-center gap-1.5 bg-slate-900 border border-slate-700/80 rounded-lg px-2.5 py-1 text-xs text-white">
-              <Globe className="w-3.5 h-3.5 text-cyan-400" />
+          {/* Language Switcher */}
+          <div className="relative group">
+            <div className="flex items-center gap-2 bg-white/[0.04] border border-white/[0.08] rounded-lg px-2.5 py-1.5 text-xs text-white transition-all duration-300 group-hover:border-cyber-accent/30">
+              <Globe className="w-3.5 h-3.5 text-cyber-accent" />
               <select
                 value={currentLang}
                 onChange={(e) => onLanguageChange(e.target.value)}
-                className="bg-transparent border-none text-xs text-slate-200 focus:ring-0 focus:outline-none cursor-pointer pr-1 font-medium"
+                className="bg-transparent border-none text-xs text-slate-200 focus:ring-0 focus:outline-none cursor-pointer pr-1 font-medium appearance-none"
               >
                 {SUPPORTED_LANGUAGES.map(lang => (
-                  <option key={lang.code} value={lang.code} className="bg-slate-900 text-white">
+                  <option key={lang.code} value={lang.code} className="bg-cyber-dark text-white">
                     {lang.flag} {lang.name}
                   </option>
                 ))}

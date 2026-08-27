@@ -4,10 +4,10 @@ import { Play, Sparkles, MessageSquare, Globe, QrCode, ShieldAlert, Database } f
 export const DEMO_PRESETS = [
   {
     id: 'preset-hinglish-sms',
-    title: 'Preset 1: Hinglish Utility Scam',
-    tag: 'Code-Mixed Indic NLP',
+    title: 'Hinglish Utility Scam',
+    tag: 'Indic NLP',
     icon: MessageSquare,
-    badgeColor: 'from-amber-500/20 to-orange-500/20 text-amber-300 border-amber-500/30',
+    badgeColor: 'from-amber-500/20 to-orange-500/20 text-amber-200 border-amber-500/30',
     description: 'Dear customer aapka bijli bill update nahi hai, aaj raat 9 baje connection cut jayega...',
     targetTab: 'message',
     data: {
@@ -16,10 +16,10 @@ export const DEMO_PRESETS = [
   },
   {
     id: 'preset-typosquat-url',
-    title: 'Preset 2: SBI Bank Typosquatting',
-    tag: 'Levenshtein & Sandbox',
+    title: 'SBI Bank Typosquatting',
+    tag: 'Link Check',
     icon: Globe,
-    badgeColor: 'from-rose-500/20 to-red-500/20 text-rose-300 border-rose-500/30',
+    badgeColor: 'from-rose-500/20 to-pink-500/20 text-rose-200 border-rose-500/30',
     description: 'http://sbi-bank-kyc-update.top/login.php (Spoofing sbi.co.in)',
     targetTab: 'url',
     data: {
@@ -28,10 +28,10 @@ export const DEMO_PRESETS = [
   },
   {
     id: 'preset-upi-trap',
-    title: 'Preset 3: UPI QR "Receive" Trap',
-    tag: 'Micro-Friction Gate',
+    title: 'UPI QR "Receive" Trap',
+    tag: 'Payment Gate',
     icon: QrCode,
-    badgeColor: 'from-purple-500/20 to-violet-500/20 text-purple-300 border-purple-500/30',
+    badgeColor: 'from-violet-500/20 to-purple-500/20 text-purple-200 border-violet-500/30',
     description: 'upi://pay?pa=cashback-claim@ybl&am=4999&pn=PaytmReward',
     targetTab: 'qr',
     data: {
@@ -40,10 +40,10 @@ export const DEMO_PRESETS = [
   },
   {
     id: 'preset-malicious-apk',
-    title: 'Preset 4: Malicious APK RAT',
-    tag: 'RAT Permission Auditor',
+    title: 'Malicious APK RAT',
+    tag: 'App Audit',
     icon: ShieldAlert,
-    badgeColor: 'from-red-500/20 to-pink-500/20 text-red-300 border-red-500/30',
+    badgeColor: 'from-red-500/20 to-pink-500/20 text-red-200 border-red-500/30',
     description: 'http://customer-support-app.net/AnyDesk_Support.apk',
     targetTab: 'apk',
     data: {
@@ -52,11 +52,11 @@ export const DEMO_PRESETS = [
   },
   {
     id: 'preset-poa-block',
-    title: 'Preset 5: PoA Consortium Block',
-    tag: 'Multi-Sig Blockchain',
+    title: 'Consortium Blockchain',
+    tag: 'Blockchain',
     icon: Database,
-    badgeColor: 'from-cyan-500/20 to-blue-500/20 text-cyan-300 border-cyan-500/30',
-    description: 'Report scam-paytm@ybl -> Cyber Cell + RBI Bank Multi-Sig Minting',
+    badgeColor: 'from-sky-500/20 to-blue-500/20 text-sky-200 border-sky-500/30',
+    description: 'Report scam-paytm@ybl → Cyber Cell + RBI Bank Multi-Sig Minting',
     targetTab: 'blockchain',
     data: {
       target: 'scam-paytm@ybl',
@@ -68,29 +68,30 @@ export const DEMO_PRESETS = [
 
 export default function JudgePresetBar({ onSelectPreset, activePresetId }) {
   return (
-    <section className="mb-6 p-4 rounded-2xl bg-gradient-to-r from-slate-900/90 via-slate-900/70 to-slate-950/90 border border-cyan-500/30 shadow-[0_4px_30px_rgba(6,182,212,0.1)]">
-      <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-3 mb-3 pb-2.5 border-b border-slate-800/80">
-        <div className="flex items-center gap-2">
-          <div className="p-1.5 rounded-lg bg-cyan-500/20 text-cyan-400">
-            <Sparkles className="w-4 h-4" />
+    <section className="mb-8 p-5 rounded-2xl glass-panel relative overflow-hidden animate-fade-in stagger-1">
+      
+      <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-4 pb-4 border-b border-white/[0.06] relative z-10">
+        <div className="flex items-center gap-3">
+          <div className="p-2 rounded-xl bg-gradient-to-br from-cyber-accent/12 to-cyber-neon/15 border border-cyber-accent/20 text-cyber-accent">
+            <Sparkles className="w-5 h-5" />
           </div>
           <div>
-            <h2 className="text-sm font-bold tracking-wide text-white uppercase flex items-center gap-2 font-mono">
-              <span>Hackathon Judge Evaluation Bench</span>
-              <span className="text-[10px] px-1.5 py-0.2 rounded bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 font-sans font-normal">
-                1-Click Demo Triggers
+            <h2 className="text-base font-semibold tracking-wide text-white flex items-center gap-3">
+              <span>Try It Out</span>
+              <span className="text-[10px] px-2 py-0.5 rounded-full bg-cyber-accent/10 text-cyber-accent border border-cyber-accent/20 font-medium tracking-wider">
+                Interactive
               </span>
             </h2>
-            <p className="text-xs text-slate-400">
-              Instantly evaluate all 5 domain blind spots with pre-loaded real-world threat vectors:
+            <p className="text-xs text-slate-400 mt-0.5">
+              Click any scenario below to see Rakshak AI in action:
             </p>
           </div>
         </div>
       </div>
 
       {/* Preset Buttons Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-2.5">
-        {DEMO_PRESETS.map((preset) => {
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 relative z-10">
+        {DEMO_PRESETS.map((preset, index) => {
           const Icon = preset.icon;
           const isActive = activePresetId === preset.id;
 
@@ -98,23 +99,26 @@ export default function JudgePresetBar({ onSelectPreset, activePresetId }) {
             <button
               key={preset.id}
               onClick={() => onSelectPreset(preset)}
-              className={`group text-left p-2.5 rounded-xl border transition-all relative overflow-hidden flex flex-col justify-between ${
+              style={{ animationDelay: `${100 + index * 40}ms` }}
+              className={`group text-left p-3.5 rounded-xl border transition-all duration-300 relative overflow-hidden flex flex-col justify-between animate-fade-in ${
                 isActive
-                  ? 'bg-cyan-950/40 border-cyan-400 shadow-[0_0_20px_rgba(6,182,212,0.25)] ring-1 ring-cyan-400'
-                  : 'bg-slate-900/60 hover:bg-slate-800/80 border-slate-800 hover:border-slate-700'
+                  ? 'glass-panel-glow -translate-y-0.5'
+                  : 'bg-white/[0.03] hover:bg-white/[0.06] border-white/[0.06] hover:border-white/[0.12] hover:-translate-y-0.5'
               }`}
             >
               <div>
-                <div className="flex items-center justify-between gap-2 mb-1.5">
-                  <span className={`text-[10px] font-mono px-2 py-0.5 rounded-md border bg-gradient-to-r ${preset.badgeColor}`}>
+                <div className="flex items-center justify-between gap-2 mb-2.5">
+                  <span className={`text-[10px] font-medium px-2 py-0.5 rounded-md border bg-gradient-to-r ${preset.badgeColor}`}>
                     {preset.tag}
                   </span>
-                  <Play className={`w-3 h-3 text-cyan-400 opacity-60 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all ${isActive ? 'opacity-100 text-cyan-300' : ''}`} />
+                  <div className={`p-1 rounded-full transition-colors ${isActive ? 'bg-cyber-accent/15' : 'bg-white/[0.04] group-hover:bg-white/[0.08]'}`}>
+                    <Play className={`w-3 h-3 transition-all ${isActive ? 'text-cyber-accent opacity-100' : 'text-slate-400 opacity-50 group-hover:opacity-80 group-hover:text-white'}`} />
+                  </div>
                 </div>
-                <div className="font-semibold text-xs text-slate-100 mb-1 line-clamp-1 group-hover:text-cyan-300 transition-colors">
+                <div className={`font-semibold text-sm mb-1.5 line-clamp-1 transition-colors ${isActive ? 'text-cyber-accent' : 'text-slate-200 group-hover:text-white'}`}>
                   {preset.title}
                 </div>
-                <p className="text-[11px] text-slate-400 line-clamp-2 leading-relaxed">
+                <p className="text-[11px] text-slate-400 line-clamp-2 leading-relaxed group-hover:text-slate-300 transition-colors">
                   {preset.description}
                 </p>
               </div>
