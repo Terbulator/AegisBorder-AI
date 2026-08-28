@@ -1,155 +1,130 @@
-import React, { useState } from 'react';
-import { Globe, Search, ShieldCheck, Sparkles, Loader2, HelpCircle, AlertCircle } from 'lucide-react';
+import React, { useEffect, useRef, useState } from 'react';
+import { Globe, Loader2, Search, Trash2 } from 'lucide-react';
 import { inspectUrl } from '../engine/urlDetector';
 import RiskResultCard from './RiskResultCard';
 
-export default function UrlScanner({ 
-  currentLang = 'hi', 
-  onOpenSandbox, 
-  onOpenReport, 
-  onMintBlock,
-  initialUrl = '' 
-}) {
-  const [inputUrl, setInputUrl] = useState(initialUrl);
+const SCAN_STEPS = [
+  'Analyzing domain',
+  'Checking reputation',
+  'Looking for suspicious patterns',
+  'Comparing against scam registry',
+];
+
+const SAMPLE_URLS = [
+  { label: 'Fake SBI KYC link',  url: 'http://sbi-bank-kyc-update.top/login.php', safe: false },
+  { label: 'Official SBI portal', url: 'https://onlinesbi.sbi',                   safe: true },
+  { label: 'Fake Jio 5G offer',   url: 'http://free-recharge-jio-5g.live',         safe: false },
+  { label: 'Official HDFC bank',  url: 'https://hdfcbank.com',                     safe: true },
+];
+
+export default function UrlScanner({ currentLang = 'hi', onOpenReport, onMintBlock, onOpenSandbox, initialUrl = '', onResult }) {
+  const [input, setInput] = useState(initialUrl);
   const [isScanning, setIsScanning] = useState(false);
+  const [scanStep, setScanStep] = useState(0);
   const [result, setResult] = useState(null);
+  const timers = useRef([]);
 
-  const sampleUrls = [
-    { label: "Fake SBI Bank Link", url: "http://sbi-bank-kyc-update.top/login.php", safe: false },
-    { label: "Official SBI Website", url: "https://onlinesbi.sbi", safe: true },
-    { label: "Fake Jio 5G Offer", url: "http://free-recharge-jio-5g.live", safe: false },
-    { label: "Official HDFC Bank", url: "https://hdfcbank.com", safe: true }
-  ];
+  useEffect(() => {
+    if (initialUrl && initialUrl !== input) setInput(initialUrl);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initialUrl]);
+  useEffect(() => () => timers.current.forEach(clearTimeout), []);
 
-  const handleScan = (urlToScan = inputUrl) => {
-    if (!urlToScan.trim()) return;
-
+  const runScan = (url = input) => {
+    if (!url.trim()) return;
+    setResult(null);
     setIsScanning(true);
-    setTimeout(() => {
-      const res = inspectUrl(urlToScan, currentLang);
+    setScanStep(1);
+    for (let i = 2; i <= SCAN_STEPS.length; i++) {
+      timers.current.push(setTimeout(() => setScanStep(i), 280 * (i - 1)));
+    }
+    timers.current.push(setTimeout(() => {
+      const res = inspectUrl(url, currentLang);
       setResult(res);
       setIsScanning(false);
-    }, 600);
+      setScanStep(0);
+      if (onResult) onResult(res);
+    }, 280 * SCAN_STEPS.length + 200));
   };
 
   return (
-    <div className="space-y-6">
-      
-      {/* Input Card */}
-      <div className="card p-5 sm:p-6">
-        <div className="flex items-center gap-3 mb-5">
-          <div className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-950/50 text-[var(--primary)] flex items-center justify-center font-bold">
-            <Globe className="w-5 h-5" />
+    <div className="space-y-4">
+      <section className="panel-elevated p-5 sm:p-6">
+        <div className="flex items-center gap-2.5 mb-1">
+          <div className="w-9 h-9 rounded-lg bg-[var(--primary-subtle)] flex items-center justify-center shrink-0">
+            <Globe className="w-4 h-4 text-[var(--primary)]" />
           </div>
           <div>
-            <h3 className="text-base sm:text-lg font-bold text-[var(--text-primary)]">
-              Check Website Link (वेबसाइट लिंक की जांच करें)
-            </h3>
-            <p className="text-xs text-[var(--text-muted)]">
-              Enter any link or website to check if it's an official bank site or a fake clone
-            </p>
+            <h2 className="text-[15px] font-semibold text-[var(--text-primary)]">Check a suspicious website</h2>
+            <p className="text-[12.5px] text-[var(--text-muted)]">Paste any link to verify if it is the official site or a fake clone.</p>
           </div>
         </div>
 
-        {/* URL Input */}
-        <div className="relative mb-4">
+        <div className="mt-4">
           <input
             type="text"
-            value={inputUrl}
-            onChange={(e) => setInputUrl(e.target.value)}
-            placeholder="Paste website link here (e.g. sbi-bank-kyc-update.top)"
-            className="w-full p-4 pl-11 input-clean text-sm sm:text-base font-mono"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            placeholder="Paste the website link here…"
+            className="input"
           />
-          <Globe className="w-4 h-4 text-[var(--text-muted)] absolute left-4 top-1/2 -translate-y-1/2" />
         </div>
 
-        {/* Sample Links */}
-        <div className="flex flex-wrap items-center gap-2 mb-5">
-          <span className="text-xs font-bold text-[var(--text-muted)]">Try an example:</span>
-          {sampleUrls.map((s, idx) => (
-            <button
-              key={idx}
-              onClick={() => {
-                setInputUrl(s.url);
-                handleScan(s.url);
-              }}
-              className={`text-xs font-semibold px-3 py-1.5 rounded-lg border transition-all ${
-                s.safe
-                  ? 'bg-emerald-50 text-emerald-800 border-emerald-200 hover:bg-emerald-100'
-                  : 'bg-red-50 text-red-800 border-red-200 hover:bg-red-100'
-              }`}
-            >
-              {s.label}
-            </button>
-          ))}
-        </div>
-
-        {/* Scan Actions */}
-        <div className="flex items-center justify-between pt-3 border-t border-[var(--border-subtle)]">
-          <button
-            onClick={() => {
-              setInputUrl('');
-              setResult(null);
-            }}
-            className="btn-secondary text-xs"
-          >
-            Clear
-          </button>
-          <button
-            onClick={() => handleScan()}
-            disabled={!inputUrl.trim() || isScanning}
-            className="btn-primary text-sm sm:text-base px-6 py-2.5 disabled:opacity-40"
-          >
-            {isScanning ? (
-              <>
-                <Loader2 className="w-4 h-4 animate-spin" />
-                <span>Checking Website...</span>
-              </>
-            ) : (
-              <>
-                <Search className="w-4 h-4" />
-                <span>Check Link (लिंक जांचें)</span>
-              </>
-            )}
-          </button>
-        </div>
-      </div>
-
-      {/* Scanning Loader State */}
-      {isScanning && (
-        <div className="card p-6 border-[var(--primary-border)] bg-[var(--primary-subtle)] flex items-center gap-3 animate-fade-in">
-          <Loader2 className="w-5 h-5 text-[var(--primary)] animate-spin" />
-          <div className="text-xs text-[var(--text-secondary)]">
-            <p className="font-bold text-[var(--text-primary)]">Comparing domain against official Indian bank registries...</p>
-            <p>Checking for fake spelling, lookalike characters, and deceptive subdomains.</p>
+        <div className="mt-4">
+          <p className="text-[10.5px] font-semibold uppercase tracking-wider text-[var(--text-muted)] mb-2">Try an example</p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            {SAMPLE_URLS.map((s, i) => (
+              <button
+                key={i}
+                onClick={() => { setInput(s.url); runScan(s.url); }}
+                className="text-left p-2.5 rounded-md border border-[var(--border-subtle)] hover:border-[var(--border-medium)] hover:bg-[var(--bg-hover)] transition-colors"
+              >
+                <p className="text-[12.5px] font-medium text-[var(--text-primary)] leading-tight">{s.label}</p>
+                <p className="text-[11px] text-[var(--text-muted)] truncate mt-0.5 font-mono">{s.url}</p>
+              </button>
+            ))}
           </div>
         </div>
+
+        <div className="mt-4 flex items-center justify-between gap-3 pt-4 border-t border-[var(--border-subtle)]">
+          <button onClick={() => setInput('')} disabled={!input} className="btn btn-ghost btn-sm">
+            <Trash2 className="w-3.5 h-3.5" />Clear
+          </button>
+          <button onClick={() => runScan()} disabled={!input.trim() || isScanning} className="btn btn-primary">
+            {isScanning ? (<><Loader2 className="w-4 h-4 animate-spin-slow" />Analyzing…</>) : (<><Search className="w-4 h-4" />Check link</>)}
+          </button>
+        </div>
+      </section>
+
+      {isScanning && (
+        <section className="panel-elevated p-5 animate-fade-in" aria-live="polite">
+          <div className="flex items-center gap-2 mb-3">
+            <Loader2 className="w-3.5 h-3.5 text-[var(--primary)] animate-spin-slow" />
+            <h3 className="text-[13px] font-semibold text-[var(--text-primary)]">Checking link</h3>
+          </div>
+          <div className="space-y-0.5">
+            {SCAN_STEPS.map((label, i) => {
+              const stepNum = i + 1;
+              const done = scanStep > stepNum;
+              const active = scanStep === stepNum;
+              return (
+                <div key={label} className={`scan-step ${done ? 'done' : active ? 'active' : ''}`}>
+                  <span className="step-icon">{done ? '✓' : ''}</span>{label}
+                </div>
+              );
+            })}
+          </div>
+        </section>
       )}
 
-      {/* Result Card */}
       {result && !isScanning && (
         <RiskResultCard
           result={result}
           currentLang={currentLang}
-          onOpenSandbox={onOpenSandbox}
           onOpenReport={onOpenReport}
           onMintBlock={onMintBlock}
         />
       )}
-
-      {/* Empty State Educational Tip */}
-      {!result && !isScanning && (
-        <div className="card p-5 bg-[var(--bg-surface)] text-xs space-y-2 text-[var(--text-secondary)]">
-          <div className="flex items-center gap-2 font-bold text-[var(--text-primary)]">
-            <ShieldCheck className="w-4 h-4 text-emerald-600" />
-            <span>How scammers trick you with fake links:</span>
-          </div>
-          <p>
-            Scammers create website names that look almost identical to real banks (e.g. <code>sbi-kyc.top</code> instead of official <code>onlinesbi.sbi</code>). Rakshak AI flags fake spelling and warns you before you enter your bank password.
-          </p>
-        </div>
-      )}
-
     </div>
   );
 }

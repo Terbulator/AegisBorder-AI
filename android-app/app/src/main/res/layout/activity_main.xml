@@ -3,14 +3,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#0A0F1D"
+    android:background="#0A0E1A"
     android:padding="24dp">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="RAKSHAK AI"
-        android:textColor="#06B6D4"
+        android:textColor="#4D7CFF"
         android:textSize="26sp"
         android:textStyle="bold" />
 
@@ -18,7 +18,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="On-Device Phishing &amp; Fraud Defence Assistant"
-        android:textColor="#94A3B8"
+        android:textColor="#A8B6CC"
         android:textSize="13sp"
         android:layout_marginBottom="24dp" />
 
@@ -26,10 +26,10 @@
         android:id="@+id/tvProtectionStatus"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#1E293B"
+        android:background="#1B2438"
         android:padding="16dp"
         android:text="🛡️ ON-DEVICE PROTECTION: ACTIVE"
-        android:textColor="#10B981"
+        android:textColor="#34D399"
         android:textSize="14sp"
         android:textStyle="bold"
         android:layout_marginBottom="24dp" />
@@ -38,7 +38,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Required Permissions for Zero-Copy Protection:"
-        android:textColor="#E2E8F0"
+        android:textColor="#F4F7FD"
         android:textSize="14sp"
         android:textStyle="bold"
         android:layout_marginBottom="12dp" />
@@ -47,7 +47,7 @@
         android:id="@+id/btnGrantNotificationAccess"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:backgroundTint="#06B6D4"
+        android:backgroundTint="#4D7CFF"
         android:text="1. Grant WhatsApp/SMS Notification Listener"
         android:layout_marginBottom="12dp" />
 
@@ -55,7 +55,7 @@
         android:id="@+id/btnGrantOverlayAccess"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:backgroundTint="#3B82F6"
+        android:backgroundTint="#2E6BFF"
         android:text="2. Grant Floating Alert Shield Overlay" />
 
 </LinearLayout>

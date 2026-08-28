@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Volume2, VolumeX, Mic, MicOff, Sparkles } from 'lucide-react';
+import { Volume2, Mic, MicOff, Sparkles } from 'lucide-react';
 import { SUPPORTED_LANGUAGES } from '../engine/regionalDictionary';
 
 export function speakText(text, langCode = 'hi') {
@@ -13,12 +13,12 @@ export function speakText(text, langCode = 'hi') {
 
   const utterance = new SpeechSynthesisUtterance(text);
   const langObj = SUPPORTED_LANGUAGES.find(l => l.code === langCode);
-  
+
   if (langObj) {
     utterance.lang = langObj.speechLang;
   }
 
-  utterance.rate = 0.95; // Slightly slower for clear comprehension for rural / first-time users
+  utterance.rate = 0.95;
   utterance.pitch = 1.0;
 
   window.speechSynthesis.speak(utterance);
@@ -81,22 +81,22 @@ export default function VoiceAssistant({ currentLang, onVoiceInput }) {
     <div className="flex items-center gap-2">
       <button
         onClick={handleToggleListening}
-        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all border ${
+        className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all border shadow-sm hover:shadow-md ${
           isListening
-            ? 'bg-red-500/20 border-red-500 text-red-400 animate-pulse'
-            : 'bg-slate-900/80 hover:bg-slate-800 border-slate-700 text-slate-300'
+            ? 'bg-gradient-to-r from-coral-500 to-coral-600 text-white border-coral-500 shadow-lg shadow-coral-500/20 animate-pulse'
+            : 'bg-gradient-to-r from-indigo-500 to-indigo-600 text-white border-indigo-500 hover:shadow-lg hover:shadow-indigo-500/20'
         }`}
         title="Speak suspicious message or URL (Voice Input)"
       >
         {isListening ? (
           <>
-            <MicOff className="w-3.5 h-3.5" />
-            <span>Listening...</span>
+            <MicOff className="w-4 h-4" />
+            <span className="hidden sm:inline">Listening...</span>
           </>
         ) : (
           <>
-            <Mic className="w-3.5 h-3.5 text-cyan-400" />
-            <span>Voice Input (बोलकर पूछें)</span>
+            <Mic className="w-4 h-4" />
+            <span className="hidden sm:inline">Voice Input</span>
           </>
         )}
       </button>
