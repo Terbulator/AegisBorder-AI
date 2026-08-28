@@ -21,7 +21,7 @@ export default function BlockchainLedger({ isOpen, onClose }) {
       globalPoaBlockchain.submitCommunityReport(
         targetInput,
         typeInput,
-        detailsInput || 'Verified malicious pattern via consortium telemetry'
+        detailsInput || 'Verified malicious pattern reported by community'
       );
       setBlocks([...globalPoaBlockchain.getBlocks()]);
       setIsMinting(false);
@@ -29,96 +29,95 @@ export default function BlockchainLedger({ isOpen, onClose }) {
       setDetailsInput('');
 
       confetti({
-        particleCount: 70,
-        spread: 60,
+        particleCount: 60,
+        spread: 50,
         origin: { y: 0.6 }
       });
     }, 600);
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fade-in">
-      <div className="glass-panel-glow max-w-4xl w-full rounded-3xl p-6 text-white border border-cyan-500/40 shadow-2xl max-h-[90vh] flex flex-col">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
+      <div className="card max-w-3xl w-full p-5 sm:p-6 shadow-2xl max-h-[90vh] flex flex-col">
         
         {/* Top Header */}
-        <div className="flex items-center justify-between pb-3 border-b border-slate-800 mb-4 shrink-0">
-          <div className="flex items-center gap-2.5">
-            <div className="p-2.5 rounded-xl bg-cyan-500/20 text-cyan-400">
+        <div className="flex items-center justify-between pb-3 border-b border-[var(--border-subtle)] mb-4 shrink-0">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-950/50 text-[var(--primary)] flex items-center justify-center font-bold">
               <Database className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="text-base font-bold text-white flex items-center gap-2">
-                <span>Proof-of-Authority (PoA) Consortium Ledger</span>
-                <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-mono">
-                  Sybil Immune
+              <h3 className="text-base font-bold text-[var(--text-primary)] flex items-center gap-2">
+                <span>Verified Scam Registry (सत्यापित फ्रॉड डेटाबेस)</span>
+                <span className="badge-safe text-[10px]">
+                  Cyber Police 1930
                 </span>
               </h3>
-              <p className="text-xs text-slate-400">
-                Multi-Signature Threat Blacklisting by Authorized State & Banking Nodes
+              <p className="text-xs text-[var(--text-muted)]">
+                Shared in real-time across Indian Cyber Crime Units, RBI Banks & Telecom Providers
               </p>
             </div>
           </div>
           <button 
             onClick={onClose}
-            className="p-1.5 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-white transition-colors"
+            className="p-2 rounded-lg hover:bg-[var(--bg-surface-subtle)] text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Scrollable Body */}
-        <div className="overflow-y-auto space-y-6 pr-1">
+        <div className="overflow-y-auto space-y-5 pr-1 text-xs">
           
           {/* Consortium Nodes Bar */}
-          <div className="p-4 rounded-2xl bg-slate-900/90 border border-slate-800">
-            <div className="flex items-center justify-between mb-3">
-              <h4 className="text-xs font-bold text-cyan-400 uppercase tracking-wider flex items-center gap-1.5 font-mono">
-                <Users className="w-3.5 h-3.5" />
-                <span>Authorized Validator Consortium Nodes (3/3 Active)</span>
+          <div className="p-4 rounded-xl card bg-[var(--bg-surface-subtle)]">
+            <div className="flex items-center justify-between mb-2.5">
+              <h4 className="text-xs font-bold text-[var(--text-primary)] uppercase tracking-wider flex items-center gap-1.5">
+                <Users className="w-4 h-4 text-[var(--primary)]" />
+                <span>Authorized Verifiers (3/3 Active)</span>
               </h4>
-              <span className="text-[10px] font-mono text-slate-400">Consensus Rule: &gt;= 2 Multi-Sigs</span>
+              <span className="text-[11px] text-[var(--text-muted)]">Rule: &gt;= 2 Signatures Required</span>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-2.5">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
               {CONSORTIUM_NODES.map((node) => (
-                <div key={node.id} className="p-3 rounded-xl bg-black/40 border border-slate-800 flex items-start gap-2.5">
-                  <span className="text-xl">{node.avatar}</span>
+                <div key={node.id} className="p-2.5 rounded-lg bg-[var(--bg-surface)] border border-[var(--border-subtle)] flex items-start gap-2">
+                  <span className="text-lg">{node.avatar}</span>
                   <div className="min-w-0">
-                    <div className="text-xs font-bold text-slate-100 truncate">{node.name}</div>
-                    <div className="text-[10px] text-slate-400 truncate">{node.nodeType}</div>
-                    <div className="text-[10px] font-mono text-cyan-400 mt-1 truncate">{node.pubKey}</div>
+                    <div className="font-bold text-[var(--text-primary)] truncate">{node.name}</div>
+                    <div className="text-[10px] text-[var(--text-muted)] truncate">{node.nodeType}</div>
                   </div>
                 </div>
               ))}
             </div>
           </div>
 
-          {/* Mint New Threat Block Form */}
-          <div className="p-4 rounded-2xl bg-gradient-to-br from-slate-900 via-slate-900 to-cyan-950/30 border border-cyan-500/20">
-            <h4 className="text-xs font-bold text-slate-200 uppercase tracking-wider mb-2.5 flex items-center gap-1.5">
-              <Plus className="w-3.5 h-3.5 text-cyan-400" />
-              <span>Submit & Mint Threat Intelligence Block</span>
+          {/* Submit New Scam Record Form */}
+          <div className="p-4 rounded-xl card bg-[var(--bg-surface-subtle)]">
+            <h4 className="text-xs font-bold text-[var(--text-primary)] uppercase tracking-wider mb-2.5 flex items-center gap-1.5">
+              <Plus className="w-4 h-4 text-[var(--primary)]" />
+              <span>Report Known Scam to National Database</span>
             </h4>
 
             <form onSubmit={handleMint} className="space-y-3">
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                 <input
                   type="text"
                   value={targetInput}
                   onChange={(e) => setTargetInput(e.target.value)}
-                  placeholder="Target (e.g. scam-paytm@ybl or bad-domain.top)"
-                  className="sm:col-span-2 p-2.5 rounded-xl bg-black/50 border border-slate-700 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500 font-mono"
+                  placeholder="Scam link or UPI ID (e.g. scam-paytm@ybl)"
+                  className="sm:col-span-2 p-2.5 rounded-lg input-clean text-xs font-mono"
                   required
                 />
                 <select
                   value={typeInput}
                   onChange={(e) => setTypeInput(e.target.value)}
-                  className="p-2.5 rounded-xl bg-black/50 border border-slate-700 text-xs text-slate-200 focus:outline-none focus:border-cyan-500"
+                  className="p-2.5 rounded-lg input-clean text-xs text-[var(--text-primary)]"
                 >
-                  <option value="PHISHING_DOMAIN">Phishing Domain</option>
-                  <option value="DECEPTIVE_UPI_VPA">Deceptive UPI VPA</option>
-                  <option value="RAT_MALWARE_APK">RAT Malware APK</option>
-                  <option value="SMS_SPOOF_SOURCE">SMS Spoof Source</option>
+                  <option value="PHISHING_DOMAIN">Fake Website Link</option>
+                  <option value="DECEPTIVE_UPI_VPA">Fake UPI Cashback ID</option>
+                  <option value="RAT_MALWARE_APK">Dangerous Spy APK</option>
+                  <option value="SMS_SPOOF_SOURCE">SMS Spoof Sender</option>
                 </select>
               </div>
 
@@ -126,70 +125,63 @@ export default function BlockchainLedger({ isOpen, onClose }) {
                 type="text"
                 value={detailsInput}
                 onChange={(e) => setDetailsInput(e.target.value)}
-                placeholder="Forensic evidence or attack campaign details"
-                className="w-full p-2.5 rounded-xl bg-black/50 border border-slate-700 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500"
+                placeholder="Details of the scam message or incident"
+                className="w-full p-2.5 rounded-lg input-clean text-xs"
               />
 
               <div className="flex justify-end">
                 <button
                   type="submit"
                   disabled={isMinting || !targetInput.trim()}
-                  className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-cyan-600 hover:bg-cyan-500 disabled:opacity-50 text-white text-xs font-bold transition-all shadow-[0_0_15px_rgba(6,182,212,0.3)]"
+                  className="btn-primary text-xs"
                 >
                   <Sparkles className="w-3.5 h-3.5" />
-                  <span>{isMinting ? 'Minting Multi-Sig Block...' : 'Collect Multi-Sig & Mint Block'}</span>
+                  <span>{isMinting ? 'Verifying & Saving...' : 'Save to Official Database'}</span>
                 </button>
               </div>
             </form>
           </div>
 
-          {/* Blocks List */}
+          {/* Verified Scam Records List */}
           <div>
-            <h4 className="text-xs font-bold text-slate-300 uppercase tracking-wider mb-3 flex items-center gap-1.5 font-mono">
-              <Layers className="w-3.5 h-3.5 text-cyan-400" />
-              <span>Immutable Chain Explorer ({blocks.length} Blocks Minted)</span>
+            <h4 className="text-xs font-bold text-[var(--text-muted)] uppercase tracking-wider mb-2.5 flex items-center gap-1.5">
+              <Layers className="w-3.5 h-3.5 text-[var(--primary)]" />
+              <span>Verified Scam Records ({blocks.length} Recorded)</span>
             </h4>
 
-            <div className="space-y-3">
+            <div className="space-y-2">
               {blocks.map((block) => (
                 <div 
                   key={block.blockNumber} 
-                  className="p-4 rounded-2xl bg-black/50 border border-slate-800/80 hover:border-cyan-500/30 transition-all font-mono"
+                  className="p-3.5 rounded-xl card bg-[var(--bg-surface)] hover:border-[var(--border-medium)] transition-all"
                 >
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2 border-b border-slate-800/60 mb-2.5">
+                  <div className="flex items-center justify-between pb-1.5 border-b border-[var(--border-subtle)] mb-1.5">
                     <div className="flex items-center gap-2">
-                      <span className="text-xs font-bold text-cyan-400">
-                        Block #{block.blockNumber}
+                      <span className="font-bold text-[var(--primary)]">
+                        Record #{block.blockNumber}
                       </span>
-                      <span className="text-[10px] px-2 py-0.5 rounded bg-red-500/20 text-red-300 border border-red-500/30">
+                      <span className="badge-danger text-[10px]">
                         {block.threatType}
                       </span>
                     </div>
-                    <span className="text-[10px] text-slate-400 font-sans">
-                      {new Date(block.timestamp).toLocaleString()}
+                    <span className="text-[10px] text-[var(--text-muted)]">
+                      {new Date(block.timestamp).toLocaleDateString()}
                     </span>
                   </div>
 
-                  <div className="text-xs text-slate-200 font-semibold mb-1 truncate">
-                    Target: <span className="text-red-300">{block.threatTarget}</span>
+                  <div className="font-semibold text-[var(--text-primary)] mb-1">
+                    Target: <span className="font-mono text-red-600 dark:text-red-400">{block.threatTarget}</span>
                   </div>
 
                   {block.evidenceDetails && (
-                    <div className="text-[11px] text-slate-400 font-sans mb-2">
+                    <div className="text-[11px] text-[var(--text-secondary)] mb-2">
                       {block.evidenceDetails}
                     </div>
                   )}
 
-                  {/* Hash & Multi-sig details */}
-                  <div className="pt-2 border-t border-slate-800/40 grid grid-cols-1 sm:grid-cols-2 gap-2 text-[10px] text-slate-400">
-                    <div>
-                      <span className="text-slate-500">Block Hash: </span>
-                      <span className="text-cyan-300">{block.blockHash.slice(0, 18)}...</span>
-                    </div>
-                    <div>
-                      <span className="text-slate-500">Signatures: </span>
-                      <span className="text-emerald-400">✓ {block.signatures.length} Verified Signatures</span>
-                    </div>
+                  <div className="flex items-center justify-between text-[10px] text-[var(--text-muted)] pt-1 border-t border-[var(--border-subtle)]">
+                    <span className="font-mono">Hash: {block.blockHash.slice(0, 14)}...</span>
+                    <span className="text-emerald-700 dark:text-emerald-400 font-semibold">✓ Verified by RBI & Cyber Police</span>
                   </div>
                 </div>
               ))}
@@ -199,12 +191,12 @@ export default function BlockchainLedger({ isOpen, onClose }) {
         </div>
 
         {/* Footer */}
-        <div className="pt-3 border-t border-slate-800 mt-4 flex justify-end shrink-0">
+        <div className="pt-3 border-t border-[var(--border-subtle)] mt-3 flex justify-end shrink-0">
           <button
             onClick={onClose}
-            className="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-white text-xs font-bold transition-colors"
+            className="btn-secondary text-xs"
           >
-            Close Explorer
+            Close Registry
           </button>
         </div>
 

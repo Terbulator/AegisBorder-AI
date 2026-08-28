@@ -1,20 +1,21 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  Shield, 
-  MessageSquare, 
-  Globe, 
-  QrCode, 
-  ShieldAlert, 
-  Database, 
-  Zap, 
-  Lock, 
-  Activity, 
+import {
+  Shield,
+  MessageSquare,
+  Globe,
+  QrCode,
+  ShieldAlert,
+  Database,
+  Zap,
+  Lock,
+  Activity,
   Layers,
   Sparkles,
   PhoneCall,
   Info
 } from 'lucide-react';
 
+import Sidebar, { MobileMenuButton } from './components/Sidebar';
 import Header from './components/Header';
 import JudgePresetBar from './components/JudgePresetBar';
 import NotificationSimulator from './components/NotificationSimulator';
@@ -39,6 +40,23 @@ export default function App() {
   const [isOfflineMode, setIsOfflineMode] = useState(false);
   const [activeTab, setActiveTab] = useState('message');
   const [activePresetId, setActivePresetId] = useState(null);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [theme, setTheme] = useState(() => localStorage.getItem('rakshak_theme') || 'light');
+
+  // Theme Syncing Effect
+  useEffect(() => {
+    if (theme === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+    localStorage.setItem('rakshak_theme', theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme(prev => (prev === 'light' ? 'dark' : 'light'));
+  };
 
   // Modals & Popups State
   const [activeNotification, setActiveNotification] = useState(null);
@@ -73,10 +91,10 @@ export default function App() {
       });
       // Speak audio warning in selected language
       speakText("सावधान! बिजली कनेक्शन काटने का फर्जी संदेश आया है। दिए गए नंबर पर कॉल न करें।", currentLang);
-    } 
+    }
     else if (preset.id === 'preset-typosquat-url') {
       setUrlInitialText(preset.data.url);
-    } 
+    }
     else if (preset.id === 'preset-upi-trap') {
       setQrInitialPayload(preset.data.qrPayload);
       // Automatically trigger Micro-Friction Gate
@@ -87,10 +105,10 @@ export default function App() {
         hasDeceptiveIntent: true
       });
       speakText("रुकिए! आप 4999 रुपये भेज रहे हैं। कैशबैक पाने के लिए कभी पिन न डालें।", currentLang);
-    } 
+    }
     else if (preset.id === 'preset-malicious-apk') {
       setApkInitialUrl(preset.data.apkUrl);
-    } 
+    }
     else if (preset.id === 'preset-poa-block') {
       setIsLedgerOpen(true);
     }
@@ -99,7 +117,7 @@ export default function App() {
   const handleMintFromThreat = (threat) => {
     const target = threat.domain || threat.vpa || threat.appName || threat.fullUrl || "Unknown Target";
     const type = threat.category || (threat.isApk ? "RAT_MALWARE_APK" : threat.vpa ? "DECEPTIVE_UPI_VPA" : "PHISHING_DOMAIN");
-    
+
     globalPoaBlockchain.addVerifiedBlock(
       target,
       type,
@@ -110,189 +128,234 @@ export default function App() {
     setIsLedgerOpen(true);
   };
 
-  const tabs = [
-    { id: 'phone', label: 'Phone Simulator', icon: Shield },
-    { id: 'message', label: 'Messages', icon: MessageSquare },
-    { id: 'url', label: 'Link Checker', icon: Globe },
-    { id: 'qr', label: 'QR & UPI', icon: QrCode },
-    { id: 'apk', label: 'App Scanner', icon: ShieldAlert },
-    { id: 'blockchain', label: 'Threat Ledger', icon: Database },
-  ];
+  // Page title for current tab
+  const tabTitles = {
+    message: 'Message Scanner (मैसेज सुरक्षा)',
+    url: 'Website Link Checker (लिंक जांच)',
+    qr: 'QR & UPI Safety (UPI फ्रॉड से बचाव)',
+    apk: 'App Safety Check (ऐप सुरक्षा)',
+    phone: 'Live Phone Protection Demo (लाइव फोन सुरक्षा)',
+    blockchain: 'Verified Scam Registry (1930 पुलिस डेटाबेस)'
+  };
+
+  const tabSubtitles = {
+    message: 'Paste any SMS or WhatsApp message asking for money or KYC update',
+    url: 'Enter any website or link to verify if it is an official bank portal or fake clone',
+    qr: 'Check UPI payment requests and cashback QR codes before money is debited',
+    apk: 'Check if a downloaded app has dangerous permissions to spy or steal OTPs',
+    phone: 'Simulate how Rakshak AI warns you in Hindi immediately when scam messages arrive',
+    blockchain: 'Verified scam database shared in real-time with Indian Cyber Police (1930) and Banks'
+  };
 
   return (
-    <div className="min-h-screen text-slate-100 flex flex-col">
-      
-      {/* Top Navbar */}
-      <Header
-        currentLang={currentLang}
-        onLanguageChange={setCurrentLang}
-        isOfflineMode={isOfflineMode}
-        onToggleOffline={() => setIsOfflineMode(!isOfflineMode)}
+    <div className="min-h-screen flex bg-[var(--bg-app)] text-[var(--text-primary)] transition-colors duration-150">
+
+      {/* Sidebar Navigation */}
+      <Sidebar
+        activeTab={activeTab}
+        onTabChange={setActiveTab}
+        isCollapsed={sidebarCollapsed}
+        onToggleCollapse={() => setSidebarCollapsed(!sidebarCollapsed)}
+        isMobileOpen={mobileMenuOpen}
+        onMobileClose={() => setMobileMenuOpen(false)}
         bloomStats={bloomStats}
         onOpenLedger={() => setIsLedgerOpen(true)}
       />
 
       {/* Main Content Area */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 lg:px-8 py-6">
-        
-        {/* Quick Demo Bench */}
-        <JudgePresetBar
-          activePresetId={activePresetId}
-          onSelectPreset={handleSelectPreset}
-        />
+      <div className="flex-1 flex flex-col min-h-screen overflow-x-hidden">
 
-        {/* Navigation Tabs */}
-        <div className="flex items-center gap-2 overflow-x-auto pb-4 mb-8 scrollbar-none border-b border-white/[0.06] px-1 pt-2 animate-fade-in stagger-2">
-          {tabs.map((tab) => {
-            const Icon = tab.icon;
-            const isActive = activeTab === tab.id;
-
-            return (
-              <button
-                key={tab.id}
-                onClick={() => {
-                  setActiveTab(tab.id);
-                  if (tab.id === 'blockchain') {
-                    setIsLedgerOpen(true);
-                  }
-                }}
-                className={`group flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-medium transition-all duration-200 whitespace-nowrap border ${
-                  isActive
-                    ? 'bg-cyber-accent/10 border-cyber-accent/30 text-cyber-accent'
-                    : 'bg-transparent hover:bg-white/[0.04] border-transparent hover:border-white/[0.08] text-slate-400 hover:text-slate-200'
-                }`}
-              >
-                <Icon className={`w-3.5 h-3.5 transition-colors ${isActive ? 'text-cyber-accent' : 'text-slate-500 group-hover:text-slate-300'}`} />
-                <span>{tab.label}</span>
-              </button>
-            );
-          })}
-        </div>
-
-        {/* Tab Views */}
-        <div className="animate-fade-in stagger-3">
-          {activeTab === 'phone' && (
-            <PhoneSimulator
+        {/* Top Header Bar */}
+        <div className="flex items-center gap-3 bg-[var(--bg-surface)] border-b border-[var(--border-subtle)] px-4 sm:px-6 py-2.5">
+          <MobileMenuButton onClick={() => setMobileMenuOpen(true)} />
+          <div className="flex-1">
+            <Header
               currentLang={currentLang}
-              onTriggerMicroFriction={(upi) => setMicroFrictionUpi(upi)}
-              onOpenSandbox={(t) => setSandboxThreat(t)}
-              onOpenReport={(t) => setReportThreat(t)}
+              onLanguageChange={setCurrentLang}
+              isOfflineMode={isOfflineMode}
+              onToggleOffline={() => setIsOfflineMode(!isOfflineMode)}
+              bloomStats={bloomStats}
+              onOpenLedger={() => setIsLedgerOpen(true)}
+              theme={theme}
+              onToggleTheme={toggleTheme}
             />
-          )}
-
-          {activeTab === 'message' && (
-            <MessageScanner
-              currentLang={currentLang}
-              onOpenReport={(t) => setReportThreat(t)}
-              onMintBlock={handleMintFromThreat}
-              initialText={messageInitialText}
-            />
-          )}
-
-          {activeTab === 'url' && (
-            <UrlScanner
-              currentLang={currentLang}
-              onOpenSandbox={(t) => setSandboxThreat(t)}
-              onOpenReport={(t) => setReportThreat(t)}
-              onMintBlock={handleMintFromThreat}
-              initialUrl={urlInitialText}
-            />
-          )}
-
-          {activeTab === 'qr' && (
-            <QrScanner
-              currentLang={currentLang}
-              onTriggerMicroFriction={(upi) => setMicroFrictionUpi(upi)}
-              onOpenReport={(t) => setReportThreat(t)}
-              onMintBlock={handleMintFromThreat}
-              initialPayload={qrInitialPayload}
-            />
-          )}
-
-          {activeTab === 'apk' && (
-            <ApkPermScanner
-              currentLang={currentLang}
-              onOpenReport={(t) => setReportThreat(t)}
-              onMintBlock={handleMintFromThreat}
-              initialApk={apkInitialUrl}
-            />
-          )}
-
-          {activeTab === 'blockchain' && (
-            <div className="glass-panel rounded-2xl p-8 border border-white/[0.06] text-center space-y-4">
-              <div className="w-14 h-14 rounded-xl bg-sky-500/12 text-sky-400 flex items-center justify-center mx-auto">
-                <Database className="w-7 h-7" />
-              </div>
-              <h3 className="text-lg font-semibold text-white">
-                Threat Ledger Explorer
-              </h3>
-              <p className="text-sm text-slate-400 max-w-lg mx-auto">
-                Decentralized, tamper-proof threat ledger verified by National Cyber Crime Cell, RBI Partner Banks, and Telecom authorities.
-              </p>
-              <button
-                onClick={() => setIsLedgerOpen(true)}
-                className="px-5 py-2.5 rounded-xl bg-cyber-accent/90 hover:bg-cyber-accent text-white font-semibold text-xs transition-all"
-              >
-                Open Explorer
-              </button>
-            </div>
-          )}
-        </div>
-
-        {/* What We Protect Against */}
-        <section className="mt-14 p-6 rounded-2xl glass-panel relative overflow-hidden animate-fade-in stagger-4">
-          <div className="flex items-center gap-3 mb-5 relative z-10">
-            <div className="p-2 rounded-lg bg-cyber-neon/12 border border-cyber-neon/20 text-cyber-neon">
-              <Layers className="w-4 h-4" />
-            </div>
-            <h4 className="text-sm font-semibold text-white">
-              What We Protect Against
-            </h4>
           </div>
+        </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-3 text-xs relative z-10">
-            {[
-              { id: 1, title: 'Real-World UX', desc: 'Automatic notification interception — no copy-paste needed from users.' },
-              { id: 2, title: 'Regional Languages', desc: 'Understands Hinglish, Tanglish & Telglish urgency scam patterns.' },
-              { id: 3, title: 'Malicious Apps', desc: 'Detects dangerous permissions before harmful apps can be installed.' },
-              { id: 4, title: 'Offline Protection', desc: 'Works without internet using a compact on-device threat database.' },
-              { id: 5, title: 'Community Shield', desc: 'Verified threat reports shared across a trusted consortium network.' }
-            ].map((spot) => (
-              <div key={spot.id} className="group p-4 rounded-xl bg-white/[0.03] border border-white/[0.06] hover:bg-white/[0.06] hover:border-white/[0.12] transition-all duration-300 hover:-translate-y-0.5">
-                <div className="font-semibold text-cyber-accent mb-1.5 flex items-center gap-2">
-                  <span className="text-[10px] bg-cyber-accent/12 px-1.5 py-0.5 rounded text-cyber-accent opacity-60">{spot.id}</span>
-                  {spot.title}
+        {/* Scrollable Content */}
+        <main className="flex-1 overflow-y-auto">
+          <div className="max-w-5xl mx-auto px-4 sm:px-6 py-6 sm:py-8 space-y-6">
+
+            {/* Hero 3-Second Principle Banner */}
+            <div className="card p-5 sm:p-6 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-slate-900 dark:to-blue-950/40 border-blue-200 dark:border-blue-800/40">
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                  <div className="flex items-center gap-2 mb-1.5">
+                    <span className="badge-safe text-xs">
+                      ✓ Free On-Device Protection
+                    </span>
+                    <span className="text-xs text-[var(--text-muted)] font-medium">
+                      National Cyber Cell 1930 Integrated
+                    </span>
+                  </div>
+                  <h1 className="text-lg sm:text-xl font-bold text-[var(--text-primary)]">
+                    {currentLang === 'hi' 
+                      ? 'रक्षक AI — डिजिटल फ्रॉड और फर्जी संदेशों से सुरक्षित रहें' 
+                      : 'Rakshak AI — Your Family\'s Digital Scam Protection Shield'}
+                  </h1>
+                  <p className="text-xs sm:text-sm text-[var(--text-secondary)] mt-1 max-w-2xl">
+                    {currentLang === 'hi'
+                      ? 'संदिग्ध संदेश, बैंक लिंक या UPI QR कोड नीचे डालें। रक्षक AI तुरंत सरल भाषा में बताएगा कि क्या सुरक्षित है।'
+                      : 'Paste any suspicious SMS, bank link, or UPI payment below. Get an instant, plain-language safety check.'}
+                  </p>
                 </div>
-                <p className="text-slate-400 text-[11px] leading-relaxed group-hover:text-slate-300 transition-colors">
-                  {spot.desc}
-                </p>
               </div>
-            ))}
-          </div>
-        </section>
+            </div>
 
-      </main>
+            {/* 1-Click Evaluation Scenarios */}
+            <JudgePresetBar
+              activePresetId={activePresetId}
+              onSelectPreset={handleSelectPreset}
+            />
 
-      {/* Footer */}
-      <footer className="border-t border-white/[0.05] bg-cyber-dark/50 backdrop-blur-md px-4 py-5 mt-10">
-        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-400">
-          <div className="flex items-center gap-2">
-            <Shield className="w-3.5 h-3.5 text-cyber-accent" />
-            <span className="text-slate-200 font-medium">Rakshak AI</span> 
-            <span className="opacity-40">• Cybersecurity & Blockchain Solution</span>
+            {/* Active Tab Header */}
+            <div>
+              <h2 className="text-lg sm:text-xl font-bold text-[var(--text-primary)]">
+                {tabTitles[activeTab]}
+              </h2>
+              <p className="text-xs sm:text-sm text-[var(--text-muted)] mt-0.5">
+                {tabSubtitles[activeTab]}
+              </p>
+            </div>
+
+            {/* Tab Views */}
+            <div>
+              {activeTab === 'phone' && (
+                <PhoneSimulator
+                  currentLang={currentLang}
+                  onTriggerMicroFriction={(upi) => setMicroFrictionUpi(upi)}
+                  onOpenSandbox={(t) => setSandboxThreat(t)}
+                  onOpenReport={(t) => setReportThreat(t)}
+                />
+              )}
+
+              {activeTab === 'message' && (
+                <MessageScanner
+                  currentLang={currentLang}
+                  onOpenReport={(t) => setReportThreat(t)}
+                  onMintBlock={handleMintFromThreat}
+                  initialText={messageInitialText}
+                />
+              )}
+
+              {activeTab === 'url' && (
+                <UrlScanner
+                  currentLang={currentLang}
+                  onOpenSandbox={(t) => setSandboxThreat(t)}
+                  onOpenReport={(t) => setReportThreat(t)}
+                  onMintBlock={handleMintFromThreat}
+                  initialUrl={urlInitialText}
+                />
+              )}
+
+              {activeTab === 'qr' && (
+                <QrScanner
+                  currentLang={currentLang}
+                  onTriggerMicroFriction={(upi) => setMicroFrictionUpi(upi)}
+                  onOpenReport={(t) => setReportThreat(t)}
+                  onMintBlock={handleMintFromThreat}
+                  initialPayload={qrInitialPayload}
+                />
+              )}
+
+              {activeTab === 'apk' && (
+                <ApkPermScanner
+                  currentLang={currentLang}
+                  onOpenReport={(t) => setReportThreat(t)}
+                  onMintBlock={handleMintFromThreat}
+                  initialApk={apkInitialUrl}
+                />
+              )}
+
+              {activeTab === 'blockchain' && (
+                <div className="card p-8 text-center space-y-4">
+                  <div className="w-14 h-14 rounded-2xl bg-blue-50 dark:bg-blue-950/50 text-[var(--primary)] flex items-center justify-center mx-auto">
+                    <Database className="w-7 h-7" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-bold text-[var(--text-primary)]">
+                      Verified Scam Registry Explorer
+                    </h3>
+                    <p className="text-xs text-[var(--text-muted)] max-w-md mx-auto mt-1">
+                      Official immutable registry of confirmed scam VPAs, phishing URLs, and fraudulent phone numbers.
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => setIsLedgerOpen(true)}
+                    className="btn-primary text-xs mx-auto"
+                  >
+                    Open Scam Registry (डेटाबेस खोलें)
+                  </button>
+                </div>
+              )}
+            </div>
+
+            {/* What Rakshak AI Does in Simple Words */}
+            <section className="card p-5 sm:p-6">
+              <div className="flex items-center gap-2.5 mb-4">
+                <div className="w-8 h-8 rounded-lg bg-blue-50 dark:bg-blue-950/50 text-[var(--primary)] flex items-center justify-center">
+                  <Layers className="w-4 h-4" />
+                </div>
+                <h4 className="text-sm font-bold text-[var(--text-primary)]">
+                  Why Rakshak AI is Built For Real Families (रक्षक AI की विशेषताएं)
+                </h4>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 text-xs">
+                {[
+                  { title: 'Zero Jargon', desc: 'No complex technical terms. Clear English & Hindi answers with direct action steps.' },
+                  { title: 'Vernacular & Hinglish', desc: 'Recognizes Hindi, Romanized Hinglish, and regional electricity bill threats.' },
+                  { title: '100% On-Device & Private', desc: 'Works privately on your phone without sending personal chats to the cloud.' },
+                  { title: 'Spoken Voice Warnings', desc: 'Reads security alerts out loud so elderly family members stay safe.' },
+                  { title: 'UPI PIN Safety Shield', desc: 'Explains that UPI PIN is only to send money, never to receive cashbacks.' },
+                  { title: 'Cyber Police 1930', desc: 'Generates ready-to-submit fraud complaints directly for the National Helpline.' }
+                ].map((item, idx) => (
+                  <div key={idx} className="p-3.5 rounded-xl bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)]">
+                    <div className="font-bold text-[var(--text-primary)] mb-1">
+                      {item.title}
+                    </div>
+                    <p className="text-[var(--text-secondary)] text-[11px] leading-relaxed">
+                      {item.desc}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </section>
+
           </div>
-          <div className="flex items-center gap-5">
-            <span className="flex items-center gap-1.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-              <span className="text-slate-400">On-Device Privacy</span>
-            </span>
-            <span className="flex items-center gap-1.5">
-              <PhoneCall className="w-3.5 h-3.5 text-slate-500" />
-              Helpline: <strong className="text-slate-200">1930</strong>
-            </span>
-          </div>
-        </div>
-      </footer>
+
+          {/* Footer */}
+          <footer className="border-t border-[var(--border-subtle)] px-6 py-4 mt-6 bg-[var(--bg-surface)]">
+            <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-[var(--text-muted)]">
+              <div className="flex items-center gap-2">
+                <Shield className="w-4 h-4 text-emerald-600" />
+                <span className="text-[var(--text-primary)] font-bold">Rakshak AI</span>
+                <span>• Digital Scam & Financial Fraud Defense Shield</span>
+              </div>
+              <div className="flex items-center gap-4">
+                <span className="flex items-center gap-1.5 text-emerald-700 dark:text-emerald-400 font-medium">
+                  <span className="w-2 h-2 rounded-full bg-emerald-500" />
+                  <span>100% Private On-Device</span>
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <PhoneCall className="w-3.5 h-3.5 text-amber-500" />
+                  National Helpline: <strong className="text-[var(--text-primary)]">1930</strong>
+                </span>
+              </div>
+            </div>
+          </footer>
+        </main>
+      </div>
 
       {/* OS Notification Interceptor Pop-up */}
       <NotificationSimulator

@@ -4,11 +4,11 @@ import { Play, Sparkles, MessageSquare, Globe, QrCode, ShieldAlert, Database } f
 export const DEMO_PRESETS = [
   {
     id: 'preset-hinglish-sms',
-    title: 'Hinglish Utility Scam',
-    tag: 'Indic NLP',
+    title: 'Electricity Bill Scam',
+    tag: 'SMS / WhatsApp',
+    badgeClass: 'badge-warning',
     icon: MessageSquare,
-    badgeColor: 'from-amber-500/20 to-orange-500/20 text-amber-200 border-amber-500/30',
-    description: 'Dear customer aapka bijli bill update nahi hai, aaj raat 9 baje connection cut jayega...',
+    description: '“Aapka bijli bill update nahi hai, connection cut ho jayega…”',
     targetTab: 'message',
     data: {
       message: 'Dear customer aapka bijli bill update nahi hai, aaj raat 9 baje connection cut jayega. Call electricity nodal officer immediately 9876543210 to avoid penalty.'
@@ -16,11 +16,11 @@ export const DEMO_PRESETS = [
   },
   {
     id: 'preset-typosquat-url',
-    title: 'SBI Bank Typosquatting',
-    tag: 'Link Check',
+    title: 'Fake SBI Bank Link',
+    tag: 'Phishing Link',
+    badgeClass: 'badge-danger',
     icon: Globe,
-    badgeColor: 'from-rose-500/20 to-pink-500/20 text-rose-200 border-rose-500/30',
-    description: 'http://sbi-bank-kyc-update.top/login.php (Spoofing sbi.co.in)',
+    description: 'sbi-bank-kyc-update.top (Looks like official bank website)',
     targetTab: 'url',
     data: {
       url: 'http://sbi-bank-kyc-update.top/login.php'
@@ -28,11 +28,11 @@ export const DEMO_PRESETS = [
   },
   {
     id: 'preset-upi-trap',
-    title: 'UPI QR "Receive" Trap',
-    tag: 'Payment Gate',
+    title: 'Fake ₹4,999 Cashback',
+    tag: 'UPI QR Trap',
+    badgeClass: 'badge-danger',
     icon: QrCode,
-    badgeColor: 'from-violet-500/20 to-purple-500/20 text-purple-200 border-violet-500/30',
-    description: 'upi://pay?pa=cashback-claim@ybl&am=4999&pn=PaytmReward',
+    description: 'Deceptive payment request asking user to enter UPI PIN',
     targetTab: 'qr',
     data: {
       qrPayload: 'upi://pay?pa=cashback-claim@ybl&am=4999&pn=PaytmReward&tn=Congratulations+Claim+4999+Cashback'
@@ -40,11 +40,11 @@ export const DEMO_PRESETS = [
   },
   {
     id: 'preset-malicious-apk',
-    title: 'Malicious APK RAT',
-    tag: 'App Audit',
+    title: 'Dangerous Spy APK',
+    tag: 'Malicious App',
+    badgeClass: 'badge-danger',
     icon: ShieldAlert,
-    badgeColor: 'from-red-500/20 to-pink-500/20 text-red-200 border-red-500/30',
-    description: 'http://customer-support-app.net/AnyDesk_Support.apk',
+    description: 'Customer_Support.apk asking for private SMS & screen permissions',
     targetTab: 'apk',
     data: {
       apkUrl: 'http://customer-support-app.net/AnyDesk_Support.apk'
@@ -52,11 +52,11 @@ export const DEMO_PRESETS = [
   },
   {
     id: 'preset-poa-block',
-    title: 'Consortium Blockchain',
-    tag: 'Blockchain',
+    title: 'Verified Scam Registry',
+    tag: 'Cyber Police 1930',
+    badgeClass: 'badge-safe',
     icon: Database,
-    badgeColor: 'from-sky-500/20 to-blue-500/20 text-sky-200 border-sky-500/30',
-    description: 'Report scam-paytm@ybl → Cyber Cell + RBI Bank Multi-Sig Minting',
+    description: 'Check official scam database shared with Banks & Police',
     targetTab: 'blockchain',
     data: {
       target: 'scam-paytm@ybl',
@@ -68,30 +68,26 @@ export const DEMO_PRESETS = [
 
 export default function JudgePresetBar({ onSelectPreset, activePresetId }) {
   return (
-    <section className="mb-8 p-5 rounded-2xl glass-panel relative overflow-hidden animate-fade-in stagger-1">
-      
-      <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-4 pb-4 border-b border-white/[0.06] relative z-10">
-        <div className="flex items-center gap-3">
-          <div className="p-2 rounded-xl bg-gradient-to-br from-cyber-accent/12 to-cyber-neon/15 border border-cyber-accent/20 text-cyber-accent">
-            <Sparkles className="w-5 h-5" />
+    <section className="mb-6 p-4 sm:p-5 card">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4 pb-3 border-b border-[var(--border-subtle)]">
+        <div className="flex items-center gap-2.5">
+          <div className="w-8 h-8 rounded-lg bg-blue-50 dark:bg-blue-950/50 text-[var(--primary)] flex items-center justify-center font-bold">
+            <Sparkles className="w-4 h-4" />
           </div>
           <div>
-            <h2 className="text-base font-semibold tracking-wide text-white flex items-center gap-3">
-              <span>Try It Out</span>
-              <span className="text-[10px] px-2 py-0.5 rounded-full bg-cyber-accent/10 text-cyber-accent border border-cyber-accent/20 font-medium tracking-wider">
-                Interactive
-              </span>
+            <h2 className="text-sm sm:text-base font-bold text-[var(--text-primary)]">
+              Try Common Scam Examples (उदाहरण देखें)
             </h2>
-            <p className="text-xs text-slate-400 mt-0.5">
-              Click any scenario below to see Rakshak AI in action:
+            <p className="text-xs text-[var(--text-muted)]">
+              Click any real-world scam scenario below to see how Rakshak protects you:
             </p>
           </div>
         </div>
       </div>
 
       {/* Preset Buttons Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 relative z-10">
-        {DEMO_PRESETS.map((preset, index) => {
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+        {DEMO_PRESETS.map((preset) => {
           const Icon = preset.icon;
           const isActive = activePresetId === preset.id;
 
@@ -99,26 +95,25 @@ export default function JudgePresetBar({ onSelectPreset, activePresetId }) {
             <button
               key={preset.id}
               onClick={() => onSelectPreset(preset)}
-              style={{ animationDelay: `${100 + index * 40}ms` }}
-              className={`group text-left p-3.5 rounded-xl border transition-all duration-300 relative overflow-hidden flex flex-col justify-between animate-fade-in ${
+              className={`text-left p-3 rounded-xl border transition-all flex flex-col justify-between ${
                 isActive
-                  ? 'glass-panel-glow -translate-y-0.5'
-                  : 'bg-white/[0.03] hover:bg-white/[0.06] border-white/[0.06] hover:border-white/[0.12] hover:-translate-y-0.5'
+                  ? 'border-[var(--primary)] bg-[var(--primary-subtle)] shadow-sm ring-1 ring-[var(--primary)]'
+                  : 'border-[var(--border-subtle)] bg-[var(--bg-surface)] hover:border-[var(--border-medium)] hover:bg-[var(--bg-surface-subtle)]'
               }`}
             >
               <div>
-                <div className="flex items-center justify-between gap-2 mb-2.5">
-                  <span className={`text-[10px] font-medium px-2 py-0.5 rounded-md border bg-gradient-to-r ${preset.badgeColor}`}>
+                <div className="flex items-center justify-between gap-1.5 mb-2">
+                  <span className={preset.badgeClass}>
                     {preset.tag}
                   </span>
-                  <div className={`p-1 rounded-full transition-colors ${isActive ? 'bg-cyber-accent/15' : 'bg-white/[0.04] group-hover:bg-white/[0.08]'}`}>
-                    <Play className={`w-3 h-3 transition-all ${isActive ? 'text-cyber-accent opacity-100' : 'text-slate-400 opacity-50 group-hover:opacity-80 group-hover:text-white'}`} />
+                  <div className={`p-1 rounded-md transition-colors ${isActive ? 'bg-[var(--primary)] text-white' : 'text-[var(--text-muted)]'}`}>
+                    <Play className="w-3 h-3" />
                   </div>
                 </div>
-                <div className={`font-semibold text-sm mb-1.5 line-clamp-1 transition-colors ${isActive ? 'text-cyber-accent' : 'text-slate-200 group-hover:text-white'}`}>
+                <div className="font-bold text-xs sm:text-sm text-[var(--text-primary)] mb-1">
                   {preset.title}
                 </div>
-                <p className="text-[11px] text-slate-400 line-clamp-2 leading-relaxed group-hover:text-slate-300 transition-colors">
+                <p className="text-[11px] text-[var(--text-secondary)] line-clamp-2 leading-relaxed">
                   {preset.description}
                 </p>
               </div>

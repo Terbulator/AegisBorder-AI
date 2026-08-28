@@ -4,19 +4,17 @@ import {
   ShieldCheck, 
   AlertTriangle, 
   Volume2, 
-  ExternalLink, 
   FileText, 
   Database, 
-  Zap, 
+  Lock,
   CheckCircle2,
-  Clock,
-  Lock
+  AlertCircle
 } from 'lucide-react';
 import { speakText } from './VoiceAssistant';
 
 export default function RiskResultCard({ 
   result, 
-  currentLang, 
+  currentLang = 'hi', 
   onOpenSandbox, 
   onOpenReport, 
   onMintBlock 
@@ -47,23 +45,23 @@ export default function RiskResultCard({
   };
 
   return (
-    <div className={`rounded-2xl p-6 transition-all duration-300 ${
+    <div className={`p-5 sm:p-6 transition-all duration-200 ${
       isSafe
-        ? 'glass-safe-glow border border-emerald-500/30'
+        ? 'card-safe'
         : isCritical
-          ? 'glass-danger-glow border border-rose-500/30'
-          : 'glass-panel border border-amber-500/30'
+          ? 'card-danger'
+          : 'card-warning'
     }`}>
       
-      {/* Top Header with Status & Score */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-white/[0.08] mb-5">
-        <div className="flex items-center gap-3">
-          <div className={`p-2.5 rounded-xl ${
+      {/* Top Header with Status & Plain Risk Rating */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[var(--border-subtle)] mb-5">
+        <div className="flex items-start sm:items-center gap-3">
+          <div className={`p-2.5 rounded-xl shrink-0 ${
             isSafe 
-              ? 'bg-emerald-500/15 text-emerald-400' 
+              ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300' 
               : isCritical
-                ? 'bg-rose-500/15 text-rose-400'
-                : 'bg-amber-500/15 text-amber-400'
+                ? 'bg-red-100 text-red-700 dark:bg-red-950/60 dark:text-red-300'
+                : 'bg-amber-100 text-amber-700 dark:bg-amber-950/60 dark:text-amber-300'
           }`}>
             {isSafe ? (
               <ShieldCheck className="w-6 h-6" />
@@ -74,64 +72,48 @@ export default function RiskResultCard({
             )}
           </div>
           <div>
-            <div className="flex items-center gap-2">
-              <span className={`text-xs font-semibold uppercase tracking-wider px-2.5 py-0.5 rounded-full ${
-                isSafe 
-                  ? 'bg-emerald-500/12 text-emerald-300 border border-emerald-500/25' 
-                  : isCritical
-                    ? 'bg-rose-500/12 text-rose-300 border border-rose-500/25'
-                    : 'bg-amber-500/12 text-amber-300 border border-amber-500/25'
-              }`}>
-                {isSafe ? 'Looks Safe' : isCritical ? 'High Risk' : 'Suspicious'}
+            <div className="flex items-center gap-2 mb-1">
+              <span className={isSafe ? 'badge-safe' : isCritical ? 'badge-danger' : 'badge-warning'}>
+                {isSafe 
+                  ? '✓ Looks Safe (सुरक्षित है)' 
+                  : isCritical 
+                    ? '⚠️ High Risk Scam (धोखाधड़ी का खतरा)' 
+                    : '⚡ Caution (सावधान रहें)'}
               </span>
-              
-              {result.bloomLookupMs !== undefined && (
-                <span className="flex items-center gap-1 text-[11px] font-mono text-sky-300 bg-sky-950/40 px-2 py-0.5 rounded-full border border-sky-500/20">
-                  <Zap className="w-3 h-3 text-amber-400" />
-                  <span>{result.bloomLookupMs}ms</span>
-                </span>
-              )}
             </div>
             
-            <h3 className="text-lg font-semibold text-white mt-1">
-              {result.title || (isSafe ? 'Verified Legitimate' : 'Threat Detected')}
+            <h3 className="text-base sm:text-lg font-bold text-[var(--text-primary)]">
+              {result.title || (isSafe ? 'Verified Safe to Proceed' : 'Potential Scam Warning')}
             </h3>
           </div>
         </div>
 
-        {/* Risk Score */}
-        <div className="flex items-center gap-3 bg-black/30 px-4 py-2 rounded-xl border border-white/[0.06] self-start sm:self-auto">
+        {/* How Risky Is This Rating */}
+        <div className="flex items-center gap-3 bg-[var(--bg-surface)] px-4 py-2.5 rounded-xl border border-[var(--border-subtle)] self-start sm:self-auto shadow-sm">
           <div className="text-right">
-            <span className="text-[10px] text-slate-400 block uppercase">Risk Level</span>
-            <span className={`text-2xl font-bold font-mono ${
-              isSafe ? 'text-emerald-400' : isCritical ? 'text-rose-400' : 'text-amber-400'
+            <span className="text-[11px] text-[var(--text-muted)] block font-semibold">How risky is this?</span>
+            <span className={`text-xl font-bold font-mono ${
+              isSafe ? 'text-emerald-600' : isCritical ? 'text-red-600' : 'text-amber-600'
             }`}>
-              {result.riskScore}/100
+              {isSafe ? 'Low Risk' : isCritical ? 'Very High Risk' : 'Medium Risk'}
             </span>
           </div>
-          <div className="w-10 h-10 rounded-full border-[3px] border-white/[0.08] flex items-center justify-center relative">
-            <div 
-              className={`w-full h-full rounded-full border-[3px] ${
-                isSafe ? 'border-emerald-500' : isCritical ? 'border-rose-500' : 'border-amber-500'
-              }`}
-              style={{
-                clipPath: `polygon(0 0, 100% 0, 100% ${result.riskScore}%, 0 ${result.riskScore}%)`
-              }}
-            />
-            <span className="text-[9px] font-semibold text-slate-300 absolute">
-              {result.riskScore}%
-            </span>
+          <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs ${
+            isSafe ? 'bg-emerald-100 text-emerald-800' : isCritical ? 'bg-red-100 text-red-800' : 'bg-amber-100 text-amber-800'
+          }`}>
+            {result.riskScore}%
           </div>
         </div>
       </div>
 
-      {/* Analysis */}
-      <div className="bg-black/20 rounded-xl p-4 border border-white/[0.04] mb-5 space-y-3">
+      {/* Analysis Sections: Plain Explanations */}
+      <div className="bg-[var(--bg-surface)] rounded-xl p-4 sm:p-5 border border-[var(--border-subtle)] mb-5 space-y-4 shadow-sm">
         <div>
-          <h4 className="text-xs font-medium text-slate-400 uppercase tracking-wider mb-1">
-            What we found:
+          <h4 className="text-xs font-bold text-[var(--text-muted)] uppercase tracking-wider mb-1 flex items-center gap-1.5">
+            <AlertCircle className="w-3.5 h-3.5" />
+            <span>Why this looks suspicious (यह संदिग्ध क्यों है):</span>
           </h4>
-          <p className="text-sm text-slate-100 font-medium leading-relaxed">
+          <p className="text-sm text-[var(--text-primary)] font-medium leading-relaxed">
             {typeof result.explanation === 'object'
               ? (result.explanation[currentLang] || result.explanation.en)
               : (result.explanation || "Analysis complete.")}
@@ -139,11 +121,12 @@ export default function RiskResultCard({
         </div>
 
         {result.recommendation && (
-          <div className="pt-2 border-t border-white/[0.06]">
-            <h4 className="text-xs font-medium text-cyber-accent uppercase tracking-wider mb-1">
-              What to do:
+          <div className="pt-3 border-t border-[var(--border-subtle)]">
+            <h4 className="text-xs font-bold text-[var(--primary)] uppercase tracking-wider mb-1 flex items-center gap-1.5">
+              <CheckCircle2 className="w-3.5 h-3.5" />
+              <span>What you should do (आपको क्या करना चाहिए):</span>
             </h4>
-            <p className="text-xs text-slate-300">
+            <p className="text-xs sm:text-sm text-[var(--text-secondary)] font-medium leading-relaxed">
               {typeof result.recommendation === 'object'
                 ? (result.recommendation[currentLang] || result.recommendation.en)
                 : result.recommendation}
@@ -151,15 +134,15 @@ export default function RiskResultCard({
           </div>
         )}
 
-        {/* Reasons breakdown */}
+        {/* Plain-Language Specific Warning Signs */}
         {result.reasons && result.reasons.length > 0 && (
-          <div className="pt-2 border-t border-white/[0.06] space-y-1.5">
-            <h4 className="text-xs font-medium text-slate-400 uppercase tracking-wider">
-              Why we flagged this:
+          <div className="pt-3 border-t border-[var(--border-subtle)] space-y-1.5">
+            <h4 className="text-xs font-bold text-[var(--text-muted)] uppercase tracking-wider">
+              Specific Warning Signs:
             </h4>
             {result.reasons.map((r, i) => (
-              <div key={i} className="flex items-center gap-2 text-xs text-rose-300">
-                <span className="w-1.5 h-1.5 rounded-full bg-rose-400/60" />
+              <div key={i} className="flex items-start gap-2 text-xs text-red-700 dark:text-red-400 font-medium">
+                <span className="w-1.5 h-1.5 rounded-full bg-red-500 mt-1.5 shrink-0" />
                 <span>{r}</span>
               </div>
             ))}
@@ -170,45 +153,46 @@ export default function RiskResultCard({
       {/* Action Toolbar */}
       <div className="flex flex-wrap items-center gap-2.5">
         
-        {/* Voice Readout Button */}
+        {/* Voice Readout Button (आवाज़ में सुनें) */}
         <button
           onClick={playVoiceSummary}
-          className="flex items-center gap-2 px-3.5 py-2 rounded-lg bg-cyber-accent/90 hover:bg-cyber-accent text-white text-xs font-semibold transition-all"
+          className="btn-primary text-xs"
+          title="Listen to this warning in your language"
         >
-          <Volume2 className="w-3.5 h-3.5" />
-          <span>Listen (आवाज़ सुनें)</span>
+          <Volume2 className="w-4 h-4" />
+          <span>Listen (आवाज़ में सुनें)</span>
         </button>
 
-        {/* Safe Sandbox Button */}
-        {result.spoofedTarget && onOpenSandbox && (
-          <button
-            onClick={() => onOpenSandbox(result)}
-            className="flex items-center gap-2 px-3.5 py-2 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] text-slate-200 text-xs font-medium border border-white/[0.08] transition-all hover:border-cyber-accent/30"
-          >
-            <Lock className="w-3.5 h-3.5 text-sky-400" />
-            <span>Safe Sandbox</span>
-          </button>
-        )}
-
-        {/* Report to Cyber Cell */}
+        {/* Report to 1930 Cyber Cell */}
         {!isSafe && onOpenReport && (
           <button
             onClick={() => onOpenReport(result)}
-            className="flex items-center gap-2 px-3.5 py-2 rounded-lg bg-rose-950/40 hover:bg-rose-900/40 text-rose-200 text-xs font-medium border border-rose-500/25 transition-all"
+            className="btn-danger text-xs"
           >
-            <FileText className="w-3.5 h-3.5 text-rose-400" />
-            <span>Report to 1930</span>
+            <FileText className="w-4 h-4" />
+            <span>Report to 1930 Helpline</span>
           </button>
         )}
 
-        {/* Mint on PoA Blockchain */}
+        {/* Safe Sandbox Preview */}
+        {result.spoofedTarget && onOpenSandbox && (
+          <button
+            onClick={() => onOpenSandbox(result)}
+            className="btn-secondary text-xs"
+          >
+            <Lock className="w-4 h-4 text-[var(--primary)]" />
+            <span>Open in Safe Sandbox</span>
+          </button>
+        )}
+
+        {/* Add to Community Registry */}
         {!isSafe && onMintBlock && (
           <button
             onClick={() => onMintBlock(result)}
-            className="flex items-center gap-2 px-3.5 py-2 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] text-sky-300 text-xs font-medium border border-white/[0.08] hover:border-sky-500/25 transition-all"
+            className="btn-secondary text-xs"
           >
-            <Database className="w-3.5 h-3.5 text-sky-400" />
-            <span>Add to Ledger</span>
+            <Database className="w-4 h-4 text-[var(--primary)]" />
+            <span>Save to Scam Registry</span>
           </button>
         )}
 
