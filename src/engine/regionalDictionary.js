@@ -14,6 +14,7 @@ export const SUPPORTED_LANGUAGES = [
    Helper: get a string safely with English fallback
    -------------------------------------------------------------- */
 export function t(lang, strings) {
+  if (!strings) return '';
   return strings[lang] || strings.en || '';
 }
 

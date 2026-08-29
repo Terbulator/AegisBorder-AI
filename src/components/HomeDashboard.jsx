@@ -16,7 +16,8 @@ import {
 import { speakText } from './VoiceAssistant';
 import { HOME, NAV_SUBS, t } from '../engine/regionalDictionary';
 
-const ICONS = { message: MessageSquare, url: Globe, qr: QrCode, apk: AppWindow };
+const ICONS = { message: MessageSquare, url: Globe, qr: QrCode, apk: AppWindow, link: Globe, upi: QrCode };
+const QUICK_ACTION_KEYS = { message: 'scanMessage', url: 'checkWebsite', qr: 'checkQR', apk: 'checkApp' };
 
 /* Demo security metrics (clearly demo values) — values are language-agnostic */
 const METRICS = [
@@ -174,7 +175,7 @@ export default function HomeDashboard({ onTabChange, onOpenScamExample, currentL
                   <Icon className="w-4 h-4 text-[var(--primary)]" />
                 </div>
                 <p className="text-[13.5px] font-semibold text-[var(--text-primary)] leading-tight">
-                  {t(currentLang, HOME.quickActions[id])}
+                  {t(currentLang, HOME.quickActions[QUICK_ACTION_KEYS[id]])}
                 </p>
                 <p className="text-[12px] text-[var(--text-muted)] mt-0.5 leading-snug">
                   {t(currentLang, NAV_SUBS[id])}
