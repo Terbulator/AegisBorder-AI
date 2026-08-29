@@ -14,18 +14,12 @@ import {
   X,
   Menu,
 } from 'lucide-react';
+import { NAV_LABELS, NAV_SUBS, HOME, MORE, t } from '../engine/regionalDictionary';
 
-const NAV_ITEMS = [
-  { id: 'home',      label: 'Home',           sub: 'Overview',            icon: Home },
-  { id: 'message',   label: 'Message Scanner', sub: 'SMS & WhatsApp',     icon: MessageSquare },
-  { id: 'url',       label: 'Website Checker', sub: 'Phishing & fake sites', icon: Globe },
-  { id: 'qr',        label: 'QR & UPI Safety', sub: 'Deceptive payments',  icon: QrCode },
-  { id: 'apk',       label: 'App Safety',      sub: 'Dangerous permissions', icon: AppWindow },
-  { id: 'registry',  label: 'Scam Registry',   sub: 'Cyber crime database',  icon: Database },
-  { id: 'more',      label: 'More',           sub: 'Settings & help',      icon: Settings },
-];
+const ICONS = { home: Home, message: MessageSquare, url: Globe, qr: QrCode, apk: AppWindow, registry: Database, more: Settings };
+const NAV_IDS = ['home', 'message', 'url', 'qr', 'apk', 'registry', 'more'];
 
-export default function Sidebar({ activeTab, onTabChange, isCollapsed, onToggleCollapse, isMobileOpen, onMobileClose }) {
+export default function Sidebar({ activeTab, onTabChange, isCollapsed, onToggleCollapse, isMobileOpen, onMobileClose, currentLang = 'hi' }) {
   const handleNav = (id) => {
     onTabChange(id);
     if (isMobileOpen) onMobileClose();
@@ -98,11 +92,14 @@ export default function Sidebar({ activeTab, onTabChange, isCollapsed, onToggleC
         <nav className="flex-1 px-2 py-3 overflow-y-auto space-y-0.5">
           {!isCollapsed && (
             <div className="px-2 pb-1 text-[10px] font-semibold uppercase tracking-wider text-[var(--text-muted)]">
-              Menu
+              {currentLang === 'hi' ? 'मेनू' : currentLang === 'ta' ? 'பட்டி' : currentLang === 'te' ? 'మెను' : currentLang === 'bn' ? 'মেনু' : currentLang === 'mr' ? 'मेनू' : 'Menu'}
             </div>
           )}
-          {NAV_ITEMS.map(({ id, label, sub, icon: Icon }) => {
+          {NAV_IDS.map((id) => {
             const active = activeTab === id;
+            const label = t(currentLang, NAV_LABELS[id]);
+            const sub = t(currentLang, NAV_SUBS[id]);
+            const Icon = ICONS[id];
             return (
               <button
                 key={id}
@@ -129,18 +126,24 @@ export default function Sidebar({ activeTab, onTabChange, isCollapsed, onToggleC
               <div className="flex items-center gap-2 px-2 py-1.5 rounded-md bg-[var(--bg-elevated)]">
                 <span className="status-dot status-dot-success" />
                 <div className="min-w-0">
-                  <p className="text-[12px] font-semibold text-[var(--text-primary)] leading-tight">Protected</p>
-                  <p className="text-[10.5px] text-[var(--text-muted)] leading-tight">Your device is currently protected</p>
+                  <p className="text-[12px] font-semibold text-[var(--text-primary)] leading-tight">
+                    {t(currentLang, HOME.panels.protected)}
+                  </p>
+                  <p className="text-[10.5px] text-[var(--text-muted)] leading-tight">
+                    {t(currentLang, HOME.panels.yourDeviceIs)}
+                  </p>
                 </div>
               </div>
               <p className="mt-2 text-[10.5px] text-[var(--text-muted)] text-center leading-tight">
-                Rakshak AI v1.0<br />Digital Safety Companion
+                {t(currentLang, MORE.rakshakV1)}
               </p>
             </>
           ) : (
             <div className="flex flex-col items-center gap-1">
               <span className="status-dot status-dot-success" />
-              <p className="text-[10px] text-[var(--text-muted)] text-center">Protected</p>
+              <p className="text-[10px] text-[var(--text-muted)] text-center">
+                {t(currentLang, HOME.panels.protected)}
+              </p>
             </div>
           )}
         </div>

@@ -1,15 +1,15 @@
 import React from 'react';
 import { Search, Database, Globe, Sun, Moon, Settings, ChevronRight } from 'lucide-react';
-import { SUPPORTED_LANGUAGES } from '../engine/regionalDictionary';
+import { SUPPORTED_LANGUAGES, TOPBAR_LABELS, t } from '../engine/regionalDictionary';
 
-const TAB_LABELS = {
-  home:     'Home',
-  message:  'Message Scanner',
-  url:      'Website Checker',
-  qr:       'QR & UPI Safety',
-  apk:      'App Safety',
-  registry: 'Scam Registry',
-  more:     'More',
+const REGISTRY_LABELS = { en: 'Registry', hi: 'रजिस्ट्री', ta: 'பதிவு', te: 'రెజిస్ట్రీ', bn: 'রেজিস্ট্রি', mr: 'रजिस्ट्री' };
+const SEARCH_PLACEHOLDERS = {
+  en: 'Search scams, numbers, websites…',
+  hi: 'धोखाधड़ी, नंबर, वेबसाइट खोजें…',
+  ta: 'கற்றகங்கள், எண்கள், இணையதளங்கள் தேடு…',
+  te: 'స్కామ్లు, నంబర్లు, వెబ్సైట్లు శోధించండి…',
+  bn: 'স্ক্যাম, নম্বর, ওয়েবসাইট খুঁজুন…',
+  mr: 'शक्य, नंबर, वेबसाइट शोधा…',
 };
 
 export default function TopBar({
@@ -29,7 +29,7 @@ export default function TopBar({
       <div className="hidden md:flex items-center gap-1.5 text-[13px] text-[var(--text-muted)] min-w-0">
         <span className="font-medium text-[var(--text-secondary)]">Rakshak AI</span>
         <ChevronRight className="w-3.5 h-3.5 shrink-0" />
-        <span className="font-semibold text-[var(--text-primary)] truncate">{TAB_LABELS[activeTab] || 'Home'}</span>
+        <span className="font-semibold text-[var(--text-primary)] truncate">{t(currentLang, TOPBAR_LABELS[activeTab])}</span>
       </div>
 
       <div className="flex-1" />
@@ -41,7 +41,7 @@ export default function TopBar({
           type="text"
           value={searchQuery}
           onChange={(e) => onSearchChange(e.target.value)}
-          placeholder="Search scams, numbers, websites…"
+          placeholder={t(currentLang, SEARCH_PLACEHOLDERS)}
           className="bg-transparent border-none text-[13px] text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:outline-none w-full"
         />
       </div>
@@ -55,7 +55,7 @@ export default function TopBar({
           title="Open Scam Registry"
         >
           <Database className="w-3.5 h-3.5" />
-          <span className="hidden lg:inline text-[12.5px]">Registry</span>
+          <span className="hidden lg:inline text-[12.5px]">{t(currentLang, REGISTRY_LABELS)}</span>
         </button>
 
         {/* Language */}

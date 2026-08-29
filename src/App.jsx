@@ -85,6 +85,7 @@ export default function App() {
         onToggleCollapse={() => setSidebarCollapsed(v => !v)}
         isMobileOpen={mobileMenuOpen}
         onMobileClose={() => setMobileMenuOpen(false)}
+        currentLang={currentLang}
       />
 
       <div className="flex-1 flex flex-col min-w-0 min-h-screen">
@@ -173,7 +174,7 @@ export default function App() {
           </div>
         </main>
 
-        <BottomNav activeTab={activeTab} onTabChange={setActiveTab} />
+        <BottomNav activeTab={activeTab} onTabChange={setActiveTab} currentLang={currentLang} />
       </div>
 
       {/* Modals */}

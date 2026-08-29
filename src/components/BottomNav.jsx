@@ -1,23 +1,20 @@
 import React from 'react';
 import { Home, MessageSquare, Globe, Database, MoreHorizontal } from 'lucide-react';
+import { BOTTOM_NAV_LABELS, t } from '../engine/regionalDictionary';
 
-const ITEMS = [
-  { id: 'home',     label: 'Home',     icon: Home },
-  { id: 'message',  label: 'Scan',     icon: MessageSquare },
-  { id: 'url',      label: 'Check',    icon: Globe },
-  { id: 'registry', label: 'Registry', icon: Database },
-  { id: 'more',     label: 'More',     icon: MoreHorizontal },
-];
+const ICONS = { home: Home, message: MessageSquare, url: Globe, registry: Database, more: MoreHorizontal };
 
-export default function BottomNav({ activeTab, onTabChange }) {
+export default function BottomNav({ activeTab, onTabChange, currentLang = 'hi' }) {
   return (
     <nav
       className="lg:hidden fixed bottom-0 left-0 right-0 z-30 bg-[var(--bg-surface)] border-t border-[var(--border-subtle)] h-16 flex"
       style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}
       aria-label="Primary navigation"
     >
-      {ITEMS.map(({ id, label, icon: Icon }) => {
+      {['home', 'message', 'url', 'registry', 'more'].map((id) => {
         const active = activeTab === id;
+        const label = t(currentLang, BOTTOM_NAV_LABELS[id]);
+        const Icon = ICONS[id];
         return (
           <button
             key={id}

@@ -3,30 +3,33 @@ import { MessageSquare, Lock, Trash2, Search, UserX, UserCheck, Loader2 } from '
 import { analyzeMessage } from '../engine/codeMixedNlp';
 import RiskResultCard from './RiskResultCard';
 import VoiceAssistant from './VoiceAssistant';
+import { SCANNER, HOME, t } from '../engine/regionalDictionary';
 
-const SCAN_STEPS = [
-  'Reading message',
-  'Checking suspicious patterns',
-  'Checking links',
-  'Detecting social-engineering signals',
-  'Calculating risk',
-];
+const UNKNOWN_NUMBER_LABELS = { en: 'Unknown number', hi: 'अज्ञात नंबर', ta: 'தெரியாத எண்', te: 'తెలియని నంబర్', bn: 'অজানা নম্বর', mr: 'अज्ञात नंबर' };
+const SAVED_CONTACT_LABELS = { en: 'Saved contact', hi: 'सहेजा गया संपर्क', ta: 'சேமித்த தொடர்பு', te: 'సేవ్ చేసిన కాంటాక్ట్', bn: 'সংরক্ষিত পরিচিতি', mr: 'जतन केलेला संपर्क' };
+const SCAN_MSG_LABELS = { en: 'Scan message', hi: 'संदेश स्कैन करें', ta: 'செய்தியைத் தேடு', te: 'సందేశం స్క్యాన్ చేయండి', bn: 'বার্তা স্ক্যান করুন', mr: 'संदेश स्कॅन करा' };
+const ANALYZING_LABELS = { en: 'Analyzing message', hi: 'संदेश का विश्लेषण', ta: 'செய்தி பகுப்பாய்வு', te: 'సందేశం విశ్లేషణ', bn: 'বার্তা বিশ্লেষণ', mr: 'संदेश विश्लेषण' };
+const TITLE_LABELS = { en: 'Check a suspicious message', hi: 'संदिग्ध संदेश जाँचें', ta: 'தெளிவான செய்தியைத் தேடு', te: 'సందిగ్ధ సందేశం చెక్ చేయండి', bn: 'সন্দেহজনক বার্তা যাচাই করুন', mr: 'संदिग्ध संदेश तपासा' };
+const SUBTITLE_LABELS = { en: 'Paste an SMS or WhatsApp message and we’ll explain whether it looks safe.', hi: 'एसएमएस या व्हाट्सऐप संदेश पेस्ट करें और हम बताएंगे कि यह सुरक्षित है या नहीं।', ta: 'SMS அல்லது WhatsApp செய்தியை ஒட்டவும், அது பாதுகாப்பானதா என்பதை விளக்குவோம்.', te: 'SMS లేదా WhatsApp సందేశాన్ని పెట్టండి, అది సురక్షితమైనదో కాదో మేము వివరిస్తాము.', bn: 'একটি এসএমএস বা ওয়াটসাপ বার্তা পেস্ট করুন এবং এটি নিরাপদ কিনা আমরা ব্যাখ্যা করব।', mr: 'SMS किंवा WhatsApp संदेश येथे पेस्ट करा आणि ते सुरक्षित आहे का ते सांगू.' };
+const SAFE_QUESTION_LABELS = { en: 'Is this message safe?', hi: 'क्या यह संदेश सुरक्षित है?', ta: 'இந்த செய்தி பாதுகாப்பானதா?', te: 'ఈ సందేశం సురक్షితమైనదా?', bn: 'এই বার্তাটি কি নিরাপদ?', mr: 'हा संदेश सुरक्षित आहे का?' };
+const SAFE_ANSWER_LABELS = { en: 'Paste any SMS or WhatsApp message above. Rakshak AI will tell you in plain language whether it is safe, suspicious, or a scam — and what to do next.', hi: 'ऊपर कोई एसएमएस या व्हाट्सऐप संदेश पेस्ट करें। रक्षक AI सरल भाषा में बताएगा कि यह सुरक्षित है, संदिग्ध है, या धोखाधड़ी है — और आगे क्या करें।', ta: 'மேலே ஏதாவது SMS அல்லது WhatsApp செய்தியை ஒட்டவும். ரக்ஷக் AI அது பாதுகாப்பானதா, சந்தேகமா அல்லது கற்றமா என்பதை எளிய மொழியில் சொல்லும் — அடுத்து என்ன செய்ய வேண்டும்.', te: 'పైన ఏదైనా SMS లేదా WhatsApp సందేశాన్ని పెట్టండి. రక్షక్ AI అది సురక్షితమైనదో, అనుమానమైనదో లేదా మోసమో సరళమైన భాషలో చెప్తుంది — తరువాత ఏమి చేయాలి.', bn: 'উপরে যেকোনো এসএমএস বা ওয়াটসাপ বার্তা পেস্ট করুন। রাকশাক AI সাধারণ ভাষায় বলবে এটি নিরাপদ, সন্দেহজনক, নাকি স্ক্যাম — এবং পরবর্তীতে কী করবেন।', mr: 'वर कोणताही SMS किंवा WhatsApp संदेश पेस्ट करा. रक्षक AI सोप्या भाषेत सांगेल की हा संदेश सुरक्षित आहे, संदिग्ध आहे, किंवा शक्य आहे — आणि पुढे काय करायचे.' };
 
 const SAMPLE_MESSAGES = [
   {
-    title: 'Electricity Bill Scam',
+    titleKey: 'electricity',
     text:
       'Dear customer aapka bijli bill update nahi hai, aaj raat 9 baje connection cut jayega. Pay ₹20 immediately using this link electricity-nodal-officer.in/pay',
     known: false,
   },
   {
-    title: 'SBI Bank KYC Scam',
+    titleKey: 'kyc',
     text:
       'Dear SBI User, your YONO NetBanking will be blocked today due to pending KYC update. Click http://sbi-bank-kyc-update.top to reactivate account.',
     known: false,
   },
   {
-    title: 'Friend’s Photo Link',
+    titleKey: 'photo',
+    title: { en: 'Friend’s Photo Link', hi: 'मित्र की फोटो लिंक', ta: 'நண்பரின் புகைப்பட இணைப்பு', te: 'స్నేహితుని ఫోటో లింక్', bn: 'বন্ধুর ফটো লিংক', mr: 'मित्राचा फोटो दुवा' },
     text: 'Hey, check this photo link http://trip-photos-share.top from yesterday’s family picnic!',
     known: true,
   },
@@ -59,8 +62,8 @@ export default function MessageScanner({
     setIsScanning(true);
     setScanStep(1);
 
-    // 5 steps, ~250ms each → 1.25s total
-    for (let i = 2; i <= SCAN_STEPS.length; i++) {
+    const steps = SCANNER.steps.message[currentLang] || SCANNER.steps.message.en;
+    for (let i = 2; i <= steps.length; i++) {
       const t = setTimeout(() => setScanStep(i), 250 * (i - 1));
       stepTimers.current.push(t);
     }
@@ -68,13 +71,13 @@ export default function MessageScanner({
     const final = setTimeout(() => {
       const res = analyzeMessage(text, currentLang, {
         isKnownContact: known,
-        senderInfo: known ? 'Saved contact' : '+91 98765 43210 (Unknown)',
+        senderInfo: known ? t(currentLang, SAVED_CONTACT_LABELS) : t(currentLang, UNKNOWN_NUMBER_LABELS),
       });
       setResult(res);
       setIsScanning(false);
       setScanStep(0);
       if (onResult) onResult(res);
-    }, 250 * SCAN_STEPS.length + 200);
+    }, 250 * steps.length + 200);
     stepTimers.current.push(final);
   };
 
@@ -95,9 +98,9 @@ export default function MessageScanner({
                 <MessageSquare className="w-4 h-4 text-[var(--primary)]" />
               </div>
               <div className="min-w-0">
-                <h2 className="text-[15px] font-semibold text-[var(--text-primary)]">Check a suspicious message</h2>
+                <h2 className="text-[15px] font-semibold text-[var(--text-primary)]">{t(currentLang, TITLE_LABELS)}</h2>
                 <p className="text-[12.5px] text-[var(--text-muted)]">
-                  Paste an SMS or WhatsApp message and we’ll explain whether it looks safe.
+                  {t(currentLang, SUBTITLE_LABELS)}
                 </p>
               </div>
             </div>
@@ -118,7 +121,7 @@ export default function MessageScanner({
               }`}
             >
               <UserX className="w-3.5 h-3.5" />
-              Unknown number
+              {t(currentLang, UNKNOWN_NUMBER_LABELS)}
             </button>
             <button
               onClick={() => setIsKnownContact(true)}
@@ -129,7 +132,7 @@ export default function MessageScanner({
               }`}
             >
               <UserCheck className="w-3.5 h-3.5" />
-              Saved contact
+              {t(currentLang, SAVED_CONTACT_LABELS)}
             </button>
           </div>
 
@@ -140,7 +143,7 @@ export default function MessageScanner({
               maxLength={2000}
               value={inputText}
               onChange={(e) => setInputText(e.target.value)}
-              placeholder="Paste the suspicious message here…"
+              placeholder={t(currentLang, SCANNER.placeholders.message)}
               className="input input-textarea"
             />
             <div className="absolute bottom-2 right-3 text-[11px] text-[var(--text-muted)] tabular-nums pointer-events-none">
@@ -150,18 +153,24 @@ export default function MessageScanner({
 
           {/* Examples */}
           <div className="mt-4">
-            <p className="text-[10.5px] font-semibold uppercase tracking-wider text-[var(--text-muted)] mb-2">Try an example</p>
+            <p className="text-[10.5px] font-semibold uppercase tracking-wider text-[var(--text-muted)] mb-2">{t(currentLang, SCANNER.examples)}</p>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-              {SAMPLE_MESSAGES.map((s, i) => (
+              {SAMPLE_MESSAGES.map((s, i) => {
+                const title = s.titleKey
+                  ? t(currentLang, HOME.commonScams[s.titleKey]?.title)
+                  : s.title
+                    ? t(currentLang, s.title)
+                    : s.title;
+                return (
                 <button
                   key={i}
                   onClick={() => { setInputText(s.text); setIsKnownContact(s.known); runScan(s.text, s.known); }}
                   className="text-left p-2.5 rounded-md border border-[var(--border-subtle)] hover:border-[var(--border-medium)] hover:bg-[var(--bg-hover)] transition-colors"
                 >
-                  <p className="text-[12.5px] font-medium text-[var(--text-primary)] leading-tight">{s.title}</p>
+                  <p className="text-[12.5px] font-medium text-[var(--text-primary)] leading-tight">{title}</p>
                   <p className="text-[11px] text-[var(--text-muted)] line-clamp-2 mt-0.5">{s.text}</p>
                 </button>
-              ))}
+              );})}
             </div>
           </div>
 
@@ -169,7 +178,7 @@ export default function MessageScanner({
           <div className="mt-4 flex items-center gap-2 px-3 py-2 rounded-md bg-[var(--bg-elevated)] border border-[var(--border-subtle)]">
             <Lock className="w-3.5 h-3.5 text-[var(--text-muted)] shrink-0" />
             <p className="text-[11.5px] text-[var(--text-muted)]">
-              Processed on-device where supported. Your message stays private.
+              {t(currentLang, SCANNER.privacyNote)}
             </p>
           </div>
 
@@ -181,7 +190,7 @@ export default function MessageScanner({
               className="btn btn-ghost btn-sm"
             >
               <Trash2 className="w-3.5 h-3.5" />
-              Clear
+              {t(currentLang, SCANNER.buttons.clear)}
             </button>
 
             <button
@@ -192,12 +201,12 @@ export default function MessageScanner({
               {isScanning ? (
                 <>
                   <Loader2 className="w-4 h-4 animate-spin-slow" />
-                  Analyzing…
+                  {t(currentLang, SCANNER.buttons.analyzing)}
                 </>
               ) : (
                 <>
                   <Search className="w-4 h-4" />
-                  Scan message
+                  {t(currentLang, SCAN_MSG_LABELS)}
                 </>
               )}
             </button>
@@ -210,10 +219,10 @@ export default function MessageScanner({
         <section className="panel-elevated p-5 animate-fade-in" aria-live="polite">
           <div className="flex items-center gap-2 mb-3">
             <Loader2 className="w-3.5 h-3.5 text-[var(--primary)] animate-spin-slow" />
-            <h3 className="text-[13px] font-semibold text-[var(--text-primary)]">Analyzing message</h3>
+            <h3 className="text-[13px] font-semibold text-[var(--text-primary)]">{t(currentLang, ANALYZING_LABELS)}</h3>
           </div>
           <div className="space-y-0.5">
-            {SCAN_STEPS.map((label, i) => {
+            {SCANNER.steps.message[currentLang]?.map((label, i) => {
               const stepNum = i + 1;
               const done = scanStep > stepNum;
               const active = scanStep === stepNum;
@@ -246,10 +255,9 @@ export default function MessageScanner({
       {/* Empty state */}
       {!result && !isScanning && (
         <section className="panel p-5">
-          <h3 className="text-[13px] font-semibold text-[var(--text-primary)] mb-1">Is this message safe?</h3>
+          <h3 className="text-[13px] font-semibold text-[var(--text-primary)] mb-1">{t(currentLang, SAFE_QUESTION_LABELS)}</h3>
           <p className="text-[12.5px] text-[var(--text-muted)] leading-relaxed">
-            Paste any SMS or WhatsApp message above. Rakshak AI will tell you in plain language
-            whether it is safe, suspicious, or a scam — and what to do next.
+            {t(currentLang, SAFE_ANSWER_LABELS)}
           </p>
         </section>
       )}
