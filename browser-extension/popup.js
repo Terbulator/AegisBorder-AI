@@ -66,4 +66,27 @@ document.getElementById('clearBtn').addEventListener('click', () => {
   send({ type: 'rakshak_clear_incidents' }).then(refresh);
 });
 
+const statusEl = document.getElementById('testStatus');
+
+// Full end-to-end test: run a real scam text through the detection engine and
+// trigger overlay + voice + notification + badge on the active tab.
+document.getElementById('testBtn').addEventListener('click', () => {
+  statusEl.textContent = 'Testing pipeline… check the active tab.';
+  send({ type: 'rakshak_test' }).then(() => {
+    statusEl.textContent = 'Demo alert sent. You should hear a voice + see the red banner.';
+    setTimeout(refresh, 800);
+  });
+});
+
+// Voice-only test (also asks the active tab to speak a short phrase).
+document.getElementById('testVoiceBtn').addEventListener('click', () => {
+  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+    const tabId = tabs && tabs[0] && tabs[0].id;
+    chrome.runtime.sendMessage({
+      type: 'rakshak_focus_and_speak',
+      message: 'Rakshak AI voice alert is working correctly.'
+    });
+  });
+});
+
 refresh();

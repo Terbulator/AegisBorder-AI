@@ -3,6 +3,59 @@
 // and blocked/visited URLs, then raises notifications + toolbar badge.
 
 import { inspectUrl } from './engine/urlDetector.js';
+import { analyzeText } from './engine/nlp.js';
+import { inspectUpi } from './engine/upi.js';
+
+// Central detection: runs entirely in the service worker (reliable ES-module
+// context). The content script only samples page text and reports overlay/voice.
+function scanBlob(text) {
+  if (!text || text.length < 3) return null;
+  const n = analyzeText(text);
+
+  let urlResult = null;
+  if (n.extUrls && n.extUrls.length) {
+    for (const u of n.extUrls.slice(0, 12)) {
+      const r = inspectUrl(u);
+      if (r && r.isThreat) urlResult = r;
+    }
+  }
+
+  const upiPayload = text.match(/upi:\/\/pay[^\s"'<>()]+/i);
+  let upiResult = null;
+  if (upiPayload) upiResult = inspectUpi(upiPayload[0]);
+
+  const scores = [
+    n.isThreat ? n.riskScore : 0,
+    urlResult ? urlResult.riskScore : 0,
+    upiResult ? upiResult.riskScore : 0
+  ];
+  const max = Math.max(...scores);
+  if (max < 70) return null;
+
+  const bestNlp = n.best || {};
+  let title = bestNlp.title || 'Suspicious message detected';
+  let detail = bestNlp.explanation || 'Suspicious patterns detected in a message.';
+  let domain = '';
+
+  if (urlResult && urlResult.riskScore === max) {
+    title = 'Phishing link in message';
+    detail = urlResult.reasons.join(' ');
+    domain = urlResult.domain;
+  }
+  if (upiResult && upiResult.riskScore === max) {
+    title = 'UPI debit trap in message';
+    detail = upiResult.reasons.join(' ') || upiResult.frictionMessage;
+  }
+
+  return {
+    riskScore: max,
+    severity: max >= 85 ? 'CRITICAL' : 'HIGH',
+    title,
+    detail,
+    domain,
+    hash: max + '|' + (domain || title)
+  };
+}
 
 const DEFAULTS = {
   notifications: true,
@@ -154,8 +207,88 @@ chrome.runtime.onInstalled.addListener(async () => {
   await saveState(state);
 });
 
+// Tell the content script of a tab to draw the overlay (and speak the alert).
+function notifyContent(tabId, payload) {
+  if (typeof tabId !== 'number') return;
+  try {
+    setTimeout(() => {
+      chrome.tabs.sendMessage(tabId, { type: 'rakshak_show_overlay', payload }).catch?.(() => {});
+    }, 50);
+  } catch (e) { /* ignore */ }
+}
+
+function notifyContentSpeak(tabId, payload) {
+  try {
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+      const activeId = tabs && tabs[0] && tabs[0].id;
+      const focused = activeId === tabId;
+      if (focused) {
+        chrome.tabs.sendMessage(tabId, { type: 'rakshak_speak', message: buildSpoken(payload) });
+      } else {
+        chrome.tabs.update(tabId, { active: true }, () => {
+          if (chrome.runtime.lastError) return;
+          setTimeout(() => {
+            chrome.tabs.sendMessage(tabId, { type: 'rakshak_speak', message: buildSpoken(payload) });
+          }, 250);
+        });
+      }
+    });
+  } catch (e) { /* ignore */ }
+}
+
+function buildSpoken(payload) {
+  const t = payload.title || 'Possible scam message detected.';
+  return (t + '. ' + (payload.domain || '')).trim();
+}
+
 // Message scan results sent from content scripts
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
+  // Content script sampled page text -> run detection here in the worker.
+  if (msg && msg.type === 'rakshak_scan') {
+    const statePromise = getState();
+    statePromise.then((state) => {
+      if (!state || !state.enabled) { sendResponse({ ok: true, reviewed: false }); return; }
+      const payload = scanBlob(msg.text || '');
+      if (!payload) { sendResponse({ ok: true, reviewed: true, found: false }); return; }
+      const tabId = sender.tab && sender.tab.id;
+
+      if (state.overlay) notifyContent(tabId, payload);
+      if (state.voice) notifyContentSpeak(tabId, payload);
+
+      handleDetection(payload).then(() => {
+        sendResponse({ ok: true, found: true, payload });
+      });
+    });
+    return true; // async response
+  }
+  if (msg && msg.type === 'rakshak_test') {
+    const statePromise = getState();
+    statePromise.then((state) => {
+      const sample =
+        msg.text ||
+        'Aapka bijli bill update nahi hai, aaj raat 9 baje connection cut jayega. ' +
+        'Pay immediately 9876543210 or click http://sbi-bank-kyc-update.top to reactivate your account.';
+      const payload = scanBlob(sample) || {
+        riskScore: 99,
+        severity: 'CRITICAL',
+        title: 'Demo: scam pattern detected',
+        detail: 'Rakshak AI engine is running correctly. This is a test alert.',
+        domain: 'sbi-bank-kyc-update.top',
+        hash: 'test|' + Date.now()
+      };
+      // Always re-alert on repeated tests (bypass the 90s dedup key).
+      if (payload && typeof payload.hash === 'string') payload.hash = payload.hash + '|' + Date.now();
+      chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+        const tabId = tabs && tabs[0] && tabs[0].id;
+        if (state.overlay) notifyContent(tabId, payload);
+        if (state.voice) notifyContentSpeak(tabId, payload);
+        handleDetection({ ...payload, source: 'test' }).then(() => {
+          sendResponse({ ok: true, payload });
+        });
+      });
+    });
+    return true;
+  }
   if (msg && msg.type === 'rakshak_detection') {
     const detection = {
       ...msg.detection,

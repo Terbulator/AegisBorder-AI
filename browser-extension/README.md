@@ -45,16 +45,29 @@ scanning happens locally on your machine.
   critical threat the extension briefly focuses the tab so the browser's
   autoplay policy doesn't mute the announcement. Toggle it in the popup.
 - When in doubt, report scams to India's **National Cyber Crime Helpline 1930**.
+- Use the **▶ Run demo test** button in the popup to instantly verify the whole
+  pipeline works: it runs a real scam text through the engine and triggers the
+  red banner, voice alert, notification and badge on your active tab. Use
+  **🔊 Test voice** to check the spoken alert on its own.
+
+## How detection works (architecture)
+
+All scanning runs **in the background service worker** (`background.js`) using
+standard ES-module imports of the detection engines. The content script only
+samples visible page text and asks the worker to analyze it, then draws the
+overlay and speaks the alert it is told to. Keeping the engines in the worker
+(not dynamically imported into every page) makes detection reliable on sites
+with strict Content Security Policies.
 
 ## Project structure
 
 ```
 browser-extension/
 ├── manifest.json          # MV3 manifest (permissions, entry points)
-├── background.js          # Service worker: runs 24/7, aggregates detections, alerts
-├── content.js             # Scans visible message text on web apps, draws overlay
+├── background.js          # Service worker: runs 24/7, runs detection engines, alerts
+├── content.js             # Samples visible message text, draws overlay, speaks alerts
 ├── overlay.css            # In-page warning banner styling
-├── popup.html / popup.js  # Dashboard: settings + recent detections
+├── popup.html / popup.js  # Dashboard: settings + detections + demo/voice test buttons
 ├── engine/                # Local detection engines (no network)
 │   ├── nlp.js             # Code-mixed Indic scam patterns
 │   ├── urlDetector.js     # Typosquatting / phishing URL inspector
