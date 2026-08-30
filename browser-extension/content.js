@@ -103,6 +103,29 @@
     }
   }
 
+  // Speak now, or ask the background worker to focus this tab first so
+  // Chrome's autoplay policy doesn't mute the voice when the tab is hidden.
+  function voiceAlert(message) {
+    const focused = document.visibilityState === 'visible' && document.hasFocus();
+    if (focused) {
+      speak(message);
+    } else {
+      try {
+        chrome.runtime.sendMessage({ type: 'rakshak_focus_and_speak', message });
+      } catch (e) { /* ignore */ }
+    }
+  }
+
+  // Handler: background focused the tab, now it is safe to speak.
+  chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
+    if (msg && msg.type === 'rakshak_speak') {
+      speak(msg.message);
+      sendResponse && sendResponse({ ok: true });
+      return true;
+    }
+    return false;
+  });
+
   function escapeHtml(s) {
     return String(s || '')
       .replace(/&/g, '&amp;')
@@ -171,6 +194,7 @@
   // ------------------------------------------------------------------
   let lastSample = '';
   let overlayEnabled = true;
+  let voiceEnabled = true;
   let running = false;
   // Distinct threats we have already surfaced (overlay + voice + notification).
   // Only NEW threats re-trigger alerts; dismissed overlays stay gone until a
@@ -182,6 +206,7 @@
       const settings = await getSettings();
       if (!settings || !settings.enabled) return;
       overlayEnabled = !!settings.overlay;
+      voiceEnabled = settings.voice !== false;
 
       const root = document.body;
       if (!root) return;
@@ -198,7 +223,11 @@
       handledThreats.add(payload.hash);
 
       if (overlayEnabled) showOverlay(payload);
-      speak(payload.title || 'Possible scam message detected.');
+      if (voiceEnabled) {
+        const spoken = (payload.title || 'Possible scam message detected.') +
+          '. ' + (payload.domain || '');
+        voiceAlert(spoken.trim());
+      }
 
       // Send to background worker for notification + badge
       chrome.runtime.sendMessage({ type: 'rakshak_detection', detection: payload });

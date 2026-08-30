@@ -45,6 +45,7 @@ async function refresh() {
   document.getElementById('tBadge').checked = !!s.badge;
   document.getElementById('tOverlay').checked = !!s.overlay;
   document.getElementById('tUrl').checked = !!s.urlScan;
+  document.getElementById('tVoice').checked = s.voice !== false;
 
   const dot = document.getElementById('statusDot');
   const text = document.getElementById('statusText');
@@ -59,6 +60,7 @@ bindToggle('tNotify', 'notifications');
 bindToggle('tBadge', 'badge');
 bindToggle('tOverlay', 'overlay');
 bindToggle('tUrl', 'urlScan');
+bindToggle('tVoice', 'voice');
 
 document.getElementById('clearBtn').addEventListener('click', () => {
   send({ type: 'rakshak_clear_incidents' }).then(refresh);

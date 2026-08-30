@@ -9,6 +9,7 @@ const DEFAULTS = {
   badge: true,
   overlay: true,
   urlScan: true,
+  voice: true,
   enabled: true,
   seen: {},
   incidents: []
@@ -149,6 +150,7 @@ chrome.runtime.onInstalled.addListener(async () => {
   state.badge = true;
   state.overlay = true;
   state.urlScan = true;
+  state.voice = true;
   await saveState(state);
 });
 
@@ -170,8 +172,24 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
       badge: s.badge,
       overlay: s.overlay,
       urlScan: s.urlScan,
+      voice: s.voice,
       incidents: s.incidents
     }));
+    return true;
+  }
+  // Focus the originating tab so Chrome's autoplay policy won't mute the
+  // speech voice (voice plays even when the tab was in the background).
+  if (msg && msg.type === 'rakshak_focus_and_speak') {
+    const tabId = sender.tab && sender.tab.id;
+    if (typeof tabId === 'number') {
+      chrome.tabs.update(tabId, { active: true }, () => {
+        if (chrome.runtime.lastError) return;
+        setTimeout(() => {
+          chrome.tabs.sendMessage(tabId, { type: 'rakshak_speak', message: msg.message });
+        }, 250);
+      });
+    }
+    sendResponse({ ok: true });
     return true;
   }
   if (msg && msg.type === 'rakshak_set_settings') {

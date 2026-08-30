@@ -41,6 +41,9 @@ scanning happens locally on your machine.
   **voice alert** ("Possible scam message detected").
 - Each distinct threat is alerted once. After you dismiss the banner it stays
   gone until a *new/different* threat is detected (no repeated pop-ups).
+- Voice keeps working even when the messages tab is in the background: for a
+  critical threat the extension briefly focuses the tab so the browser's
+  autoplay policy doesn't mute the announcement. Toggle it in the popup.
 - When in doubt, report scams to India's **National Cyber Crime Helpline 1930**.
 
 ## Project structure
