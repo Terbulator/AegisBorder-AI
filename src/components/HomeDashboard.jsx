@@ -16,7 +16,7 @@ import {
 import { speakText } from './VoiceAssistant';
 import { HOME, NAV_SUBS, t } from '../engine/regionalDictionary';
 
-const ICONS = { message: MessageSquare, url: Globe, qr: QrCode, apk: AppWindow, link: Globe, upi: QrCode };
+const ICONS = { message: MessageSquare, url: Globe, qr: QrCode, apk: AppWindow, app: AppWindow, link: Globe, upi: QrCode };
 const QUICK_ACTION_KEYS = { message: 'scanMessage', url: 'checkWebsite', qr: 'checkQR', apk: 'checkApp' };
 
 /* Demo security metrics (clearly demo values) — values are language-agnostic */
