@@ -36,8 +36,11 @@ scanning happens locally on your machine.
 
 - Open the pinned **Rakshak AI** icon to see recent detections and toggle
   alerts (desktop notifications, badge, in-page overlay, link scanning).
-- Threats raise a **red notification**, a toolbar **badge**, and a **red
-  in-page banner** on the site showing which scam pattern was matched.
+- Threats raise a **red notification**, a toolbar **badge**, a **red
+  in-page banner** on the site showing which scam pattern was matched, and a
+  **voice alert** ("Possible scam message detected").
+- Each distinct threat is alerted once. After you dismiss the banner it stays
+  gone until a *new/different* threat is detected (no repeated pop-ups).
 - When in doubt, report scams to India's **National Cyber Crime Helpline 1930**.
 
 ## Project structure

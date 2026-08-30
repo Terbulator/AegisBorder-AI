@@ -1,14 +1,15 @@
 {
   "manifest_version": 3,
   "name": "Rakshak AI - Message & Link Scam Shield",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Detects scam / phishing messages and links on web apps (WhatsApp Web, Gmail, Messenger) in the background and alerts you.",
   "permissions": [
     "storage",
     "notifications",
     "tabs",
     "activeTab",
-    "webNavigation"
+    "webNavigation",
+    "alarms"
   ],
   "host_permissions": [
     "https://*.whatsapp.com/*",
@@ -37,7 +38,9 @@
         "https://*.discord.com/*",
         "https://*.linkedin.com/*"
       ],
-      "js": ["content.js"],
+      "js": [
+        "content.js"
+      ],
       "run_at": "document_idle"
     }
   ],
@@ -57,8 +60,18 @@
   },
   "web_accessible_resources": [
     {
-      "resources": ["overlay.css", "icons/*", "engine/nlp.js", "engine/urlDetector.js", "engine/upi.js", "engine/bloom.js", "engine/data.js"],
-      "matches": ["<all_urls>"]
+      "resources": [
+        "overlay.css",
+        "icons/*",
+        "engine/nlp.js",
+        "engine/urlDetector.js",
+        "engine/upi.js",
+        "engine/bloom.js",
+        "engine/data.js"
+      ],
+      "matches": [
+        "<all_urls>"
+      ]
     }
   ]
 }

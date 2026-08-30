@@ -86,6 +86,23 @@
     document.documentElement.appendChild(host);
   }
 
+  // ------------------------------------------------------------------
+  // Voice alert (offline, works in Chrome/Edge, multilingual)
+  // ------------------------------------------------------------------
+  function speak(message) {
+    try {
+      if (!('speechSynthesis' in window)) return;
+      window.speechSynthesis.cancel();
+      const utter = new SpeechSynthesisUtterance(message || 'Attention. Possible scam message detected.');
+      utter.lang = 'en-IN';
+      utter.rate = 1;
+      utter.pitch = 1;
+      window.speechSynthesis.speak(utter);
+    } catch (e) {
+      // Voice is optional - never break the scan loop
+    }
+  }
+
   function escapeHtml(s) {
     return String(s || '')
       .replace(/&/g, '&amp;')
@@ -155,6 +172,10 @@
   let lastSample = '';
   let overlayEnabled = true;
   let running = false;
+  // Distinct threats we have already surfaced (overlay + voice + notification).
+  // Only NEW threats re-trigger alerts; dismissed overlays stay gone until a
+  // different threat is detected.
+  const handledThreats = new Set();
 
   async function tick() {
     try {
@@ -171,7 +192,13 @@
       const payload = scanBlob(sample);
       if (!payload) return;
 
+      // Ignore a threat we have already alerted on (prevents it re-popping up
+      // on every scan after you dismissed it).
+      if (handledThreats.has(payload.hash)) return;
+      handledThreats.add(payload.hash);
+
       if (overlayEnabled) showOverlay(payload);
+      speak(payload.title || 'Possible scam message detected.');
 
       // Send to background worker for notification + badge
       chrome.runtime.sendMessage({ type: 'rakshak_detection', detection: payload });
