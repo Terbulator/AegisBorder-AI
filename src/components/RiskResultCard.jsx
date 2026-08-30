@@ -33,7 +33,7 @@ const SUSPICIOUS_LABELS = { en: 'Suspicious message', hi: 'संदिग्ध
 /* ============================================================
    Animated risk score bar (0 → target over 600ms)
    ============================================================ */
-function RiskScoreBar({ targetScore }) {
+function RiskScoreBar({ targetScore, currentLang }) {
   const [displayed, setDisplayed] = useState(0);
   const rafRef = useRef(null);
 
@@ -213,7 +213,7 @@ export default function RiskResultCard({
         </div>
 
         <div className="mt-4">
-          <RiskScoreBar targetScore={result.riskScore ?? 0} />
+          <RiskScoreBar targetScore={result.riskScore ?? 0} currentLang={currentLang} />
         </div>
       </div>
 
