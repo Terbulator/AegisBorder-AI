@@ -57,6 +57,28 @@ object IndicNlpEngine {
             titleEn = "Fake Cashback / Lottery Reward Lure",
             voiceHi = "रुकिए! कैशबैक या लॉटरी का पैसा पाने के लिए कभी यूपीआई पिन दर्ज न करें।",
             voiceEn = "Stop! Never enter your UPI PIN to claim lottery or cashback rewards."
+        ),
+        ThreatPattern(
+            id = "REMOTE_ACCESS_SUPPORT",
+            category = "RAT_SOCIAL_ENGINEERING",
+            severity = "CRITICAL",
+            regex = Regex("(anydesk|teamviewer|rustdesk|quicksupport|screen share|screen|share|apk|install|download|helpdesk|support officer)", RegexOption.IGNORE_CASE),
+            urgencyScore = 98,
+            titleHi = "स्क्रीन शेयरिंग व रिमोट एक्सेस ऐप का खतरा",
+            titleEn = "Screen Sharing / Remote Access Trojan Scam",
+            voiceHi = "सावधान! अज्ञात लोगों के कहने पर AnyDesk या कोई एपीके इंस्टॉल न करें। आपका फोन कंट्रोल हो सकता है।",
+            voiceEn = "Warning! Never install AnyDesk or APK files on instruction from unknown callers. Your phone can be controlled."
+        ),
+        ThreatPattern(
+            id = "TRAFFIC_CHALLAN_LEGAL",
+            category = "LEGAL_COERCION",
+            severity = "HIGH",
+            regex = Regex("(challan|traffic|court|arrest|police|cyber cell|warrant|fir|jail).*(pay|bhare|link|immediate|penalty|fine)", RegexOption.IGNORE_CASE),
+            urgencyScore = 90,
+            titleHi = "फर्जी ई-चालान व कानूनी गिरफ्तारी की धमकी",
+            titleEn = "Fake Traffic Challan / Legal Threat",
+            voiceHi = "सावधान! फर्जी ट्रैफिक चालान या कानूनी धमकी का संदेश है। केवल आधिकारिक परिवहन पोर्टल पर ही चालान जांचें।",
+            voiceEn = "Warning! This is a fake traffic challan or legal threat message. Verify only on the official transport portal."
         )
     )
 

@@ -62,12 +62,38 @@ class NativeBloomFilter(
 
     private fun seedInitialThreats() {
         val knownThreats = listOf(
+            // Domains
             "sbi-bank-kyc-update.top",
             "sbi-reward-points.xyz",
+            "hdfc-netbanking-verify.info",
+            "icici-pan-card-link.site",
+            "paytm-cashback-offer99.buzz",
+            "gpay-lottery-winner.online",
+            "phonepe-merchant-reward.club",
+            "customer-support-app.net",
+            "bijli-bill-payment-portal.cc",
+            "electricity-disconnection-alert.tk",
+            "epfo-claim-status-kyc.top",
+            "aadhaar-biometric-unlock.biz",
+            "free-recharge-jio-5g.live",
+            "anydesk-remote-support.apk.link",
+            "rbi-digital-rupee-claim.win",
+            // VPAs
             "cashback-claim@ybl",
-            "scam-paytm@ybl",
+            "paytm-refund-dept@paytm",
+            "sbi-rewards-executive@oksbi",
             "electricity-nodal-officer@axl",
-            "http://customer-support-app.net/AnyDesk_Support.apk"
+            "kyc-support-verification@icici",
+            "lottery-winner-tax@ibl",
+            "phonepe-cashback-gate@ibl",
+            "gpay-official-promotions@okaxis",
+            "scam-paytm@ybl",
+            // Phone numbers
+            "+919876543210",
+            "+918765432109",
+            "+917001234567",
+            "+919123456780",
+            "+919988776655"
         )
         knownThreats.forEach { add(it) }
     }
