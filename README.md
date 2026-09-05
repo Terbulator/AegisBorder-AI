@@ -1,259 +1,301 @@
 <div align="center">
 
-# 🛡️ RAKSHAK AI (रक्षक AI)
-### **Next-Gen On-Device Cyber Threat Detection & Proof-of-Authority Fraud Consortium**
+# 🛡️ AegisBorder AI — Smart Border Identity & Document Screening System
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-cyan.svg)](https://opensource.org/licenses/MIT)
-[![Android SDK](https://img.shields.io/badge/Android%20SDK-API%2034%2B-brightgreen.svg?logo=android)](https://developer.android.com)
-[![Kotlin](https://img.shields.io/badge/Kotlin-1.9.22-purple.svg?logo=kotlin)](https://kotlinlang.org)
-[![React](https://img.shields.io/badge/React-19.0-blue.svg?logo=react)](https://react.dev)
-[![Vite](https://img.shields.io/badge/Vite-6.0-yellow.svg?logo=vite)](https://vitejs.dev)
-[![Tailwind CSS](https://img.shields.io/badge/TailwindCSS-3.4-38B2AC.svg?logo=tailwind-css)](https://tailwindcss.com)
-[![Cybersecurity](https://img.shields.io/badge/Cybersecurity-Zero--Copy%20Protection-red.svg)](#)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.115+-009688.svg?style=flat&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
+[![React](https://img.shields.io/badge/React-19-61DAFB.svg?style=flat&logo=react&logoColor=black)](https://react.dev)
+[![Vite](https://img.shields.io/badge/Vite-8.x-646CFF.svg?style=flat&logo=vite&logoColor=white)](https://vitejs.dev)
+[![Tailwind CSS](https://img.shields.io/badge/TailwindCSS-4-38B2AC.svg?style=flat&logo=tailwind-css)](https://tailwindcss.com)
+[![OpenCV](https://img.shields.io/badge/OpenCV-Computer%20Vision-5C3EE8.svg?style=flat&logo=opencv&logoColor=white)](https://opencv.org)
+[![ICAO Doc 9303](https://img.shields.io/badge/ICAO%20Doc%209303-Compliant-0284c7.svg?style=flat)](https://www.icao.int)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-*An AI-powered, zero-copy, privacy-first cybersecurity defense shield against modern digital financial fraud, social engineering scams, Indic language phishing, deceptive UPI debit traps, and malicious RAT APKs.*
+**A next-generation AI-powered document inspection, tamper forensics, and biometric facial verification platform engineered for high-throughput border checkpoints, immigration gates, and international security terminals.**
 
 </div>
 
 ---
 
-## 📌 Table of Contents
-- [Executive Overview](#-executive-overview)
-- [The 5 Critical Blind Spots Solved](#-the-5-critical-blind-spots-solved)
-- [System Architecture & Core Engines](#-system-architecture--core-engines)
-- [Key Features](#-key-features)
-- [Repository Structure](#-repository-structure)
-- [Getting Started & Installation](#-getting-started--installation)
-  - [1. Web Interactive Dashboard & Phone Simulator](#1-web-interactive-dashboard--phone-simulator)
-  - [2. Native Android Application (Kotlin)](#2-native-android-application-kotlin)
-- [Hackathon Judge Evaluation Bench](#-hackathon-judge-evaluation-bench)
-- [Security & Privacy Model](#-security--privacy-model)
-- [Contributing & License](#-contributing--license)
+## Table of Contents
+- [Overview](#overview)
+- [Key Challenges Addressed](#key-challenges-addressed)
+- [Core Architecture & AI Modules](#core-architecture--ai-modules)
+- [Real-World (IRL) Testing & New Passenger Console](#real-world-irl-testing--new-passenger-console)
+- [Tech Stack](#tech-stack)
+- [Project Directory Structure](#project-directory-structure)
+- [Quick Start & Installation](#quick-start--installation)
+- [API Documentation](#api-documentation)
+- [Simulation Profiles & Presets](#simulation-profiles--presets)
+- [Legacy Modules (Monorepo)](#legacy-modules-monorepo)
+- [Security & Compliance](#security--compliance)
+- [License](#license)
 
 ---
 
-## 🌟 Executive Overview
+## Overview
 
-In India, over **80% of cyber financial scams** (electricity bill disconnection, KYC suspension, APK RAT sideloading, and UPI cashback debit traps) exploit social engineering and conversational vernacular languages (**Hinglish, Tanglish, Telglish, Benglish**). 
+Border checkpoints process tens of thousands of travelers daily across passports, visas, national ID cards, and transit permits. Manual verification by human officers is time-constrained, prone to cognitive fatigue, and struggling against sophisticated modern counterfeits:
 
-Traditional antivirus solutions fail because:
-1. They require users to manually copy-paste links (high friction).
-2. Cloud-based analysis leaks private conversations and banking SMS OTPs.
-3. Scammers use phonetic English spellings and typosquatted lookalikes that bypass regex filters.
+- Digitally spliced and replaced portrait photos
+- Laser-modified dates of birth and expiry
+- Re-encoded or fabricated Machine Readable Zones (MRZ)
+- Identity impersonation and synthetic alias profiles
+- Expired or blacklisted travel documents
 
-**Rakshak AI** solves this with a **dual-layer architecture**:
-- **On-Device Real-Time Passive Defense**: An Android service listening directly for incoming SMS/WhatsApp notifications and intercepting threats using phonetic N-gram models, a local Bloom filter, and real-time floating heads-up alert overlays.
-- **Proof-of-Authority (PoA) Threat Consortium**: A decentralized, Sybil-immune threat intelligence ledger operated by verified institutional authorities (RBI Partner Banks, CERT-In, National Cyber Crime Helpline 1930) that syncs verified threat hashes in under 2ms.
+**AegisBorder AI** automates this end-to-end verification pipeline in sub-second latency, performing multi-spectral forensic image analysis, mathematical check-digit auditing, 1:1 facial biometric matching against live camera feeds, and automated risk scoring with cryptographic audit trails.
 
 ---
 
-## 🎯 The 5 Critical Blind Spots Solved
+## Key Challenges Addressed
 
-```
-┌──────────────────────────────────────────────────────────────────────────┐
-│                   RAKSHAK AI MULTI-LAYER DEFENSE MATRIX                 │
-└──────────────────────────────────────────────────────────────────────────┘
-  [1. UX Reality Check]     ───▶ Zero-Copy Passive Notification Interception
-  [2. Code-Mixed NLP]       ───▶ Phonetic N-Gram Engine for Indic Dialects
-  [3. Malicious APK Auditor]───▶ Sideloaded RAT & Permission Heuristic Engine
-  [4. Offline Resilience]   ───▶ Sub-2ms Compressed Bloom Filter (50k+ Hashes)
-  [5. Anti-Poisoning PoA]   ───▶ Multi-Sig Consortium Consensus with 1930 / RBI
-```
-
-| Blind Spot | Traditional Antivirus / Regex | Rakshak AI Defense Engine |
+| Challenge | Detection Mechanism | Accuracy / Standard |
 | :--- | :--- | :--- |
-| **1. UX Burden** | Requires manual copy-paste of SMS/links | **Zero-Copy passive Android NotificationListener** with floating threat shield |
-| **2. Language Nuance** | Pure English dictionaries only | **Phonetic phonetic similarity + Code-mixed N-grams** (Hinglish/Tanglish) |
-| **3. Financial Traps** | Scans URLs only, misses UPI intents | **Micro-Friction Gate** intercepts deceptive UPI PIN entry on "Cashback" |
-| **4. APK Sideloads** | Checks hash on Google Play | **Static Android Manifest bytecode auditor** for dangerous accessibility/SMS RATs |
-| **5. Threat Poisoning** | Centralized database or public spam | **Sybil-Immune PoA Consortium Blockchain** with cryptographic validator staking |
+| **Fake Passports & Visas** | ICAO 9303 TD1/TD2/TD3 check-digit verification with 7-3-1 weight algorithms | 100% Mathematical Precision |
+| **Altered Photographs** | Error Level Analysis (ELA) heatmaps & portrait boundary gradient jump analysis | Digital artifact & edge discontinuity detection |
+| **Modified DOB & Expiry** | Automated cross-validation between Visual Inspection Zone (VIZ) and encoded MRZ | Cross-field inconsistency flagging |
+| **Tampered Visa Stamps** | Multi-spectral contrast filtering and high-frequency noise variance analysis | Surface alteration profiling |
+| **Identity Impersonation** | 1:1 Face verification matching passport chip/visual portrait against live camera stream | Cosine landmark similarity + anti-spoofing |
+| **Interpol / Blacklist Hits** | Real-time query against international law enforcement databases | Instant match with red alert trigger |
+| **High Passenger Volume** | Asynchronous FastAPI microservice backend with glassmorphic React terminal | < 1.2s complete pipeline turnaround |
 
 ---
 
-## 🏗️ System Architecture & Core Engines
+## Core Architecture & AI Modules
 
-```mermaid
-graph TD
-    A[Incoming SMS / WhatsApp Notification] -->|Zero-Copy Interception| B(RakshakNotificationService)
-    B -->|Check Whitelist| C{Saved in Phonebook?}
-    C -->|Yes| D[Allow & Skip - Preserves Privacy]
-    C -->|No| E[Indic NLP & Heuristics Engine]
-    
-    E --> F[Code-Mixed Regex & N-gram Tokenizer]
-    E --> G[Homoglyph / Typosquatting Checker]
-    E --> H[Deceptive UPI String Extractor]
-    
-    F & G & H --> I[Sub-2ms Local Bloom Filter]
-    I -->|Threat Detected| J[Trigger Floating Alert Overlay]
-    J --> K[Regional Voice Assistant Speech Alert]
-    J --> L[Micro-Friction Gate on Payment Action]
-    
-    I -->|Verified Malicious Target| M[PoA Consortium Blockchain]
-    M -->|Multi-Sig Consensus| N[National Cybercrime 1930 / CERT-In Dispatch]
+```
+                                  [ Traveler Arrival ]
+                                           │
+                    ┌──────────────────────┴──────────────────────┐
+                    ▼                                             ▼
+          [ Document Scanner ]                          [ Live Camera Stream ]
+          (Physical / Upload)                           (Webcam / Sensor Feed)
+                    │                                             │
+                    ├──────────────────────┬──────────────────────┤
+                    ▼                      ▼                      ▼
+           [ MODULE 1: OCR/MRZ ]  [ MODULE 2: FORENSICS ] [ MODULE 3: BIOMETRICS ]
+           • ICAO 9303 Checksums  • Error Level Analysis • 1:1 Face Similarity
+           • TD1/TD2/TD3 Parsing  • Noise Variance Map   • Moire / Spoof Check
+           • VIZ vs MRZ Matching  • Photo Border Jump    • Portrait Geometry
+                    │                      │                      │
+                    └──────────────────────┼──────────────────────┘
+                                           ▼
+                            [ MODULE 4: WATCHLIST LOOKUP ]
+                            • Interpol Red Notice Database
+                            • Border Exclusion Ledger
+                                           ▼
+                            [ UNIFIED RISK SCORING ENGINE ]
+                            • Weighted Bayesian Multi-Factor Model
+                            • 0–100% Composite Risk Index
+                                           │
+                    ┌──────────────────────┼──────────────────────┐
+                    ▼                      ▼                      ▼
+             [ GRANT ENTRY ]    [ SECONDARY INSPECT ]    [ DETAIN SUBJECT ]
+            (Audit Stamped)      (Route Counter 4B)     (Security Dispatch)
 ```
 
-### 1. Indic Code-Mixed NLP Engine (`src/engine/codeMixedNlp.js` & `IndicNlpEngine.kt`)
-Detects high-urgency psychological extortion patterns in code-mixed romanized vernaculars (e.g., *"Bijli bill update nahi hua to raat 9 baje power cut ho jayegi"* or *"YONO KYC blocked, click to verify PAN"*).
+### Module 1: OCR & ICAO 9303 MRZ Engine
+- Supports **TD3** (Passports: 2 lines × 44 chars), **TD2** (Visas: 2 lines × 36 chars), and **TD1** (National IDs: 3 lines × 30 chars).
+- Verifies document number check digits, birth date check digits, expiry date check digits, optional data check digits, and composite master check digits.
+- Cross-validates extracted Visual Zone text against encoded MRZ characters to expose physical surface overwriting.
 
-### 2. Banking & Typosquatting Detector (`src/engine/urlDetector.js`)
-Uses Levenshtein Distance algorithms combined with canonical Indian bank domain profiles (SBI, HDFC, ICICI, PNB, Paytm) to flag deceptive homoglyphs (e.g., `sbi-kyc-update.top`, `paytm-cashback-claim.xyz`).
+### Module 2: Multi-Spectral Forensics & Tamper Detection
+- **Error Level Analysis (ELA)**: Re-compresses image matrices at defined quantization levels (Q=90) to visualize compression rate differentials across spliced layers.
+- **Noise Analysis**: Evaluates Laplacian variance and standard deviation across discrete tiles to expose high-frequency cloning or smoothing artifacts.
+- **Photo Tamper Boundary Detector**: Scans portrait box edges for gradient discontinuities, chromatic aberration, and physical sticker seams.
+- **Metadata Analyzer**: Inspects EXIF tags for software signatures (e.g. Photoshop, GIMP, Canva) and abnormal color space conversions.
 
-### 3. Deceptive UPI Debit Trap Gate (`src/engine/upiQrDetector.js` & `MicroFrictionActivity.kt`)
-Analyzes UPI payment URIs (`upi://pay?pa=...&am=...`). When scammers attempt to disguise money requests as "Cashbacks" or "Rewards", Rakshak AI launches a modal warning users: **"STOP! UPI PIN is ONLY entered to SEND money, NEVER to receive rewards!"**
+### Module 3: Biometric Face Verification & Anti-Spoofing
+- Extracts facial geometry landmarks from the document portrait and compares them against the live terminal camera stream.
+- Computes normalized vector similarity and match confidence percentages.
+- Runs liveness verification to detect screen re-photography, printed cutouts, and moiré pattern artifacts.
 
-### 4. Sideloaded APK RAT Auditor (`src/engine/apkInspector.js`)
-Inspects APK package permissions before installation, detecting high-risk Remote Access Trojan (RAT) combinations like:
-- `android.permission.BIND_ACCESSIBILITY_SERVICE` (Keylogging & Screen reading)
-- `android.permission.RECEIVE_SMS` / `READ_SMS` (OTP Sniffing)
-- `android.permission.SYSTEM_ALERT_WINDOW` (Phishing Overlays)
+### Module 4: Border Watchlist & Interpol Red Notice Screening
+- Real-time indexing against simulated international fugitives, stolen blank document batches, and biometric alias records.
+- Instantly triggers critical alert banners and detention protocols upon positive identification.
 
-### 5. Ultra-Fast Sub-2ms Compressed Bloom Filter (`src/engine/bloomFilter.js`)
-Stores 50,000+ known malicious threat hashes in < 64KB memory footprint, enabling zero-latency threat lookups completely **offline** without battery drain or network dependencies.
+### Unified Risk Decision Engine
+Generates an aggregated risk score (0–100%) and categorizes the traveler into actionable tiers:
 
-### 6. PoA Consortium Threat Ledger (`src/engine/poaBlockchainSim.js`)
-A decentralized, multi-signature Proof-of-Authority ledger maintained by verified validators (RBI, CERT-In, Law Enforcement) preventing database poisoning while propagating zero-day malicious domains to all protected client nodes.
+| Score | Tier | Recommended Decision |
+| :--- | :--- | :--- |
+| 0–25% | LOW | GRANT ENTRY — Automated gate opening with digital audit stamp |
+| 26–50% | MODERATE | SECONDARY INSPECTION — Request supplemental documentation |
+| 51–80% | HIGH | REFUSE ENTRY & ESCORT — Formal interrogation |
+| 81–100% | CRITICAL | DETAIN & CONFISCATE — Instant security dispatch |
 
 ---
 
-## 📁 Repository Structure
+## Real-World (IRL) Testing & New Passenger Console
+
+A dedicated **"New Passenger"** registration console enables real-world terminal trials and demonstration scenarios:
+
+1. **Custom Document Ingestion**: Upload physical document images or photos taken at the counter.
+2. **Live Webcam Facial Ingestion**: Snap live traveler selfies using a connected webcam for real-time 1:1 facial biometric matching.
+3. **Automated ICAO MRZ Synthesis**: Automatically calculates valid ICAO check digits for any entered identity metadata.
+4. **Fraud Scenario Injection**: Choose from test scenarios including *Photo Tampering*, *Checksum Forgery*, *DOB Mismatch*, *Interpol Red Notice*, or *Authentic Document*.
+5. **Quick Templates**: One-click profiles to rapidly test edge cases (`Diplomat`, `Counterfeit Visa`, `Fugitive Watchlist`, `Photo Altered`).
+
+---
+
+## Tech Stack
+
+### Frontend
+- **Framework**: React 19 + Vite
+- **Styling**: Tailwind CSS v4 + Custom Glassmorphism System
+- **Icons**: Lucide React
+- **Animations**: CSS Glass Shimmer, Scanlines, Particle Canvas Confetti
+- **Components**: Dual-feed Document Ingestion, Interactive ELA Heatmap Viewer, Biometric Face Split, Risk Decision Gauge, Cryptographic Audit Trail Modal
+
+### Backend
+- **Framework**: Python 3.10+ / FastAPI
+- **Server**: Uvicorn ASGI with auto-reload
+- **Computer Vision & Image Processing**: OpenCV (`opencv-python-headless`), NumPy, SciPy, Pillow, Scikit-Image
+- **Data Validation**: Pydantic v2
+- **Audit PDF Reporting**: ReportLab PDF Generator
+
+---
+
+## Project Directory Structure
 
 ```
-Rakshak-AI/
-├── android-app/                               # Native Android Kotlin Application (API 34)
-│   ├── app/
-│   │   ├── src/main/
-│   │   │   ├── AndroidManifest.xml           # Service permissions & overlay declarations
-│   │   │   ├── java/com/rakshak/ai/
-│   │   │   │   ├── engine/                   # On-device Bloom Filter & Indic NLP
-│   │   │   │   │   ├── ContactsWhitelistHelper.kt
-│   │   │   │   │   ├── IndicNlpEngine.kt
-│   │   │   │   │   └── NativeBloomFilter.kt
-│   │   │   │   ├── overlay/                  # Floating Window Shield Overlay
-│   │   │   │   │   └── FloatingAlertOverlayService.kt
-│   │   │   │   ├── service/                  # Passive Notification Interceptor
-│   │   │   │   │   └── RakshakNotificationService.kt
-│   │   │   │   ├── ui/                       # Dashboard & MicroFriction UI
-│   │   │   │   │   ├── MainActivity.kt
-│   │   │   │   │   └── MicroFrictionActivity.kt
-│   │   │   │   └── voice/                    # Multilingual TTS Voice Alerts
-│   │   │   │       └── RegionalVoiceSpeaker.kt
-│   │   │   └── res/                          # Vector icons, themes, layouts, XML rules
-│   │   └── build.gradle.kts                  # App Gradle dependencies & SDK 34 targets
-│   ├── gradle/wrapper/                       # Gradle 8.5 wrapper binaries
-│   ├── gradlew.bat                           # Windows Gradle build script
-│   └── settings.gradle.kts
+.
+├── README.md                      # Comprehensive project documentation
+├── index.html                     # React HTML shell with Google Fonts
+├── package.json                   # Node dependencies & scripts (Vite + React 19 + Tailwind 4)
+├── vite.config.js                 # Vite config with /api backend proxy
 │
-├── src/                                      # React 19 Interactive Web Sandbox & Simulator
-│   ├── components/
-│   │   ├── ApkPermScanner.jsx                # APK Permission Forensic Scanner
-│   │   ├── BlockchainLedger.jsx              # PoA Consortium Visualizer
-│   │   ├── Header.jsx                        # Language & Bloom Filter HUD
-│   │   ├── IncidentReportModal.jsx           # 1930 Cyber Helpline Auto-Reporter
-│   │   ├── JudgePresetBar.jsx                # 1-Click Evaluation Presets
-│   │   ├── MessageScanner.jsx                # SMS & WhatsApp Deep Inspector
-│   │   ├── MicroFrictionModal.jsx            # UPI Debit Trap Warning Gate
-│   │   ├── NotificationSimulator.jsx         # Heads-up Toast Interceptor
-│   │   ├── PhoneSimulator.jsx                # Full Android OS Interactive Phone Sandbox
-│   │   ├── QrScanner.jsx                     # Dynamic QR & UPI Intent Auditor
-│   │   ├── SafeSandboxModal.jsx              # Isolated Virtual Browser Sandbox
-│   │   ├── UrlScanner.jsx                    # Banking Typosquatting Detector
-│   │   └── VoiceAssistant.jsx                # Multi-dialect Speech Synthesis
-│   ├── data/
-│   │   └── legitimateInstitutions.json       # Canonical Indian Banks & Utilities DB
-│   ├── engine/                               # JavaScript Core Analysis Engines
-│   │   ├── apkInspector.js
-│   │   ├── bloomFilter.js
-│   │   ├── codeMixedNlp.js
-│   │   ├── poaBlockchainSim.js
-│   │   ├── regionalDictionary.js
-│   │   ├── upiQrDetector.js
-│   │   └── urlDetector.js
-│   ├── App.jsx                               # Main application container
-│   ├── index.css                             # Cyberpunk Dark Glassmorphism Design System
-│   └── main.jsx
+├── src/                           # AegisBorder AI React frontend
+│   ├── App.jsx                    # Main layout, state machine & tab navigation
+│   ├── index.css                  # Glassmorphism utility classes & animations
+│   └── components/
+│       ├── Header.jsx             # Live clock, scan counters, defense status
+│       ├── PresetBar.jsx          # Threat presets & + New Passenger trigger
+│       ├── DocumentIngestion.jsx  # Dual-channel document & webcam camera feed
+│       ├── NewPassengerModal.jsx  # IRL passenger registration & test console
+│       ├── MRZTerminal.jsx        # Monospace terminal for ICAO checksum audit
+│       ├── ForensicViewer.jsx     # ELA heatmap, noise map & edge gradient studio
+│       ├── BiometricsPanel.jsx    # Live camera vs portrait 1:1 face matching
+│       ├── RiskDecisionPanel.jsx  # Gauge, risk tier breakdown & action buttons
+│       └── AuditReportModal.jsx   # Formal compliance certificate modal
 │
-├── package.json                              # Vite + React 19 + Tailwind CSS setup
-├── tailwind.config.js                        # Theme colors & animation tokens
-└── vite.config.js                            # Build bundler configuration
+├── backend/                       # FastAPI screening engine
+│   ├── main.py                    # FastAPI entrypoint, routes & screening pipeline
+│   ├── requirements.txt           # Python dependencies
+│   ├── biometrics/
+│   │   └── face_verifier.py       # Facial detection, 1:1 matching & anti-spoofing
+│   ├── forensics/
+│   │   ├── ela.py                 # Error Level Analysis & heatmap generator
+│   │   ├── noise_analysis.py      # Noise inconsistency & Laplacian variance
+│   │   ├── photo_tampering.py     # Portrait replacement & boundary jump analysis
+│   │   └── metadata_analyzer.py   # EXIF & editing software detection
+│   ├── parsers/
+│   │   ├── mrz_parser.py          # ICAO 9303 parser & check-digit calculator
+│   │   └── ocr_extractor.py       # Visual Inspection Zone (VIZ) extraction
+│   ├── validators/
+│   │   ├── integrity_checker.py   # MRZ vs VIZ cross-validation rules
+│   │   └── watchlist_db.py        # Interpol Red Notice & watchlist screening
+│   ├── services/
+│   │   ├── risk_engine.py         # Multi-factor composite risk scoring
+│   │   └── report_generator.py    # Audit certificate generation
+│   └── data/
+│       └── samples.py             # Pre-configured threat presets & custom passengers
+│
+├── android-app/                   # [Legacy] Rakshak Android (Kotlin) app — PoA consortium
+├── browser-extension/             # [Legacy] Rakshak browser extension — phishing defense
+├── legacy-rakshak-web/            # [Legacy] Original Rakshak web dashboard source
+└── CODE_OF_CONDUCT.md             # Contributor Covenant
 ```
 
 ---
 
-## 🚀 Getting Started & Installation
+## Quick Start & Installation
 
-### 1. Web Interactive Dashboard & Phone Simulator
+### Prerequisites
+- **Python**: Version 3.10 or higher
+- **Node.js**: Version 18 or higher (with `npm`)
+- **Git**: Installed on your system
 
-The React-based web dashboard provides a complete sandbox to test, inspect, and evaluate the detection engines without needing a physical Android device.
+### 1. Backend Setup
 
 ```bash
-# Clone repository
-git clone https://github.com/Jishnu09-siuu/Rakshak-AI.git
-cd Rakshak-AI
+cd backend
 
+# Create and activate virtual environment
+python -m venv venv
+source venv/bin/activate    # On Windows: venv\Scripts\activate
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Start the FastAPI server
+uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+```
+
+Backend will be accessible at:
+- **API Base**: `http://localhost:8000`
+- **Interactive Swagger Docs**: `http://localhost:8000/docs`
+- **Health Check**: `http://localhost:8000/api/health`
+
+### 2. Frontend Setup
+
+Open a new terminal window in the repo root:
+
+```bash
 # Install dependencies
 npm install
 
-# Start development server
+# Start Vite dev server (proxies /api to backend :8000)
 npm run dev
 ```
 
-Open your browser at `http://localhost:5173`.
+Frontend dashboard will be running at:
+- **Web UI**: `http://localhost:5173`
 
 ---
 
-### 2. Native Android Application (Kotlin)
+## API Documentation
 
-The native Android app runs in the background on Android 8.0+ (API 26 to 34), providing real-time notification interception and floating shield overlays.
-
-#### Prerequisites:
-- **JDK 17+** (e.g., Microsoft OpenJDK 17 or Eclipse Temurin)
-- **Android SDK (API 34)** with Build-Tools `34.0.0`
-
-#### Build APK via Command Line:
-```powershell
-cd android-app
-
-# Build debug APK using Gradle Wrapper
-.\gradlew.bat assembleDebug
-```
-
-#### Install on Phone / Emulator:
-```powershell
-# Install built APK directly via ADB
-adb install -r "app\build\outputs\apk\debug\app-debug.apk"
-```
-
----
-
-## ⚖️ Hackathon Judge Evaluation Bench
-
-Rakshak AI includes a built-in **1-Click Judge Evaluation Bar** at the top of the interface:
-
-| Preset | Attack Scenario | Triggered Defense Engine |
+| Method | Endpoint | Description |
 | :--- | :--- | :--- |
-| ⚡ **Hinglish Electricity Scam** | *"Aapka bijli bill update nahi hai, connection cut ho jayega..."* | Code-mixed NLP urgency detector + Notification banner + Voice alert |
-| 🏦 **SBI Typosquatted Banking** | `http://sbi-bank-kyc-update.top` | Levenshtein distance check + Canonical bank domain matcher |
-| 💸 **UPI Cashback Debit Trap** | `upi://pay?pa=cashback-claim@ybl&am=4999` | Micro-Friction Gate modal: "STOP! PIN sends money!" |
-| 🛡️ **Malicious RAT APK** | Sideloaded banking trojan with Accessibility Service | APK Permission forensic risk scoring |
-| ⛓️ **PoA Consortium Mint** | Real-time threat reporting | Multi-sig block mining into PoA Threat Ledger |
+| `GET` | `/api/health` | Service health status & active module manifest |
+| `GET` | `/api/presets` | List all threat simulation profiles + custom registered passengers |
+| `GET` | `/api/presets/{id}` | Load document image, MRZ, and metadata for a specific preset |
+| `POST` | `/api/screen-document` | Execute full 4-module forensic screening & return risk assessment |
+| `POST` | `/api/passengers/new` | Register new IRL passenger, auto-generate MRZ/document, and run screening |
+| `DELETE` | `/api/passengers/{id}` | Remove custom passenger from session |
 
 ---
 
-## 🔒 Security & Privacy Model
+## Simulation Profiles & Presets
 
-- **Zero-Copy Telemetry**: Message content and OTPs are analyzed 100% on-device and never leave the user's phone.
-- **Phonebook Whitelisting**: Messages from saved contacts in your phonebook are immediately whitelisted, preserving privacy and saving compute.
-- **No Cloud Latency**: Local Bloom Filter + N-gram heuristics deliver results in under **10 milliseconds**.
-- **1930 Integration Ready**: Provides structured JSON evidence logs formatted for the Indian National Cyber Crime Reporting Portal (1930).
-
----
-
-## 📜 License
-
-Distributed under the **MIT License**. See `LICENSE` for more information.
+1. **Preset 1: Genuine German Passport** — Authentic travel document. All ICAO 9303 checksums pass, zero tampering, 94% face biometric match, clear watchlist record. Recommended: `GRANT ENTRY`.
+2. **Preset 2: Tampered Photo (Spliced Portrait)** — Document with digitally replaced portrait sticker. Detected by ELA heatmap (78%) and border gradient discontinuity (88.5%). Recommended: `DETAIN & CONFISCATE`.
+3. **Preset 3: Forged Visa (Checksum Failure)** — Schengen visa with tampered stay duration and invalid ICAO 9303 check digits. Recommended: `REFUSE ENTRY & ESCORT`.
+4. **Preset 4: Date of Birth Inconsistency** — Visual zone indicates birth date `01.01.1999` while encoded MRZ reveals `1985-03-14`. Exposes age fraud. Recommended: `SECONDARY INSPECTION`.
+5. **Preset 5: Interpol Red Notice (Viktor K.)** — Match against Interpol Red Notice for transnational document fraud. Instant high-threat alert banner. Recommended: `DETAIN & CONFISCATE`.
 
 ---
 
-<div align="center">
-  <sub>Developed for Smart India Hackathon (SIH) • Problem Statement BC-01: Cybersecurity & Blockchain Solutions</sub>
-</div>
+## Legacy Modules (Monorepo)
+
+The repository retains the original **Rakshak AI** cyber-defense components as legacy modules alongside the new AegisBorder AI screening system:
+
+| Module | Description | Status |
+| :--- | :--- | :--- |
+| `android-app/` | Native Android (Kotlin, API 34) app for on-device SMS/WhatsApp phishing interception, bloom-filter lookup, and PoA threat consortium ledger mints | Legacy / retained |
+| `browser-extension/` | Browser extension for zero-copy phishing URL & UPI QR detection | Legacy / retained |
+| `legacy-rakshak-web/` | Original Rakshak web dashboard source (React, cyber-theme) | Legacy / archived |
+
+---
+
+## Security & Compliance
+
+- **ICAO Doc 9303**: Compliant with machine-readable travel document specifications (Parts 3, 4, 7).
+- **Privacy by Design**: Live facial streams and document frames are processed in-memory without persistent disk caching of raw biometric identifiers.
+- **Audit Logging**: Every screening transaction generates a unique SHA-256 verifiable inspection token and cryptographically stamped audit trail.
+
+---
+
+## License
+
+This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.

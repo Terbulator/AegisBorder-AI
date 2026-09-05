@@ -22,6 +22,8 @@ lerna-debug.log*
 *.sw?
 .DS_Store
 Thumbs.db
+.claude/
+.commandcode/
 
 # Android & Gradle Build Artifacts
 android-app/.gradle/
@@ -36,3 +38,10 @@ android-app/captures/
 .cxx/
 *.apk
 *.aab
+
+# Python / FastAPI Backend
+backend/venv/
+backend/.venv/
+__pycache__/
+*.pyc
+backend/bcp-audit-logs/
