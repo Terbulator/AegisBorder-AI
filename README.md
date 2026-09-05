@@ -45,7 +45,7 @@ Border checkpoints process tens of thousands of travelers daily across passports
 
 **AegisBorder AI** automates this end-to-end verification pipeline in sub-second latency, performing multi-spectral forensic image analysis, mathematical check-digit auditing, 1:1 facial biometric matching against live camera feeds, and automated risk scoring with cryptographic audit trails.
 
-The platform ships as a **unified dashboard** that combines the border-securing AegisBorder terminal with the complete **Rakshak AI cyber-defense suite** (SMS scam detection, phishing URL checking, QR/UPI safety, and APK permission analysis) behind a single sticky top-bar switcher.
+The platform ships as a **unified dashboard** that combines the border-securing AegisBorder terminal with the complete **Rakshak AI cyber-defense suite** (SMS scam detection, phishing URL checking, QR/UPI safety, and APK permission analysis) in a single merged window, fronted by a **language-first home header** (हिन्दी/English/বাংলা/मराठी/தமிழ்/తెలుగు) built for non-technical and rural users.
 
 ---
 
@@ -121,22 +121,21 @@ Generates an aggregated risk score (0–100%) and categorizes the traveler into 
 
 | Score | Tier | Recommended Decision |
 | :--- | :--- | :--- |
-| 0–25% | LOW | GRANT ENTRY — Automated gate opening with digital audit stamp |
-| 26–50% | MODERATE | SECONDARY INSPECTION — Request supplemental documentation |
-| 51–80% | HIGH | REFUSE ENTRY & ESCORT — Formal interrogation |
-| 81–100% | CRITICAL | DETAIN & CONFISCATE — Instant security dispatch |
+| 0–24% | LOW | GRANT ENTRY — Automated gate opening with digital audit stamp |
+| 25–54% | MODERATE | SECONDARY INSPECTION — Request supplemental documentation |
+| 55–79% | HIGH | REFUSE ENTRY & ESCORT — Formal interrogation |
+| 80–100% | CRITICAL | DETAIN & CONFISCATE — Instant security dispatch |
 
 ---
 
 ## Unified Dashboard
 
-A single top-level launcher (`src/App.jsx`) hosts two full suites behind a sticky navigation bar — **Border Screening** and **Cyber Defense** — with suite selection persisted in `localStorage` under `aegis_suite`.
+A single React app (`src/App.jsx`) hosts both suites in one merged window:
 
-### Suite 1 — Border Screening (`src/BorderSuite.jsx`)
-The AegisBorder identity & document screening terminal described throughout this README.
-
-### Suite 2 — Cyber Defense (`src/cyber/`)
-The complete **Rakshak AI** client-engine dashboard, now running live inside the same app (no separate deploy, no terminal dependency):
+- **Global header** — a language-first landing for non-technical & rural users: brand, a two-card quick-start guide ("How to use" button, persisted under `aegis_guide`), and one-tap language switching (`rakshak_lang`).
+- **Section 1 — Border Screening** (`src/BorderSuite.jsx`): the AegisBorder identity & document screening terminal described throughout this README.
+- **Divider** — a "Scam Guard" rail separating the two suites.
+- **Section 2 — Cyber Defense** (`src/cyber/`): the complete **Rakshak AI** client-engine dashboard, now running live inside the same app (no separate deploy, no terminal dependency):
 
 | Tab | Feature |
 | :--- | :--- |
@@ -195,7 +194,7 @@ A dedicated **"New Passenger"** registration console enables real-world terminal
 ├── vite.config.js                 # Vite config with /api backend proxy
 │
 ├── src/                           # AegisBorder AI React frontend
-│   ├── App.jsx                    # Unified-dashboard launcher (Border ⇄ Cyber switcher)
+│   ├── App.jsx                    # Single-window host: language-first header + merged suites
 │   ├── BorderSuite.jsx            # AegisBorder screening terminal (suite 1)
 │   ├── index.css                  # Glassmorphism utility classes & animations
 │   ├── main.jsx                   # Entry point (imports both design systems)
