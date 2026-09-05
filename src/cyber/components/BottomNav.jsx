@@ -7,7 +7,7 @@ const ICONS = { home: Home, message: MessageSquare, url: Globe, registry: Databa
 export default function BottomNav({ activeTab, onTabChange, currentLang = 'hi' }) {
   return (
     <nav
-      className="lg:hidden fixed bottom-0 left-0 right-0 z-30 bg-[var(--bg-surface)] border-t border-[var(--border-subtle)] h-16 flex"
+      className="lg:hidden sticky bottom-0 z-30 bg-[var(--bg-surface)] border-t border-[var(--border-subtle)] h-16 flex"
       style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}
       aria-label="Primary navigation"
     >
