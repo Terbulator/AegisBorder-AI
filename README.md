@@ -20,6 +20,7 @@
 - [Overview](#overview)
 - [Key Challenges Addressed](#key-challenges-addressed)
 - [Core Architecture & AI Modules](#core-architecture--ai-modules)
+- [Unified Dashboard](#unified-dashboard)
 - [Real-World (IRL) Testing & New Passenger Console](#real-world-irl-testing--new-passenger-console)
 - [Tech Stack](#tech-stack)
 - [Project Directory Structure](#project-directory-structure)
@@ -43,6 +44,8 @@ Border checkpoints process tens of thousands of travelers daily across passports
 - Expired or blacklisted travel documents
 
 **AegisBorder AI** automates this end-to-end verification pipeline in sub-second latency, performing multi-spectral forensic image analysis, mathematical check-digit auditing, 1:1 facial biometric matching against live camera feeds, and automated risk scoring with cryptographic audit trails.
+
+The platform ships as a **unified dashboard** that combines the border-securing AegisBorder terminal with the complete **Rakshak AI cyber-defense suite** (SMS scam detection, phishing URL checking, QR/UPI safety, and APK permission analysis) behind a single sticky top-bar switcher.
 
 ---
 
@@ -125,6 +128,33 @@ Generates an aggregated risk score (0–100%) and categorizes the traveler into 
 
 ---
 
+## Unified Dashboard
+
+A single top-level launcher (`src/App.jsx`) hosts two full suites behind a sticky navigation bar — **Border Screening** and **Cyber Defense** — with suite selection persisted in `localStorage` under `aegis_suite`.
+
+### Suite 1 — Border Screening (`src/BorderSuite.jsx`)
+The AegisBorder identity & document screening terminal described throughout this README.
+
+### Suite 2 — Cyber Defense (`src/cyber/`)
+The complete **Rakshak AI** client-engine dashboard, now running live inside the same app (no separate deploy, no terminal dependency):
+
+| Tab | Feature |
+| :--- | :--- |
+| Home | Live threat dashboard, regional scam examples, voice alerts |
+| Message Scanner | Code-mixed Hindi/English NLP phishing & fraud detection for SMS/WhatsApp |
+| Website Checker | URL typosquat / phishing / malicious redirect analysis (bloom-filter + heuristic + legit domain allowlist) |
+| QR & UPI Safety | QR/UPI payload parsing with micro-friction payment-pop protection |
+| App Safety | APK permission inspection (SMS read, accessibility, overlay, hidden loader) for spyware/RAT detection |
+| Scam Registry | Blockchain PoA-threat ledger (mints a block on every verified threat) + global bloom filter |
+| More | Theme (dark/light), language switching (हिन्दी/English/বাংলা/मराठी/தமிழ்/తెలుగు), settings |
+
+Deployment notes:
+- `src/cyber/` is a copy of the legacy Rakshak web client, converted to Tailwind v4 and **scoped under the `.cyber-suite` wrapper** so the cyber design system never leaks into the border suite.
+- The theme toggle applies the `light` class to the cyber wrapper element only (not `document.documentElement`).
+- The suite persists its own prefs (`rakshak_theme`, `rakshak_lang`) independently.
+
+---
+
 ## Real-World (IRL) Testing & New Passenger Console
 
 A dedicated **"New Passenger"** registration console enables real-world terminal trials and demonstration scenarios:
@@ -165,8 +195,16 @@ A dedicated **"New Passenger"** registration console enables real-world terminal
 ├── vite.config.js                 # Vite config with /api backend proxy
 │
 ├── src/                           # AegisBorder AI React frontend
-│   ├── App.jsx                    # Main layout, state machine & tab navigation
+│   ├── App.jsx                    # Unified-dashboard launcher (Border ⇄ Cyber switcher)
+│   ├── BorderSuite.jsx            # AegisBorder screening terminal (suite 1)
 │   ├── index.css                  # Glassmorphism utility classes & animations
+│   ├── main.jsx                   # Entry point (imports both design systems)
+│   ├── cyber/                     # Rakshak AI cyber-defense suite (suite 2)
+│   │   ├── App.jsx                # Cyber suite — scoped to .cyber-suite wrapper
+│   │   ├── cyber.css              # Cyber design system (Tailwind v4, wrapper-scoped)
+│   │   ├── components/            # 21 components (scanners, registry, ledger, modals)
+│   │   ├── engine/                # bloomFilter, codeMixedNlp, urlDetector, apkInspector, upiQrDetector, poaBlockchainSim, regionalDictionary
+│   │   └── data/                  # knownThreats.json, legitimateInstitutions.json
 │   └── components/
 │       ├── Header.jsx             # Live clock, scan counters, defense status
 │       ├── PresetBar.jsx          # Threat presets & + New Passenger trigger
@@ -278,13 +316,13 @@ Frontend dashboard will be running at:
 
 ## Legacy Modules (Monorepo)
 
-The repository retains the original **Rakshak AI** cyber-defense components as legacy modules alongside the new AegisBorder AI screening system:
+The repository retains the original **Rakshak AI** cyber-defense components as legacy reference modules. The old web dashboard is **no longer archived-only** — it is now deployed as the **Cyber Defense suite** inside the unified AegisBorder dashboard (`src/cyber/`).
 
 | Module | Description | Status |
 | :--- | :--- | :--- |
 | `android-app/` | Native Android (Kotlin, API 34) app for on-device SMS/WhatsApp phishing interception, bloom-filter lookup, and PoA threat consortium ledger mints | Legacy / retained |
 | `browser-extension/` | Browser extension for zero-copy phishing URL & UPI QR detection | Legacy / retained |
-| `legacy-rakshak-web/` | Original Rakshak web dashboard source (React, cyber-theme) | Legacy / archived |
+| `legacy-rakshak-web/` | Original Rakshak web dashboard source — the live **Cyber Defense** suite is maintained in `src/cyber/` | Legacy / archived (superseded by `src/cyber/`) |
 
 ---
 
