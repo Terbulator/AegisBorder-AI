@@ -237,10 +237,27 @@ A dedicated **"New Passenger"** registration console enables real-world terminal
 │   └── data/
 │       └── samples.py             # Pre-configured threat presets & custom passengers
 │
+├── generate_pdf_report.py         # Standalone PDF audit report generator
+├── generate_pdf_walkthrough.py    # Project walkthrough PDF generator
+├── AegisBorder_AI_Implementation_Plan_and_Walkthrough.pdf
+├── AegisBorder_AI_Project_Walkthrough.pdf
 ├── android-app/                   # [Legacy] Rakshak Android (Kotlin) app — PoA consortium
 ├── browser-extension/             # [Legacy] Rakshak browser extension — phishing defense
 ├── legacy-rakshak-web/            # [Legacy] Original Rakshak web dashboard source
 └── CODE_OF_CONDUCT.md             # Contributor Covenant
+```
+
+### Project Walkthrough PDFs
+
+Pre-generated documentation lives in the repo root:
+
+```bash
+# AegisBorder_AI_Project_Walkthrough.pdf          — end-to-end system walkthrough
+# AegisBorder_AI_Implementation_Plan_and_Walkthrough.pdf — implementation plan
+
+# Regenerate them anytime:
+python generate_pdf_report.py
+python generate_pdf_walkthrough.py
 ```
 
 ---
