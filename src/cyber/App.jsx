@@ -73,7 +73,7 @@ export default function App() {
     globalPoaBlockchain.addVerifiedBlock(
       target,
       type,
-      `Reported via Rakshak AI Client Engine. Forensic score: ${threat.riskScore}/100.`
+      `Reported via AegisBorder AI Client Engine. Forensic score: ${threat.riskScore}/100.`
     );
     globalBloomFilter.add(target);
     setIsLedgerOpen(true);

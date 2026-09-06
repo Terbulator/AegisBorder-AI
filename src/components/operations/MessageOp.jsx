@@ -42,7 +42,7 @@ export default function MessageOp({ onBack }) {
           indicators: [],
           evidence: [res.explanation?.en, `Sender: ${res.senderInfo}`].filter(Boolean),
           recommendation: res.recommendation?.en,
-          note: 'Deep-link and threat inspection is bypassed for saved contacts to protect privacy (existing Rakshak AI behaviour). This result is not saved to history.',
+          note: 'Deep-link and threat inspection is bypassed for saved contacts to protect privacy (existing AegisBorder AI behaviour). This result is not saved to history.',
         });
         return;
       }

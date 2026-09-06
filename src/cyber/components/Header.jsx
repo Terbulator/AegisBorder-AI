@@ -21,7 +21,7 @@ export default function Header({
         <p className="text-sm font-medium text-[var(--text-secondary)] truncate">
           {currentLang === 'hi'
             ? 'रक्षक AI • डिजिटल सुरक्षा सहायक'
-            : 'Rakshak AI • Digital Safety Companion'}
+            : 'AegisBorder AI • Digital Safety Companion'}
         </p>
       </div>
 
@@ -30,7 +30,7 @@ export default function Header({
         <div className="w-7 h-7 rounded-md bg-[var(--primary)] flex items-center justify-center text-white">
           <ShieldCheck className="w-4 h-4" />
         </div>
-        <p className="text-sm font-semibold text-[var(--text-primary)] truncate">Rakshak AI</p>
+        <p className="text-sm font-semibold text-[var(--text-primary)] truncate">AegisBorder AI</p>
       </div>
 
       {/* Right controls */}

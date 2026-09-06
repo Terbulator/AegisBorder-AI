@@ -1,5 +1,5 @@
 // On-Device Multi-Lingual Dictionary (6 Languages: hi, en, ta, te, bn, mr)
-// All UI strings used across the Rakshak AI dashboard & engine components
+// All UI strings used across the AegisBorder AI dashboard & engine components
 
 export const SUPPORTED_LANGUAGES = [
   { code: 'hi', name: 'हिंदी (Hindi)', flag: '🇮🇳', speechLang: 'hi-IN' },
@@ -75,7 +75,7 @@ export const HOME = {
     },
   },
   tagline: {
-    en: 'Rakshak AI is actively protecting you from digital scams and fraud.',
+    en: 'AegisBorder AI is actively protecting you from digital scams and fraud.',
     hi: 'रक्षक AI सक्रिय रूप से आपने डिजिटल धोखाधड़ियों से बचा रहा है।',
     ta: 'ரக்ஷக் AI உங்களை டிஜிட்டல் சோரை மற்றும் தெளிவில் இருந்து இயற்கையாக பாதுகாக்கிறது.',
     te: 'రక్షక్ AI మీకు డిజిటల్ స్క్యామ్ మరియు ధోఖాత్మకం నుండి సక్రియంగా రక్షిస్తుంది.',
@@ -83,7 +83,7 @@ export const HOME = {
     mr: 'रक्षक AI सध्या आपला डिजिटल शक्य आणि धोक्यांकडून सक्रियपणे संरक्षित करत आहे.',
   },
   protected: { en: 'You’re protected', hi: 'आप सुरक्षित हैं', ta: 'உங்கள் பாதுகாப்பில் உள்ளீர்கள்', te: 'మీరు సురక్షితంగా ఉన్నారు', bn: 'আপনি সুরক্ষিত', mr: 'आप सुरक्षित आहेत' },
-  checking: { en: 'Rakshak AI is actively checking suspicious messages, links, and payments.', hi: 'रक्षक AI सक्रिय रूप से संदिग्ध संदेशों, लिंकों और भुगतानों की जाँच कर रहा है।', ta: 'ரக்ஷக் AI ஐச்சலான செய்திகள், இணைப்புகள் மற்றும் பணமதிப்புகளை சரிசார்பது.', te: 'రక్షక్ AI సందిగ్ధ సందేశాలు, లింకులు మరియు చెల్లిప్పులను సక్రియంగా పరిశీలిస్తుంది.', bn: 'রাকশাক AI সংস্মৃতিশীল বার্তা, লিংক এবং পেমেন্ট পরীক্ষা করছে।', mr: 'रक्षक AI सक्रियपणा संदिग्ध संदेशां, दुवे आणि पैत्यांचे तपासणी करत आहे.' },
+  checking: { en: 'AegisBorder AI is actively checking suspicious messages, links, and payments.', hi: 'रक्षक AI सक्रिय रूप से संदिग्ध संदेशों, लिंकों और भुगतानों की जाँच कर रहा है।', ta: 'ரக்ஷக் AI ஐச்சலான செய்திகள், இணைப்புகள் மற்றும் பணமதிப்புகளை சரிசார்பது.', te: 'రక్షక్ AI సందిగ్ధ సందేశాలు, లింకులు మరియు చెల్లిప్పులను సక్రియంగా పరిశీలిస్తుంది.', bn: 'রাকশাক AI সংস্মৃতিশীল বার্তা, লিংক এবং পেমেন্ট পরীক্ষা করছে।', mr: 'रक्षक AI सक्रियपणा संदिग्ध संदेशां, दुवे आणि पैत्यांचे तपासणी करत आहे.' },
   lastChecked: { en: 'Last checked', hi: 'हाल ही में', ta: 'கடைசியே சரிசார்க்கப்பட்டது', te: 'చేసిన గమనిక', bn: 'সর্বশেষ চেক', mr: 'शेवटचे तपासणी' },
   justNow: { en: 'Just now', hi: 'अभी-अभी', ta: 'இப்போதே', te: 'ఇప్పుడే', bn: 'এখনই', mr: 'सध्याच्या तुटत्याने' },
   viewActivity: { en: 'View activity', hi: 'गतिविधि देखें', ta: 'செயல்பாட்டைய் பாருங்கள்', te: 'కార్యక్రమాన్ని చూడండి', bn: 'অ্যাক্টিভিটি দেখুন', mr: 'गृहकार्य पाहा' },
@@ -226,7 +226,7 @@ export const MORE = {
   reportScam:         { en: 'Report a scam', hi: 'धोखाधड़ी दर्ज करें', ta: 'கற்றத்தை அறிவியல்', te: 'స్కామ్ నమోదు చేయండి', bn: 'স্ক্যাম রিপোর্ট করুন', mr: 'शक्य कचवा' },
   accountDevices:     { en: 'Account & devices', hi: 'खाता और डिवाइसें', ta: 'கணக்கு மற்றும் சாதனங்கள்', te: 'ఖాతా మరియు పరికరాలు', bn: 'হিসাব ও ডিভাইস', mr: 'खाता आणि उपकरणे' },
   cyberHelpline:      { en: 'Cyber helpline', hi: 'साइबर हेल्पलाइन', ta: 'சைப்பர் உதவித் தொடர்புக்காட்டி', te: 'సైబర్ సహాయ మార్గం', bn: 'সাইবার হেল্পলাইন', mr: 'सायबर हेल्पलाइन' },
-  rakshakV1:          { en: 'Rakshak AI v1.0 · Digital Safety Companion', hi: 'रक्षक AI v1.0 · डिजिटल सुरक्षा साथी', ta: 'ரக்ஷக் AI v1.0 · டிஜிட்டல் பாதுகாப்பு நடப்பத்துணை', te: 'రక్షక్ AI v1.0 · డిజిటల్ సురక్షితం సహకర్త', bn: 'রাকশাক AI v1.0 · ডিজিটাল সুরক্ষা সঙ্গী', mr: 'रक्षक AI v1.0 · डिजिटल सुरक्षा संयुक्त' },
+  rakshakV1:          { en: 'AegisBorder AI v1.0 · Digital Safety Companion', hi: 'रक्षक AI v1.0 · डिजिटल सुरक्षा साथी', ta: 'ரக்ஷக் AI v1.0 · டிஜிட்டல் பாதுகாப்பு நடப்பத்துணை', te: 'రక్షక్ AI v1.0 · డిజిటల్ సురక్షితం సహకర్త', bn: 'রাকশাক AI v1.0 · ডিজিটাল সুরক্ষা সঙ্গী', mr: 'रक्षक AI v1.0 · डिजिटल सुरक्षा संयुक्त' },
 };
 
 /* --------------------------------------------------------------
@@ -245,7 +245,7 @@ export const MODALS = {
    Backward-compatible REGIONAL_STRINGS (used by MicroFrictionModal)
    -------------------------------------------------------------- */
 export const REGIONAL_STRINGS = {
-  appName:           { en: 'Rakshak AI', hi: 'रक्षक AI' },
+  appName:           { en: 'AegisBorder AI', hi: 'रक्षक AI' },
   tagline:           { en: 'Digital Safety Companion', hi: 'डिजिटल सुरक्षा साथी' },
   offlineMode:       { en: 'Offline protection active', hi: 'ऑफ़लाइन सुरक्षा सक्रिय' },
   onlineMode:        { en: 'Online protection active', hi: 'ऑनलाइन सुरक्षा सक्रिय' },

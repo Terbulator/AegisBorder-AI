@@ -45,7 +45,7 @@ export default function Dashboard({ onNavigate, officer, demoMode }) {
         <div className="flex flex-col justify-between gap-4 md:flex-row md:items-center">
           <div>
             <h2 className="text-lg font-extrabold text-slate-900">Good day, {officer.name.split(' ')[0]}.</h2>
-            <p className="mt-1 text-sm text-slate-500">Welcome to the Rakshak integrated border screening station.</p>
+            <p className="mt-1 text-sm text-slate-500">Welcome to the AegisBorder integrated border screening station.</p>
           </div>
           <Button onClick={() => onNavigate('screening')} className="md:px-6">
             <ScanLine className="h-4 w-4" /> START NEW SCREENING

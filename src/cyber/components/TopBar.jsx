@@ -27,7 +27,7 @@ export default function TopBar({
     <header className="h-14 border-b border-[var(--border-subtle)] bg-[var(--bg-surface)] flex items-center px-4 gap-3">
       {/* Breadcrumb */}
       <div className="hidden md:flex items-center gap-1.5 text-[13px] text-[var(--text-muted)] min-w-0">
-        <span className="font-medium text-[var(--text-secondary)]">Rakshak AI</span>
+        <span className="font-medium text-[var(--text-secondary)]">AegisBorder AI</span>
         <ChevronRight className="w-3.5 h-3.5 shrink-0" />
         <span className="font-semibold text-[var(--text-primary)] truncate">{t(currentLang, TOPBAR_LABELS[activeTab])}</span>
       </div>

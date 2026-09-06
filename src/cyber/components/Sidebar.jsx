@@ -54,7 +54,7 @@ export default function Sidebar({ activeTab, onTabChange, isCollapsed, onToggleC
             </div>
             {!isCollapsed && (
               <div className="min-w-0">
-                <h1 className="text-[13.5px] font-semibold text-[var(--text-primary)] leading-tight">Rakshak AI</h1>
+                <h1 className="text-[13.5px] font-semibold text-[var(--text-primary)] leading-tight">AegisBorder AI</h1>
                 <p className="text-[11px] text-[var(--text-muted)] leading-tight">Scam & Fraud Shield</p>
               </div>
             )}

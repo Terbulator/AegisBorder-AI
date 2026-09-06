@@ -119,7 +119,7 @@ export default function PhoneSimulator({
               </span>
             </h3>
             <p className="text-xs text-[var(--text-muted)]">
-              Shows how Rakshak warns you immediately when a scam message arrives on WhatsApp or SMS — without having to copy-paste!
+              Shows how AegisBorder warns you immediately when a scam message arrives on WhatsApp or SMS — without having to copy-paste!
             </p>
           </div>
         </div>
@@ -186,7 +186,7 @@ export default function PhoneSimulator({
                 </div>
               </div>
 
-              {/* Rakshak Background Indicator Pill */}
+              {/* AegisBorder Background Indicator Pill */}
               <div className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-black/40 border border-white/20 text-[9px] text-emerald-300 font-medium">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
                 <span>Protected</span>
@@ -225,7 +225,7 @@ export default function PhoneSimulator({
                     <div className="flex items-center gap-1.5">
                       <ShieldAlert className="w-4 h-4 text-red-400" />
                       <span className="text-[11px] font-bold text-red-300 uppercase">
-                        Rakshak Safety Warning
+                        AegisBorder Safety Warning
                       </span>
                     </div>
                     <span className="text-[9px] text-red-300 bg-red-900 px-1.5 py-0.5 rounded font-semibold">
@@ -288,7 +288,7 @@ export default function PhoneSimulator({
                     Scam message arrives on phone
                   </div>
                   <p className="text-[11px] text-[var(--text-muted)] mt-0.5">
-                    When an SMS or WhatsApp notification arrives, Rakshak AI checks if the sender is in your address book.
+                    When an SMS or WhatsApp notification arrives, AegisBorder AI checks if the sender is in your address book.
                   </p>
                 </div>
               </div>
@@ -302,7 +302,7 @@ export default function PhoneSimulator({
                     Instant On-Device Check (Sub-2ms)
                   </div>
                   <p className="text-[11px] text-[var(--text-muted)] mt-0.5">
-                    If the sender is <strong>Unknown</strong>, Rakshak scans Hindi & English words and links entirely inside your phone.
+                    If the sender is <strong>Unknown</strong>, AegisBorder scans Hindi & English words and links entirely inside your phone.
                   </p>
                 </div>
               </div>

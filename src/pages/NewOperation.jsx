@@ -15,6 +15,13 @@ import { Badge } from '../components/ui';
 
 const GROUPS = [
   {
+    title: 'Identity & document security',
+    description: 'Backend-assisted inspection of passports and ID documents with fraud and watchlist checks.',
+    ops: [
+      { id: 'document', title: 'Document & Identity Screening', icon: IdCard, desc: 'Full MRZ, face-liveness, tampering and watchlist screening of a travel document.', inputs: 'Passport · VIZ · MRZ · Face', backend: true },
+    ],
+  },
+  {
     title: 'Threat detection',
     description: 'On-device engines that flag scams, phishing, payment fraud and malware without sending data to a server.',
     ops: [
@@ -26,15 +33,8 @@ const GROUPS = [
     ],
   },
   {
-    title: 'Identity & document security',
-    description: 'Backend-assisted inspection of passports and ID documents with fraud and watchlist checks.',
-    ops: [
-      { id: 'document', title: 'Document & Identity Screening', icon: IdCard, desc: 'Full MRZ, face-liveness, tampering and watchlist screening of a travel document.', inputs: 'Passport · VIZ · MRZ · Face', backend: true },
-    ],
-  },
-  {
     title: 'AI analysis',
-    description: 'Remote-capable analyst services provided by the Rakshak AI backend.',
+    description: 'Remote-capable analyst services provided by the AegisBorder AI backend.',
     ops: [
       { id: 'ai-analysis', title: 'AI Threat Analysis', icon: BrainCircuit, desc: 'Upload a conversation, email or document for AI pattern analysis.', inputs: 'Conversation · Email · Document', Op: AiThreatOp },
     ],
@@ -73,7 +73,7 @@ export default function NewOperation({ healthState, onRefresh }) {
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <h2 className="text-lg font-bold text-slate-900">Select a screening operation</h2>
-          <p className="text-sm text-slate-500">Rakshak AI unifies document identity verification and community threat detection in one console.</p>
+          <p className="text-sm text-slate-500">AegisBorder AI unifies document identity verification and community threat detection in one console.</p>
         </div>
         <Badge color={healthState?.state === 'checking' ? 'amber' : offline ? 'red' : 'green'}>
           {healthState?.state === 'checking' ? 'Checking backend…' : offline ? 'Backend offline — identity services unavailable' : 'All systems operational'}
@@ -85,7 +85,7 @@ export default function NewOperation({ healthState, onRefresh }) {
           <div className="flex items-center gap-3">
             <ServerOff className="h-5 w-5 shrink-0 text-amber-600" aria-hidden="true" />
             <p className="text-sm text-amber-900">
-              The Rakshak AI analysis service is currently unavailable. Document & Identity Screening will be disabled until the backend reconnects.
+              The AegisBorder AI analysis service is currently unavailable. Document & Identity Screening will be disabled until the backend reconnects.
               On-device threat detection keeps working offline.
             </p>
           </div>

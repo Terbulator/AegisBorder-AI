@@ -79,7 +79,7 @@ export default function JudgePresetBar({ onSelectPreset, activePresetId }) {
               Try Common Scam Examples (उदाहरण देखें)
             </h2>
             <p className="text-xs text-[var(--text-muted)]">
-              Click any real-world scam scenario below to see how Rakshak protects you:
+              Click any real-world scam scenario below to see how AegisBorder protects you:
             </p>
           </div>
         </div>

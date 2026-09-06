@@ -28,7 +28,7 @@ const PRIMARY_NAV = [
   { id: 'settings', label: 'Settings', icon: SettingsIcon },
 ];
 
-const PAGE_TITLES = Object.fromEntries(PRIMARY_NAV.map((n) => [n.id, n.label]).concat([['cyber', 'Rakshak Threat Defense']]));
+const PAGE_TITLES = Object.fromEntries(PRIMARY_NAV.map((n) => [n.id, n.label]).concat([['cyber', 'AegisBorder Threat Defense']]));
 
 function useHealth() {
   const [health, setHealth] = useState({ state: 'checking', modules: [], version: null });
@@ -144,7 +144,7 @@ export default function App() {
               <Shield className="h-5 w-5" />
             </div>
             <div>
-              <div className="text-sm font-extrabold leading-tight text-slate-900">Rakshak AI</div>
+              <div className="text-sm font-extrabold leading-tight text-slate-900">AegisBorder AI</div>
               <div className="text-[10px] font-semibold uppercase tracking-wide text-slate-400">Integrated Screening Station</div>
             </div>
           </div>
@@ -181,7 +181,7 @@ export default function App() {
                 className={cx('flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-semibold transition-colors',
                   route === 'cyber' ? 'bg-slate-200 text-slate-900' : 'text-slate-600 hover:bg-slate-100')}>
                 <Shield className="h-[18px] w-[18px]" />
-                <span className="flex-1 text-left">Rakshak Threat Defense</span>
+                <span className="flex-1 text-left">AegisBorder Threat Defense</span>
                 <span className="rounded bg-slate-200 px-1.5 py-0.5 text-[9px] font-bold text-slate-500">ADD-ON</span>
               </button>
             </li>

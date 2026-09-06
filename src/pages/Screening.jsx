@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import confetti from 'canvas-confetti';
 import {
   Scan, FileText, Camera, User, FlaskConical, CheckCircle2, AlertTriangle,
-  UploadCloud, RefreshCw, Loader2, ShieldCheck, Lock, ArrowRight, Eye, EyeOff, KeyRound
+  UploadCloud, RefreshCw, Loader2, ShieldCheck, Lock, ArrowRight, Eye, EyeOff, KeyRound, X
 } from 'lucide-react';
 import { Card, Badge, Button, ProgressSteps, cx, verifyIcon } from '../components/ui';
 import { apiPresets, apiPresetDetail, apiScreenDocument, apiDeletePassenger } from '../lib/api';

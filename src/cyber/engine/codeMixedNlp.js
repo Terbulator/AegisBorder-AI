@@ -178,7 +178,7 @@ export function analyzeMessage(text, lang = 'hi', options = {}) {
         hi: `यह संदेश आपके सहेजे गए संपर्क (${senderInfo}) से आया है। गोपनीयता बनाए रखने के लिए इसकी स्वचालित जांच रोक दी गई है।`
       },
       recommendation: {
-        en: "Rakshak AI only activates active deep inspection for messages and links received from UNKNOWN / UNSAVED numbers.",
+        en: "AegisBorder AI only activates active deep inspection for messages and links received from UNKNOWN / UNSAVED numbers.",
         hi: "रक्षक एआई केवल अज्ञात और अनजान नंबरों से आए संदेशों और लिंक्स की ही गहन जांच करता है।"
       },
       matches: [],

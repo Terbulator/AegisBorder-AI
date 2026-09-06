@@ -29,7 +29,7 @@ export default function AiThreatOp({ onBack, healthState, onRefresh }) {
       return;
     }
     if (healthState?.status !== 'online') {
-      setError('Backend offline — start the Rakshak backend server, then Retry connection.');
+      setError('Backend offline — start the AegisBorder backend server, then Retry connection.');
       setDisplay(null); setResult(null);
       return;
     }
