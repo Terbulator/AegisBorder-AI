@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Suspense, lazy } from 'react';
 import {
   LayoutDashboard, ScanLine, History as HistoryIcon, BellRing, BarChart3, FileText,
-  Settings as SettingsIcon, Shield, Menu, X, MoreHorizontal, Wifi, AlertTriangle
+  Settings as SettingsIcon, Shield, Menu, X, MoreHorizontal, Wifi, AlertTriangle, Plus
 } from 'lucide-react';
 import { apiHealth } from './lib/api';
 import { getAlerts, getHistory, tierMeta } from './lib/store';
@@ -228,6 +228,10 @@ export default function App() {
                 <span className={cx('text-xs font-bold', scanStats.flaggedToday > 0 ? 'text-red-700' : 'text-slate-600')}>{scanStats.flaggedToday}</span>
               </span>
             </div>
+            <button onClick={() => navigate('screening')}
+              className="hidden items-center gap-1.5 rounded-lg bg-blue-700 px-3 py-1.5 text-xs font-bold text-white shadow-sm hover:bg-blue-800 sm:flex">
+              <Plus className="h-3.5 w-3.5" aria-hidden="true" /> New Entry
+            </button>
           </div>
         </header>
 

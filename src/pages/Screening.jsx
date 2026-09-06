@@ -5,7 +5,7 @@ import {
   UploadCloud, RefreshCw, Loader2, ShieldCheck, Lock, ArrowRight, Eye, EyeOff, KeyRound
 } from 'lucide-react';
 import { Card, Badge, Button, ProgressSteps, cx, verifyIcon } from '../components/ui';
-import { apiPresets, apiPresetDetail, apiScreenDocument } from '../lib/api';
+import { apiPresets, apiPresetDetail, apiScreenDocument, apiDeletePassenger } from '../lib/api';
 import { addToHistory, updateRecordStatus, tierMeta } from '../lib/store';
 import { toast } from '../components/Toast';
 import NewPassengerModal from '../components/NewPassengerModal';
@@ -64,6 +64,27 @@ export default function Screening() {
     apiPresets().then((data) => active && setPresets(data.presets || [])).catch(() => active && setPresets([]));
     return () => { active = false; };
   }, []);
+
+  const refreshPresets = useCallback(() => {
+    apiPresets().then((data) => setPresets(data.presets || [])).catch(() => {});
+  }, []);
+
+  const deletePassenger = useCallback(async (id, holderName, e) => {
+    e.stopPropagation();
+    try {
+      await apiDeletePassenger(id);
+      if (activePreset?.id === id) {
+        setActivePreset(null);
+        setDocumentImage(null);
+        setLiveImage(null);
+        setMrzText('');
+      }
+      refreshPresets();
+      toast(`${holderName} removed from registered passengers.`, { type: 'info', title: 'Passenger deleted' });
+    } catch (err) {
+      toast(err.message || 'Could not remove passenger.', { type: 'error', title: 'Delete failed' });
+    }
+  }, [activePreset, refreshPresets]);
 
   const loadPreset = useCallback(async (id) => {
     setLoading(true);
@@ -231,8 +252,20 @@ export default function Screening() {
             <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
               {presets.map((p) => (
                 <button key={p.id} type="button" onClick={() => loadPreset(p.id)}
-                  className={cx('rounded-lg border p-3 text-left transition-colors',
+                  className={cx('group relative rounded-lg border p-3 text-left transition-colors',
                     activePreset?.id === p.id ? 'border-blue-600 bg-blue-50 ring-1 ring-blue-600' : 'border-slate-200 bg-slate-50 hover:border-slate-300')}>
+                  {p.is_custom && (
+                    <span
+                      role="button"
+                      tabIndex={0}
+                      aria-label={`Delete ${p.holder_name}`}
+                      onClick={(e) => deletePassenger(p.id, p.holder_name, e)}
+                      onKeyDown={(e) => e.key === 'Enter' && deletePassenger(p.id, p.holder_name, e)}
+                      className="absolute -right-1.5 -top-1.5 flex h-5 w-5 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-400 opacity-0 shadow transition-opacity hover:text-red-600 group-hover:opacity-100"
+                    >
+                      <X className="h-3 w-3" />
+                    </span>
+                  )}
                   <div className="flex items-center justify-between gap-2">
                     <span className="truncate text-xs font-bold text-slate-800">{p.holder_name}</span>
                     <Badge color={p.badge_color || 'slate'}>{p.badge}</Badge>
