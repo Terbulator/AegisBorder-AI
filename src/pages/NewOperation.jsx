@@ -13,41 +13,46 @@ import AppOp from '../components/operations/AppOp';
 import RegistryOp from '../components/operations/RegistryOp';
 import AiThreatOp from '../components/operations/AiThreatOp';
 import { Badge } from '../components/ui';
+import { useT } from '../i18n';
 
-const GROUPS = [
+function buildGroups(t) {
+  return [
   {
-    title: 'Identity & document security',
-    description: 'Backend-assisted inspection of passports and ID documents with fraud and watchlist checks.',
+    title: t('identity_security'),
+    description: t('identity_security_desc'),
     ops: [
-      { id: 'document', title: 'Document & Identity Screening', icon: IdCard, desc: 'Full MRZ, face-liveness, tampering and watchlist screening of a travel document.', inputs: 'Passport · VIZ · MRZ · Face', backend: true, focus: 'document' },
-      { id: 'mrz', title: 'MRZ & Document Parsing', icon: FileText, desc: 'Run the pipeline and review the extracted MRZ/OCR fields with ICAO 9303 check digits.', inputs: 'Passport · MRZ · VIZ', backend: true, focus: 'mrz' },
-      { id: 'biometrics', title: 'Face Verification & Liveness', icon: ScanFace, desc: 'Run the pipeline and review the live-face match, liveness and anti-spoofing checks.', inputs: 'Document · Face capture', backend: true, focus: 'biometrics' },
-      { id: 'forensics', title: 'Tamper & Photo Forensics', icon: Search, desc: 'Run the pipeline and inspect ELA, noise and metadata tampering evidence.', inputs: 'Document image', backend: true, focus: 'forensics' },
-      { id: 'watchlist', title: 'Watchlist & Risk Decision', icon: ShieldAlert, desc: 'Run the pipeline and review watchlist hits, risk factors and the recommended decision.', inputs: 'Document · MRZ', backend: true, focus: 'watchlist' },
-      { id: 'audit', title: 'Audit Certification', icon: FileCheck2, desc: 'Run the pipeline and open the signed audit certificate for the case.', inputs: 'Document · MRZ', backend: true, focus: 'audit' },
+      { id: 'document', title: t('op_document'), icon: IdCard, desc: t('op_document_desc'), inputs: t('op_document_inputs'), backend: true, focus: 'document' },
+      { id: 'mrz', title: t('op_mrz'), icon: FileText, desc: t('op_mrz_desc'), inputs: t('op_mrz_inputs'), backend: true, focus: 'mrz' },
+      { id: 'biometrics', title: t('op_biometrics'), icon: ScanFace, desc: t('op_biometrics_desc'), inputs: t('op_biometrics_inputs'), backend: true, focus: 'biometrics' },
+      { id: 'forensics', title: t('op_forensics'), icon: Search, desc: t('op_forensics_desc'), inputs: t('op_forensics_inputs'), backend: true, focus: 'forensics' },
+      { id: 'watchlist', title: t('op_watchlist'), icon: ShieldAlert, desc: t('op_watchlist_desc'), inputs: t('op_watchlist_inputs'), backend: true, focus: 'watchlist' },
+      { id: 'audit', title: t('op_audit'), icon: FileCheck2, desc: t('op_audit_desc'), inputs: t('op_audit_inputs'), backend: true, focus: 'audit' },
     ],
   },
   {
-    title: 'Threat detection',
-    description: 'On-device engines that flag scams, phishing, payment fraud and malware without sending data to a server.',
+    title: t('threat_detection'),
+    description: t('threat_detection_desc'),
     ops: [
-      { id: 'message', title: 'Message Scanner', icon: MessageSquare, desc: 'Analyze SMS / WhatsApp messages & inboxes for scams and social-engineering patterns.', inputs: 'SMS · WhatsApp · Text', Op: MessageOp },
-      { id: 'website', title: 'Website Checker', icon: Globe, desc: 'Spot typosquatted, homograph and flagged phishing domains before you click.', inputs: 'Domain · URL', Op: WebsiteOp },
-      { id: 'qr-upi', title: 'QR & UPI Safety', icon: QrCode, desc: 'Inspect UPI deep-links and VPAs for cashback/refund lures and flagged payees.', inputs: 'upi://pay link · VPA', Op: QrUpIOp },
-      { id: 'app', title: 'App Safety', icon: Smartphone, desc: 'Evaluate APK downloads for known malware signatures and dangerous permissions.', inputs: 'Package · .apk link', Op: AppOp },
-      { id: 'scam-registry', title: 'Scam Registry', icon: Database, desc: 'Search a phone, domain, VPA or app against the on-device fraud registry.', inputs: 'Phone · Domain · VPA · APK', Op: RegistryOp },
+      { id: 'message', title: t('op_message'), icon: MessageSquare, desc: t('op_message_desc'), inputs: t('op_message_inputs'), Op: MessageOp },
+      { id: 'website', title: t('op_website'), icon: Globe, desc: t('op_website_desc'), inputs: t('op_website_inputs'), Op: WebsiteOp },
+      { id: 'qr-upi', title: t('op_qr_upi'), icon: QrCode, desc: t('op_qr_upi_desc'), inputs: t('op_qr_upi_inputs'), Op: QrUpIOp },
+      { id: 'app', title: t('op_app'), icon: Smartphone, desc: t('op_app_desc'), inputs: t('op_app_inputs'), Op: AppOp },
+      { id: 'scam-registry', title: t('op_registry'), icon: Database, desc: t('op_registry_desc'), inputs: t('op_registry_inputs'), Op: RegistryOp },
     ],
   },
   {
-    title: 'AI analysis',
-    description: 'Remote-capable analyst services provided by the AegisBorder AI backend.',
+    title: t('ai_analysis'),
+    description: t('ai_analysis_desc'),
     ops: [
-      { id: 'ai-analysis', title: 'AI Threat Analysis', icon: BrainCircuit, desc: 'Upload a conversation, email or document for AI pattern analysis.', inputs: 'Conversation · Email · Document', Op: AiThreatOp },
+      { id: 'ai-analysis', title: t('op_ai'), icon: BrainCircuit, desc: t('op_ai_desc'), inputs: t('op_ai_inputs'), Op: AiThreatOp },
     ],
   },
-];
+]; 
+}
 
 export default function NewOperation({ healthState, onRefresh }) {
+  const { t } = useT();
+  const GROUPS = buildGroups(t);
   const [op, setOp] = useState(null);
   const current = op ? GROUPS.flatMap((g) => g.ops).find((o) => o.id === op) : null;
 
@@ -58,7 +63,7 @@ export default function NewOperation({ healthState, onRefresh }) {
           onClick={() => setOp(null)}
           className="inline-flex items-center gap-1.5 rounded-md text-sm font-semibold text-blue-700 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600"
         >
-          <ArrowLeft className="h-4 w-4" aria-hidden="true" /> All operations
+          <ArrowLeft className="h-4 w-4" aria-hidden="true" /> {t('all_operations')}
         </button>
         <Screening focus={current.focus} />
       </div>
@@ -76,11 +81,11 @@ export default function NewOperation({ healthState, onRefresh }) {
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h2 className="text-lg font-bold text-slate-900">Select a screening operation</h2>
-          <p className="text-sm text-slate-500">AegisBorder AI unifies document identity verification and community threat detection in one console.</p>
+          <h2 className="text-lg font-bold text-slate-900">{t('select_operation')}</h2>
+          <p className="text-sm text-slate-500">{t('operation_subtitle')}</p>
         </div>
         <Badge color={healthState?.state === 'checking' ? 'amber' : offline ? 'red' : 'green'}>
-          {healthState?.state === 'checking' ? 'Checking backend…' : offline ? 'Backend offline — identity services unavailable' : 'All systems operational'}
+          {healthState?.state === 'checking' ? t('checking_backend') : offline ? t('backend_offline_identity') : t('all_operational')}
         </Badge>
       </div>
 
@@ -89,8 +94,7 @@ export default function NewOperation({ healthState, onRefresh }) {
           <div className="flex items-center gap-3">
             <ServerOff className="h-5 w-5 shrink-0 text-amber-600" aria-hidden="true" />
             <p className="text-sm text-amber-900">
-              The AegisBorder AI analysis service is currently unavailable. Document & Identity Screening will be disabled until the backend reconnects.
-              On-device threat detection keeps working offline.
+              {t('backend_offline_note')}
             </p>
           </div>
           <button
@@ -98,7 +102,7 @@ export default function NewOperation({ healthState, onRefresh }) {
             onClick={onRefresh}
             className="inline-flex items-center gap-1.5 rounded-lg bg-slate-900 px-3 py-2 text-xs font-semibold text-white hover:bg-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900"
           >
-            <RefreshCw className="h-3.5 w-3.5" aria-hidden="true" /> Retry connection
+            <RefreshCw className="h-3.5 w-3.5" aria-hidden="true" /> {t('retry_connection')}
           </button>
         </div>
       )}
@@ -128,7 +132,7 @@ export default function NewOperation({ healthState, onRefresh }) {
 
       <p className="flex items-center gap-1.5 pt-2 text-[11.5px] text-slate-400">
         <ShieldCheck className="h-3.5 w-3.5" aria-hidden="true" />
-        Threat detection runs on this device. Nothing you paste is uploaded unless the operation requires the backend.
+        {t('privacy_note')}
       </p>
     </div>
   );

@@ -10,6 +10,8 @@ import { addToHistory, updateRecordStatus, tierMeta } from '../lib/store';
 import { toast } from '../components/Toast';
 import NewPassengerModal from '../components/NewPassengerModal';
 import AuditReport from '../components/AuditReport';
+import { speakAlert } from '../lib/voiceAlert';
+import { useT } from '../i18n';
 
 const STEPS = ['Document', 'Information', 'Face', 'Analysis', 'Result'];
 
@@ -38,6 +40,7 @@ function InfoRow({ label, value, tone }) {
 }
 
 export default function Screening({ focus = 'document' }) {
+  const { t } = useT();
   const [step, setStep] = useState(0);
   const [presets, setPresets] = useState([]);
   const [activePreset, setActivePreset] = useState(null);
@@ -58,6 +61,16 @@ export default function Screening({ focus = 'document' }) {
   const fileRef = useRef(null);
   const liveFileRef = useRef(null);
   const confettiFiredRef = useRef(false);
+  const spokeRef = useRef(null);
+
+  useEffect(() => {
+    if (!result || spokeRef.current === result) return;
+    const tier = result.risk_assessment?.risk_tier;
+    const flagged = !!result.watchlist_screening?.flagged;
+    if (!flagged && tier !== 'HIGH' && tier !== 'CRITICAL') return;
+    spokeRef.current = result;
+    speakAlert(tier === 'CRITICAL' || flagged ? t('critical_risk_alert') : t('high_risk_alert'));
+  }, [result, t]);
 
   useEffect(() => {
     let active = true;

@@ -1,11 +1,13 @@
 import { useState } from 'react';
 import { User, MapPin, Languages, FlaskConical, Check, Save } from 'lucide-react';
 import { Card, Button, Badge, cx } from '../components/ui';
+import { useT, listLanguages } from '../i18n';
 
 const fieldCls = 'w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-blue-600 focus:outline-none focus:ring-1 focus:ring-blue-600';
 const labelCls = 'mb-1 block text-xs font-semibold text-slate-600';
 
 export default function SettingsPage({ demoMode, setDemoMode }) {
+  const { lang, setLang } = useT();
   const [officer, setOfficer] = useState(() => {
     try {
       return JSON.parse(localStorage.getItem('rakshak_officer')) ||
@@ -82,8 +84,19 @@ export default function SettingsPage({ demoMode, setDemoMode }) {
           <h2 className="text-sm font-bold text-slate-900">Language</h2>
         </div>
         <p className="mt-1 text-sm text-slate-500">
-          The screening workstation is in English.
+          The screening workstation is available in English, Hindi and all 22 Scheduled Languages of India. Untranslated strings fall back to English.
         </p>
+        <div className="mt-3 grid max-h-80 grid-cols-1 overflow-y-auto gap-1 rounded-lg border border-slate-200 p-2 sm:grid-cols-2 lg:grid-cols-3">
+          {listLanguages().map(({ code, name, native }) => (
+            <button key={code} onClick={() => setLang(code)}
+              className={cx('flex items-center justify-between gap-2 rounded-lg px-3 py-2 text-sm hover:bg-slate-100',
+                lang === code ? 'bg-blue-50 font-bold text-blue-800' : 'text-slate-700')}>
+              <span>{native}</span>
+              <span className={cx('text-[11px]', lang === code ? 'text-blue-600' : 'text-slate-400')}>{name}</span>
+              {lang === code && <Check className="h-4 w-4 text-blue-700" />}
+            </button>
+          ))}
+        </div>
       </Card>
 
       <Card className="p-5">

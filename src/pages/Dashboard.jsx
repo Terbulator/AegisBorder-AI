@@ -1,8 +1,9 @@
 import { useMemo, useState } from 'react';
 import { ScanLine, Users, CheckCircle2, AlertTriangle, BellRing, Radio, ArrowRight } from 'lucide-react';
-import { Badge, Card, Button, EmptyState, StatusDot, cx } from '../components/ui';
+import { Badge, Card, Button, EmptyState, StatusDot, cx, SeverityScale } from '../components/ui';
 import { getHistory, formatTime, kpisFromHistory, tierMeta } from '../lib/store';
 import { apiHealth } from '../lib/api';
+import { useT } from '../i18n';
 
 function Kpi({ icon, label, value, color, tone }) {
   return (
@@ -17,6 +18,7 @@ function Kpi({ icon, label, value, color, tone }) {
 }
 
 export default function Dashboard({ onNavigate, officer, demoMode }) {
+  const { t } = useT();
   const history = useMemo(() => getHistory(), []);
   const kpis = kpisFromHistory();
   const [health, setHealth] = useState('checking');
@@ -41,48 +43,53 @@ export default function Dashboard({ onNavigate, officer, demoMode }) {
           <span><strong>Demo mode is on.</strong> Built-in scenarios are simulated; IRL registration still uses the real pipeline.</span>
         </div>
       )}
-      <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm md:p-6">
+      <div className="rounded-xl border border-slate-200 bg-white shadow-sm">
+        <div className="flex h-1.5 w-full overflow-hidden rounded-t-xl" aria-hidden="true">
+          <span className="w-1/3 bg-[#FF9933]" /><span className="w-1/3 bg-white" /><span className="w-1/3 bg-[#138808]" />
+        </div>
+        <div className="p-5 md:p-6">
         <div className="flex flex-col justify-between gap-4 md:flex-row md:items-center">
           <div>
-            <h2 className="text-lg font-extrabold text-slate-900">Good day, {officer.name.split(' ')[0]}.</h2>
-            <p className="mt-1 text-sm text-slate-500">Welcome to the AegisBorder integrated border screening station.</p>
+            <h2 className="text-lg font-extrabold text-slate-900">{t('good_day', { name: officer.name.split(' ')[0] })}</h2>
+            <p className="mt-1 text-sm text-slate-500">{t('welcome')}</p>
           </div>
           <Button onClick={() => onNavigate('screening')} className="md:px-6">
-            <ScanLine className="h-4 w-4" /> START NEW SCREENING
+            <ScanLine className="h-4 w-4" /> {t('start_screening').toUpperCase()}
           </Button>
         </div>
       </div>
+      </div>
 
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-        <Kpi label="People screened" value={kpis.screened} icon={<Users className="h-4 w-4" />} tone="bg-blue-50 text-blue-700" />
-        <Kpi label="Cleared" value={kpis.cleared} icon={<CheckCircle2 className="h-4 w-4" />} tone="bg-emerald-50 text-emerald-700" />
-        <Kpi label="Needs review" value={kpis.review} icon={<AlertTriangle className="h-4 w-4" />} tone="bg-amber-50 text-amber-700" />
-        <Kpi label="Active alerts" value={kpis.alerts} icon={<BellRing className="h-4 w-4" />} tone="bg-red-50 text-red-700" />
+        <Kpi label={t('people_screened')} value={kpis.screened} icon={<Users className="h-4 w-4" />} tone="bg-blue-50 text-blue-700" />
+        <Kpi label={t('cleared')} value={kpis.cleared} icon={<CheckCircle2 className="h-4 w-4" />} tone="bg-emerald-50 text-emerald-700" />
+        <Kpi label={t('needs_review')} value={kpis.review} icon={<AlertTriangle className="h-4 w-4" />} tone="bg-amber-50 text-amber-700" />
+        <Kpi label={t('active_alerts')} value={kpis.alerts} icon={<BellRing className="h-4 w-4" />} tone="bg-red-50 text-red-700" />
       </div>
 
       <div className="grid gap-6 lg:grid-cols-3">
         <Card className="lg:col-span-2">
           <div className="flex items-center justify-between border-b border-slate-200 px-4 py-3">
-            <h3 className="text-sm font-bold text-slate-900">Recent screening</h3>
+            <h3 className="text-sm font-bold text-slate-900">{t('recent_screening')}</h3>
             {history.length > 0 && (
               <button onClick={() => onNavigate('history')} className="flex items-center gap-1 text-xs font-semibold text-blue-700 hover:underline">
-                View all <ArrowRight className="h-3.5 w-3.5" />
+                {t('view_all')} <ArrowRight className="h-3.5 w-3.5" />
               </button>
             )}
           </div>
           {recent.length === 0 ? (
-            <EmptyState icon={<ScanLine className="h-8 w-8 text-slate-300" />} title="No screenings yet"
-              hint="Run your first screening from New Screening to begin." />
+            <EmptyState icon={<ScanLine className="h-8 w-8 text-slate-300" />} title={t('no_screenings_yet')}
+              hint={t('no_screenings_hint')} />
           ) : (
             <div className="hidden md:block">
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-slate-100 text-left text-[11px] uppercase tracking-wider text-slate-400">
-                    <th className="px-4 py-2 font-semibold">Person</th>
-                    <th className="px-4 py-2 font-semibold">Doc no.</th>
-                    <th className="px-4 py-2 font-semibold">Risk</th>
-                    <th className="px-4 py-2 font-semibold">Status</th>
-                    <th className="px-4 py-2 font-semibold text-right">Time</th>
+                    <th className="px-4 py-2 font-semibold">{t('person')}</th>
+                    <th className="px-4 py-2 font-semibold">{t('doc_no')}</th>
+                    <th className="px-4 py-2 font-semibold">{t('risk')}</th>
+                    <th className="px-4 py-2 font-semibold">{t('status')}</th>
+                    <th className="px-4 py-2 font-semibold text-right">{t('time')}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -127,15 +134,15 @@ export default function Dashboard({ onNavigate, officer, demoMode }) {
         <div className="space-y-6">
           <div>
             <div className="mb-2 flex items-center justify-between">
-              <h3 className="text-sm font-bold text-slate-900">Needs your attention</h3>
+              <h3 className="text-sm font-bold text-slate-900">{t('needs_attention')}</h3>
               <button onClick={() => onNavigate('alerts')} className="flex items-center gap-1 text-xs font-semibold text-blue-700 hover:underline">
-                Alerts <ArrowRight className="h-3.5 w-3.5" />
+                {t('nav_alerts')} <ArrowRight className="h-3.5 w-3.5" />
               </button>
             </div>
             {attention.length === 0 ? (
               <Card className="p-4">
                 <div className="flex items-center gap-2 text-sm text-slate-500">
-                  <CheckCircle2 className="h-4 w-4 text-emerald-600" /> No pending flags
+                  <CheckCircle2 className="h-4 w-4 text-emerald-600" /> {t('no_pending_flags')}
                 </div>
               </Card>
             ) : (
@@ -157,21 +164,23 @@ export default function Dashboard({ onNavigate, officer, demoMode }) {
           </div>
 
           <Card className="p-4">
-            <h3 className="text-sm font-bold text-slate-900">System health</h3>
+            <h3 className="text-sm font-bold text-slate-900">{t('system_health')}</h3>
             <div className="mt-3 space-y-2 text-sm">
               <div className="flex items-center justify-between">
-                <span className="flex items-center gap-2 text-slate-600"><Radio className="h-4 w-4 text-slate-400" /> Screening engine</span>
+                <span className="flex items-center gap-2 text-slate-600"><Radio className="h-4 w-4 text-slate-400" /> {t('screening_engine')}</span>
                 <Badge color={health === 'online' ? 'green' : health === 'offline' ? 'red' : 'amber'}>
-                  {health === 'online' ? 'Online' : health === 'offline' ? 'Offline' : 'Checking'}
+                  {health === 'online' ? t('online') : health === 'offline' ? t('offline') : t('checking')}
                 </Badge>
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-slate-600">Watchlist & verification</span>
-                <Badge color={health === 'online' ? 'green' : 'red'}>{health === 'online' ? 'Loaded' : 'Unavailable'}</Badge>
+                <Badge color={health === 'online' ? 'green' : 'red'}>{health === 'online' ? t('loaded') : t('unavailable')}</Badge>
               </div>
-              <p className="pt-1 text-xs text-slate-400">History and analytics are stored per the current session using real screening results.</p>
+              <p className="pt-1 text-xs text-slate-400">{t('history_note')}</p>
             </div>
           </Card>
+
+          <SeverityScale currentTier={history[0]?.riskTier} labels={{ title: t('risk_scale_title') }} />
         </div>
       </div>
     </div>
