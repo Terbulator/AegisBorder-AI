@@ -186,6 +186,14 @@ export default function Screening() {
   const takeAction = (status) => {
     if (recordId) updateRecordStatus(recordId, status);
     setOfficerStatus(status);
+    if (status === 'approved') {
+      confetti({ particleCount: 100, spread: 75, origin: { y: 0.6 } });
+      toast('Entry granted & stamped. Record logged to the audit ledger.', { type: 'success', title: 'Entry granted' });
+    } else if (status === 'review') {
+      toast('Traveler routed to secondary inspection counter.', { type: 'warning', title: 'Secondary inspection' });
+    } else {
+      toast('Security dispatched — traveler detained for interrogation.', { type: 'error', title: 'Detained' });
+    }
   };
 
   const mrz = result?.extracted_data?.mrz || {};
