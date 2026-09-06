@@ -20,6 +20,9 @@ from forensics.metadata_analyzer import analyze_metadata
 from biometrics.face_verifier import verify_faces, detect_face, check_liveness_and_anti_spoofing
 from services.risk_engine import calculate_risk_score
 from services.report_generator import generate_audit_trail
+from services.url_reputation import check_url_reputation
+from services.app_scan import scan_apk_file
+from services.ai_analyzer import analyze_threat
 from data.samples import (
     PRESETS,
     get_preset_by_id,
@@ -63,14 +66,74 @@ class NewPassengerRequest(BaseModel):
     tamper_scenario: Optional[str] = "none"
     notes: Optional[str] = None
 
+class UrlReputationRequest(BaseModel):
+    url: str
+
+class AppScanRequest(BaseModel):
+    name: str = "unknown.apk"
+    file_b64: Optional[str] = None
+
+class AiThreatRequest(BaseModel):
+    content: str
+    title: Optional[str] = None
+
 @app.get("/api/health")
 def health_check():
     return {
         "status": "ONLINE",
         "service": "Smart Border Control AI Screening Engine",
         "version": "1.0.0",
-        "modules_active": ["OCR_MRZ", "DOC_VALIDATION", "TAMPER_FORENSICS", "FACE_VERIFICATION", "RISK_ENGINE"]
+        "modules_active": ["OCR_MRZ", "DOC_VALIDATION", "TAMPER_FORENSICS", "FACE_VERIFICATION", "RISK_ENGINE",
+                           "URL_REPUTATION", "QR_DECODE", "APP_SCAN", "AI_THREAT"]
     }
+
+@app.post("/api/qr-decode")
+async def decode_qr_image(file: UploadFile = File(...)):
+    """Decode a UPI/QR payload from an uploaded image using OpenCV."""
+    try:
+        contents = await file.read()
+        if len(contents) > 12 * 1024 * 1024:
+            raise HTTPException(status_code=413, detail="Image too large (max 12 MB)")
+        np_img = np.frombuffer(contents, np.uint8)
+        img = cv2.imdecode(np_img, cv2.IMREAD_COLOR)
+        if img is None:
+            raise HTTPException(status_code=400, detail="Could not decode the uploaded image")
+        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        qr = cv2.QRCodeDetector()
+        payload, _points, _straight = qr.detectAndDecode(gray)
+        if not payload:
+            return {"payload": None, "message": "No QR code detected. Try a clearer, straight-on photo."}
+        return {"payload": payload, "message": "QR decoded on the server."}
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"QR decode failed: {type(e).__name__}")
+
+@app.post("/api/url-reputation")
+def url_reputation(req: UrlReputationRequest):
+    return check_url_reputation(req.url)
+
+@app.post("/api/app-scan")
+def app_scan(req: AppScanRequest):
+    if req.file_b64:
+        try:
+            if "," in req.file_b64:
+                req.file_b64 = req.file_b64.split(",", 1)[1]
+            data = base64.b64decode(req.file_b64)
+        except Exception as e:
+            raise HTTPException(status_code=400, detail=f"Failed to decode uploaded file: {str(e)}")
+    else:
+        data = b""
+        return {"name": req.name, "sha256": None, "size_bytes": 0,
+                "local_match": False, "virus_total": None,
+                "note": "No file uploaded. Provide the APK file to compute its SHA-256 fingerprint."}
+    if len(data) > 200 * 1024 * 1024:
+        raise HTTPException(status_code=413, detail="APK file too large (max 200 MB)")
+    return scan_apk_file(req.name, data)
+
+@app.post("/api/ai-threat-analysis")
+def ai_threat_analysis(req: AiThreatRequest):
+    return analyze_threat(req.content, title=req.title)
 
 @app.get("/api/presets")
 def list_presets():

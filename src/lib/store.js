@@ -69,6 +69,72 @@ function recordFromScreening(id, screening, meta) {
 
 function v(x) { return x ?? '—'; }
 
+/* ----------------------------------------------------------
+   Threat-operation records (cyber detectors, all on-device)
+   ---------------------------------------------------------- */
+export const OPERATION_LABELS = {
+  message: 'Message Scanner',
+  website: 'Website Checker',
+  'qr-upi': 'QR & UPI Safety',
+  app: 'App Safety',
+  'scam-registry': 'Scam Registry',
+  document: 'Document & Identity Screening',
+};
+
+export function riskTierFromScore(score) {
+  const s = Number(score);
+  if (!Number.isFinite(s)) return 'LOW';
+  if (s >= 75) return 'CRITICAL';
+  if (s >= 50) return 'HIGH';
+  if (s >= 25) return 'MODERATE';
+  return 'LOW';
+}
+
+export function threatCategory(r) {
+  const text = [r.classification, r.decision, r.operationType, r.full?.category, r.full?.status, ...(r.factors || []), ...(r.evidence || [])]
+    .join(' ').toLowerCase();
+  if (!r.operationType) return (r.watchlistFlagged || r.riskTier === 'CRITICAL') ? 'Identity Fraud' : 'Other';
+  if (/upi|vpa|debit|refund|cashback|payment|qr|pay\.?/i.test(text)) return 'Payment Fraud';
+  if (/malware|rat|permission|apk|trojan|accessibility|otp/i.test(text)) return 'Malware';
+  if (/phish|kyc|credential|login|bank|netbank/i.test(text)) return 'Phishing';
+  if (/domain|typosquat|spoof|tld|homograph|punycode|website/i.test(text)) return 'Suspicious Website';
+  if (/scam|fraud|lure|lottery|registry|registry match|flagged/i.test(text)) return 'Scam';
+  if (/identity|document|passport|mrz|watchlist/i.test(text)) return 'Identity Fraud';
+  return 'Other';
+}
+
+export function addThreatToHistory(opType, result, meta = {}) {
+  const list = getHistory();
+  const tier = riskTierFromScore(result?.riskScore);
+  const record = {
+    id: `TH-${Date.now()}`,
+    ts: new Date().toISOString(),
+    operationType: opType,
+    person: OPERATION_LABELS[opType] || opType,
+    documentNumber: v(meta.target || result?.threat),
+    documentType: 'Cyber threat',
+    nationality: '—',
+    riskTier: tier,
+    riskScore: result?.riskScore ?? 0,
+    decision: meta.classification || result?.category || result?.status || (meta.safe ? 'No threat indicators' : 'Flagged'),
+    source: meta.source || 'live',
+    scenario: meta.scenario || null,
+    watchlistFlagged: (result?.riskScore ?? 0) >= 75,
+    summary: { validationValid: true, faceMatched: null, photoTampered: false },
+    factors: meta.indicators || [],
+    evidence: meta.evidence || [],
+    classification: meta.classification || result?.category || result?.status || null,
+    recommendation: meta.recommendation || result?.recommendation || null,
+    target: meta.target || null,
+    confidence: meta.confidence ?? null,
+    full: result,
+    truncated: false,
+  };
+  list.unshift(record);
+  write(HISTORY_KEY, list.slice(0, MAX_RECORDS));
+  return record;
+}
+
 function read(key) {
   try {
     const raw = localStorage.getItem(key);
@@ -147,18 +213,21 @@ export function syncAlertsFromHistory() {
     const watchlistFlag = r.watchlistFlagged;
     if (rank < 2 && !watchlistFlag) continue;
     const severity = watchlistFlag ? (r.riskTier === 'LOW' || r.riskTier === 'MODERATE' ? 'High' : tierMeta(r.riskTier).short) : tierMeta(r.riskTier).short;
+    const factors = r.full?.risk_assessment?.risk_factors?.map((f) => f.description) || r.factors || [];
     consolidated.push({
       id: r.id,
       ts: r.ts,
       severity,
-      title: watchlistFlag
-        ? 'Potential watchlist match'
-        : (r.riskTier === 'CRITICAL' ? 'Critical risk screening' : 'High risk screening'),
+      title: r.operationType
+        ? `${tierMeta(r.riskTier).short} risk — ${OPERATION_LABELS[r.operationType] || r.operationType}`
+        : (watchlistFlag
+          ? 'Potential watchlist match'
+          : (r.riskTier === 'CRITICAL' ? 'Critical risk screening' : 'High risk screening')),
       person: r.person,
       documentNumber: r.documentNumber,
       riskScore: r.riskScore,
       riskTier: r.riskTier,
-      factors: r.full?.risk_assessment?.risk_factors?.map((f) => f.description) || [],
+      factors,
       recommended: r.decision,
       resolution: null,
     });
@@ -185,20 +254,32 @@ export function analyticsFromHistory() {
   const list = getHistory();
   const byTier = { LOW: 0, MODERATE: 0, HIGH: 0, CRITICAL: 0 };
   const byHour = {};
+  const byOperation = { message: 0, website: 0, qr: 0, app: 0, registry: 0, document: 0 };
+  const byCategory = { 'Payment Fraud': 0, Phishing: 0, Malware: 0, 'Suspicious Website': 0, Scam: 0, 'Identity Fraud': 0, Other: 0 };
   let faceFail = 0, tamperFail = 0, validFail = 0, watchlistFail = 0;
   for (const r of list) {
     byTier[r.riskTier] = (byTier[r.riskTier] || 0) + 1;
     const h = r.ts ? new Date(r.ts).getHours() : '?';
     byHour[h] = (byHour[h] || 0) + 1;
-    if (r.summary.faceMatched === false) faceFail += 1;
-    if (r.summary.photoTampered) tamperFail += 1;
-    if (!r.summary.validationValid) validFail += 1;
+    const op = r.operationType
+      ? ({ 'qr-upi': 'qr', 'scam-registry': 'registry', 'ai-analysis': 'ai' }[r.operationType] || r.operationType)
+      : 'document';
+    byOperation[op] = (byOperation[op] || 0) + 1;
+    const cat = threatCategory(r);
+    byCategory[cat] = (byCategory[cat] || 0) + 1;
+    if (r.summary) {
+      if (r.summary.faceMatched === false) faceFail += 1;
+      if (r.summary.photoTampered) tamperFail += 1;
+      if (!r.summary.validationValid) validFail += 1;
+    }
     if (r.watchlistFlagged) watchlistFail += 1;
   }
   return {
     total: list.length,
     byTier,
     byHour,
+    byOperation,
+    byCategory,
     failures: { faceFail, tamperFail, validFail, watchlistFail },
   };
 }

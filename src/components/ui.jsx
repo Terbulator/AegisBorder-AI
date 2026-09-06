@@ -50,7 +50,7 @@ export function Button({ variant = 'primary', className, loading, disabled, chil
   return (
     <button
       className={cx(
-        'inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-50',
+        'inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-1',
         BUTTON_VARIANTS[variant] || BUTTON_VARIANTS.primary,
         className
       )}

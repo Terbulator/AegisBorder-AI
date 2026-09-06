@@ -3,6 +3,7 @@ import { Search, History as HistoryIcon, Trash2, FileText } from 'lucide-react';
 import { Card, Badge, Button, EmptyState, cx, IconButton } from '../components/ui';
 import { getHistory, deleteRecord, formatTime, secondsAgo, tierMeta } from '../lib/store';
 import AuditReport from '../components/AuditReport';
+import ThreatReport from '../components/operations/ThreatReport';
 
 const FILTERS = [
   { id: 'all', label: 'All' },
@@ -139,7 +140,9 @@ export default function History() {
         </>
       )}
 
-      {selected?.full && <AuditReport screening={selected.full} onClose={() => setSelected(null)} />}
+      {selected && (selected.operationType
+        ? <ThreatReport record={selected} onClose={() => setSelected(null)} />
+        : selected.full && <AuditReport screening={selected.full} onClose={() => setSelected(null)} />)}
     </div>
   );
 }

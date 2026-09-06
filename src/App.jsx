@@ -9,7 +9,7 @@ import { getAlerts } from './lib/store';
 import { cx } from './components/ui';
 
 import Dashboard from './pages/Dashboard';
-import Screening from './pages/Screening';
+import NewOperation from './pages/NewOperation';
 import History from './pages/History';
 import Alerts from './pages/Alerts';
 import Reports from './pages/Reports';
@@ -44,7 +44,7 @@ function useHealth() {
     const id = setInterval(check, 60000);
     return () => clearInterval(id);
   }, [check]);
-  return health;
+  return { state: health.state, modules: health.modules, version: health.version, refresh: check };
 }
 
 function Clock() {
@@ -198,7 +198,7 @@ export default function App() {
 
         <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-6 pb-24 lg:pb-6">
           {route === 'dashboard' && <Dashboard onNavigate={navigate} officer={officer} demoMode={demoMode} />}
-          {route === 'screening' && <Screening demoMode={demoMode} />}
+          {route === 'screening' && <NewOperation healthState={health} onRefresh={health.refresh} />}
           {route === 'history' && <History />}
           {route === 'alerts' && <Alerts />}
           {route === 'reports' && <Reports />}

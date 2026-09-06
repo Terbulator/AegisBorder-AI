@@ -3,6 +3,11 @@ import { BarChart3, Users, CheckCircle2, AlertTriangle, ShieldAlert } from 'luci
 import { Card, EmptyState } from '../components/ui';
 import { analyticsFromHistory, tierMeta } from '../lib/store';
 
+const OP_LABELS = {
+  message: 'Message Scanner', website: 'Website Checker', qr: 'QR & UPI Safety', app: 'App Safety',
+  registry: 'Scam Registry', document: 'Document & Identity Screening', ai: 'AI Threat Analysis',
+};
+
 function Bar({ label, value, max, color }) {
   const pct = max > 0 ? Math.round((value / max) * 100) : 0;
   return (
@@ -67,6 +72,26 @@ export default function Analytics() {
                 <FlagRow icon={<BarChart3 className="h-4 w-4" />} label="Photo tampering detected" count={data.failures.tamperFail} color="orange" />
                 <FlagRow icon={<AlertTriangle className="h-4 w-4" />} label="Document validation failed" count={data.failures.validFail} color="amber" />
                 <FlagRow icon={<AlertTriangle className="h-4 w-4" />} label="Watchlist matches" count={data.failures.watchlistFail} color="red" />
+              </div>
+            </Card>
+          </div>
+
+          <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
+            <Card className="p-5">
+              <h2 className="mb-4 text-sm font-bold text-slate-900">Scans by operation</h2>
+              <div className="space-y-2">
+                {Object.entries(data.byOperation).map(([op, count]) => (
+                  <Bar key={op} label={OP_LABELS[op] || op} value={count} max={Math.max(1, ...Object.values(data.byOperation))} color="blue" />
+                ))}
+              </div>
+            </Card>
+
+            <Card className="p-5">
+              <h2 className="mb-4 text-sm font-bold text-slate-900">Threat distribution</h2>
+              <div className="space-y-2">
+                {Object.entries(data.byCategory).map(([cat, count]) => (
+                  <Bar key={cat} label={cat} value={count} max={Math.max(1, ...Object.values(data.byCategory))} color="orange" />
+                ))}
               </div>
             </Card>
           </div>

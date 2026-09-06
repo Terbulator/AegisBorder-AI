@@ -3,6 +3,7 @@ import { FileText, ArrowDownToLine } from 'lucide-react';
 import { Card, Badge, Button, EmptyState } from '../components/ui';
 import { getHistory, formatTime, tierMeta } from '../lib/store';
 import AuditReport from '../components/AuditReport';
+import ThreatReport from '../components/operations/ThreatReport';
 
 export default function Reports() {
   const records = useMemo(() => getHistory(), []);
@@ -42,7 +43,9 @@ export default function Reports() {
         </div>
       )}
 
-      {selected?.full && <AuditReport screening={selected.full} onClose={() => setSelected(null)} />}
+      {selected && (selected.operationType
+        ? <ThreatReport record={selected} onClose={() => setSelected(null)} />
+        : selected.full && <AuditReport screening={selected.full} onClose={() => setSelected(null)} />)}
     </div>
   );
 }
