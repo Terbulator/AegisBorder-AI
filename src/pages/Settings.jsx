@@ -1,11 +1,11 @@
 import { useState } from 'react';
-import { User, MapPin, Shield, Languages, FlaskConical, Check, Save } from 'lucide-react';
+import { User, MapPin, Languages, FlaskConical, Check, Save } from 'lucide-react';
 import { Card, Button, Badge, cx } from '../components/ui';
 
 const fieldCls = 'w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-blue-600 focus:outline-none focus:ring-1 focus:ring-blue-600';
 const labelCls = 'mb-1 block text-xs font-semibold text-slate-600';
 
-export default function SettingsPage({ onNavigate, demoMode, setDemoMode }) {
+export default function SettingsPage({ demoMode, setDemoMode }) {
   const [officer, setOfficer] = useState(() => {
     try {
       return JSON.parse(localStorage.getItem('rakshak_officer')) ||
@@ -78,22 +78,11 @@ export default function SettingsPage({ onNavigate, demoMode, setDemoMode }) {
 
       <Card className="p-5">
         <div className="flex items-center gap-2">
-          <Shield className="h-5 w-5 text-blue-700" />
-          <div>
-            <h2 className="text-sm font-bold text-slate-900">RaKshak Threat Defense</h2>
-            <p className="text-xs text-slate-500">The companion cyber-defence suite — keeps its own bilingual UI and theme.</p>
-          </div>
-        </div>
-        <Button className="mt-3" variant="secondary" onClick={() => onNavigate('cyber')}>Open Threat Defense suite</Button>
-      </Card>
-
-      <Card className="p-5">
-        <div className="flex items-center gap-2">
           <Languages className="h-5 w-5 text-blue-700" />
           <h2 className="text-sm font-bold text-slate-900">Language</h2>
         </div>
         <p className="mt-1 text-sm text-slate-500">
-          The screening workstation is in English. The RaKshak Threat Defense suite keeps its own language selection (6 regional languages) and dark/light theme, independent of this station.
+          The screening workstation is in English.
         </p>
       </Card>
 

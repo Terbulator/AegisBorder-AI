@@ -37,7 +37,7 @@ function InfoRow({ label, value, tone }) {
   );
 }
 
-export default function Screening() {
+export default function Screening({ focus = 'document' }) {
   const [step, setStep] = useState(0);
   const [presets, setPresets] = useState([]);
   const [activePreset, setActivePreset] = useState(null);
@@ -68,6 +68,16 @@ export default function Screening() {
   const refreshPresets = useCallback(() => {
     apiPresets().then((data) => setPresets(data.presets || [])).catch(() => {});
   }, []);
+
+  const applyFocus = useCallback(() => {
+    switch (focus) {
+      case 'biometrics': setStep(2); break;
+      case 'forensics': setStep(3); setShowTechnical(true); break;
+      case 'watchlist': setStep(4); break;
+      case 'audit': setStep(4); setShowReport(true); break;
+      default: setStep(1);
+    }
+  }, [focus]);
 
   const deletePassenger = useCallback(async (id, holderName, e) => {
     e.stopPropagation();
@@ -122,7 +132,7 @@ export default function Screening() {
       const rc = addToHistory(data, { source: activePreset ? 'scenario' : 'live', scenario: activePreset?.title || uploadName || null });
       setResult(data);
       setRecordId(rc.id);
-      setStep(1);
+      applyFocus();
       const tier = data.risk_assessment?.risk_tier || 'LOW';
       toast(
         tier === 'LOW' ? 'All modules passed — document cleared.' : `${data.risk_assessment?.overall_risk_score}% composite risk (${tier}). Review required.`,
@@ -134,7 +144,7 @@ export default function Screening() {
     } finally {
       setLoading(false);
     }
-  }, [documentImage, liveImage, mrzText, activePreset, uploadName]);
+  }, [documentImage, liveImage, mrzText, activePreset, uploadName, applyFocus]);
 
   const handleUpload = (e) => {
     const file = e.target.files?.[0];
@@ -241,6 +251,24 @@ export default function Screening() {
         <div className="flex items-center gap-2 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">
           <AlertTriangle className="h-4 w-4 shrink-0" /> {error}
           <button className="ml-auto text-xs font-semibold underline" onClick={() => setError(null)}>Dismiss</button>
+        </div>
+      )}
+
+      {step >= 1 && result && (
+        <div className="flex flex-wrap items-center gap-2 rounded-xl border border-slate-200 bg-white p-2 shadow-sm">
+          {[
+            { id: 1, label: 'MRZ & Validation', icon: FileText },
+            { id: 2, label: 'Biometrics', icon: Camera },
+            { id: 3, label: 'Forensics', icon: FlaskConical },
+            { id: 4, label: 'Risk & Decision', icon: ShieldCheck },
+          ].map(({ id, label, icon: Icon }) => (
+            <button key={id} onClick={() => { setStep(id); if (id === 3) setShowTechnical(true); }}
+              className={cx('flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-bold transition-colors',
+                step === id ? 'bg-blue-700 text-white shadow-sm' : 'text-slate-600 hover:bg-slate-100')}>
+              <Icon className="h-3.5 w-3.5" /> {label}
+            </button>
+          ))}
+          <span className="ml-auto hidden text-[11px] font-medium text-slate-400 md:inline">Module reviews of the completed screening</span>
         </div>
       )}
 
@@ -660,7 +688,7 @@ export default function Screening() {
           setLiveImage(screeningResult?.extracted_data?.live_passenger_b64 || liveImage);
           setActivePreset(null);
           setUploadName(passenger.holder_name);
-          setStep(1);
+          applyFocus();
         }}
       />
 

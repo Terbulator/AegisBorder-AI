@@ -15,7 +15,6 @@ import History from './pages/History';
 import Alerts from './pages/Alerts';
 import Reports from './pages/Reports';
 import SettingsPage from './pages/Settings';
-import ThreatDefense from './pages/ThreatDefense';
 const Analytics = lazy(() => import('./pages/Analytics'));
 
 const PRIMARY_NAV = [
@@ -28,7 +27,7 @@ const PRIMARY_NAV = [
   { id: 'settings', label: 'Settings', icon: SettingsIcon },
 ];
 
-const PAGE_TITLES = Object.fromEntries(PRIMARY_NAV.map((n) => [n.id, n.label]).concat([['cyber', 'AegisBorder Threat Defense']]));
+const PAGE_TITLES = Object.fromEntries(PRIMARY_NAV.map((n) => [n.id, n.label]));
 
 function useHealth() {
   const [health, setHealth] = useState({ state: 'checking', modules: [], version: null });
@@ -124,7 +123,6 @@ export default function App() {
             { id: 'analytics', label: 'Analytics', icon: BarChart3 },
             { id: 'reports', label: 'Reports', icon: FileText },
             { id: 'settings', label: 'Settings', icon: SettingsIcon },
-            { id: 'cyber', label: 'Threat Defense', icon: Shield },
           ].map(({ id, label, icon: Icon }) => (
             <button key={id} onClick={() => navigate(id)} className="flex items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-semibold text-slate-800 hover:bg-blue-50">
               <Icon className="h-5 w-5 text-blue-700" /> {label}
@@ -172,19 +170,6 @@ export default function App() {
                 </li>
               );
             })}
-          </ul>
-
-          <p className="mt-6 mb-2 px-2 text-[10px] font-bold uppercase tracking-wider text-slate-400">Integrations</p>
-          <ul className="space-y-1">
-            <li>
-              <button onClick={() => navigate('cyber')}
-                className={cx('flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-semibold transition-colors',
-                  route === 'cyber' ? 'bg-slate-200 text-slate-900' : 'text-slate-600 hover:bg-slate-100')}>
-                <Shield className="h-[18px] w-[18px]" />
-                <span className="flex-1 text-left">AegisBorder Threat Defense</span>
-                <span className="rounded bg-slate-200 px-1.5 py-0.5 text-[9px] font-bold text-slate-500">ADD-ON</span>
-              </button>
-            </li>
           </ul>
         </nav>
 
@@ -251,8 +236,7 @@ export default function App() {
           {route === 'history' && <History />}
           {route === 'alerts' && <Alerts />}
           {route === 'reports' && <Reports />}
-          {route === 'settings' && <SettingsPage onNavigate={navigate} demoMode={demoMode} setDemoMode={setDemoMode} />}
-          {route === 'cyber' && <ThreatDefense />}
+          {route === 'settings' && <SettingsPage demoMode={demoMode} setDemoMode={setDemoMode} />}
           {route === 'analytics' && (
             <Suspense fallback={<div className="py-20 text-center text-sm text-slate-500">Loading analytics…</div>}>
               <Analytics />

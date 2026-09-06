@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import {
-  MessageSquare, Globe, QrCode, Smartphone, Database, IdCard,
+  MessageSquare, Globe, QrCode, Smartphone, Database, IdCard, FileText,
+  Search, ScanFace, ShieldAlert, FileCheck2,
   BrainCircuit, RefreshCw, ArrowLeft, ShieldCheck, ServerOff
 } from 'lucide-react';
 import Screening from './Screening';
@@ -18,7 +19,12 @@ const GROUPS = [
     title: 'Identity & document security',
     description: 'Backend-assisted inspection of passports and ID documents with fraud and watchlist checks.',
     ops: [
-      { id: 'document', title: 'Document & Identity Screening', icon: IdCard, desc: 'Full MRZ, face-liveness, tampering and watchlist screening of a travel document.', inputs: 'Passport · VIZ · MRZ · Face', backend: true },
+      { id: 'document', title: 'Document & Identity Screening', icon: IdCard, desc: 'Full MRZ, face-liveness, tampering and watchlist screening of a travel document.', inputs: 'Passport · VIZ · MRZ · Face', backend: true, focus: 'document' },
+      { id: 'mrz', title: 'MRZ & Document Parsing', icon: FileText, desc: 'Run the pipeline and review the extracted MRZ/OCR fields with ICAO 9303 check digits.', inputs: 'Passport · MRZ · VIZ', backend: true, focus: 'mrz' },
+      { id: 'biometrics', title: 'Face Verification & Liveness', icon: ScanFace, desc: 'Run the pipeline and review the live-face match, liveness and anti-spoofing checks.', inputs: 'Document · Face capture', backend: true, focus: 'biometrics' },
+      { id: 'forensics', title: 'Tamper & Photo Forensics', icon: Search, desc: 'Run the pipeline and inspect ELA, noise and metadata tampering evidence.', inputs: 'Document image', backend: true, focus: 'forensics' },
+      { id: 'watchlist', title: 'Watchlist & Risk Decision', icon: ShieldAlert, desc: 'Run the pipeline and review watchlist hits, risk factors and the recommended decision.', inputs: 'Document · MRZ', backend: true, focus: 'watchlist' },
+      { id: 'audit', title: 'Audit Certification', icon: FileCheck2, desc: 'Run the pipeline and open the signed audit certificate for the case.', inputs: 'Document · MRZ', backend: true, focus: 'audit' },
     ],
   },
   {
@@ -43,8 +49,9 @@ const GROUPS = [
 
 export default function NewOperation({ healthState, onRefresh }) {
   const [op, setOp] = useState(null);
+  const current = op ? GROUPS.flatMap((g) => g.ops).find((o) => o.id === op) : null;
 
-  if (op === 'document') {
+  if (current?.focus) {
     return (
       <div className="space-y-4">
         <button
@@ -53,17 +60,14 @@ export default function NewOperation({ healthState, onRefresh }) {
         >
           <ArrowLeft className="h-4 w-4" aria-hidden="true" /> All operations
         </button>
-        <Screening />
+        <Screening focus={current.focus} />
       </div>
     );
   }
 
-  if (op) {
-    const current = GROUPS.flatMap((g) => g.ops).find((o) => o.id === op);
-    if (current?.Op) {
-      const Workbook = current.Op;
-      return <Workbook onBack={() => setOp(null)} healthState={healthState} onRefresh={onRefresh} />;
-    }
+  if (current?.Op) {
+    const Workbook = current.Op;
+    return <Workbook onBack={() => setOp(null)} healthState={healthState} onRefresh={onRefresh} />;
   }
 
   const offline = healthState?.state === 'offline';
