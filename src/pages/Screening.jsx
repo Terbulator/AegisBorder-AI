@@ -310,7 +310,21 @@ export default function Screening() {
                 <InfoRow label="Sex" value={mrz.sex || viz.sex} />
                 <InfoRow label="MRZ checksums" value={mrz.checksums?.overall_valid ? 'Valid' : 'Invalid'} tone={mrz.checksums?.overall_valid ? undefined : 'fail'} />
                 <InfoRow label="Document validity" value={docVal.is_valid ? 'Valid' : 'Discrepancies found'} tone={docVal.is_valid ? undefined : 'warn'} />
+                <InfoRow label="Expiration" value={docVal.is_expired ? 'EXPIRED' : 'Valid'} tone={docVal.is_expired ? 'fail' : undefined} />
               </div>
+              {mrz.checksums && (
+                <div className="mt-3 rounded-lg border border-slate-200 bg-slate-50 p-3">
+                  <div className="mb-2 text-xs font-bold text-slate-600">ICAO 9303 check digits</div>
+                  <div className="grid grid-cols-1 gap-1.5 sm:grid-cols-2">
+                    {Object.entries(mrz.checksums).filter(([k]) => k !== 'overall_valid').map(([ck, cv]) => (
+                      <div key={ck} className={cx('flex items-center justify-between rounded-md border px-3 py-1.5 text-xs', cv.valid ? 'border-emerald-200 bg-emerald-50' : 'border-red-200 bg-red-50')}>
+                        <span className="font-semibold text-slate-700">{ck.replace(/_/g, ' ')}</span>
+                        <span className="font-mono text-slate-600">extracted {cv.extracted} · calc {cv.calculated} {cv.valid ? '✓' : '✗'}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
               {docVal.discrepancies?.length > 0 && (
                 <div className="mt-3 rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm text-amber-900">
                   <strong>Discrepancies flagged:</strong>
@@ -375,6 +389,28 @@ export default function Screening() {
                   <div className="text-xl font-extrabold">{bio.confidence != null ? `${bio.confidence}%` : '—'}</div>
                 </div>
               </div>
+
+              {bio.liveness && (
+                <div className="mt-3 rounded-lg border border-slate-200 bg-slate-50 p-3">
+                  <div className="mb-2 text-xs font-bold text-slate-600">Anti-spoofing & presentation attack defense</div>
+                  <div className="grid grid-cols-1 gap-1.5 sm:grid-cols-3">
+                    <div className="flex items-center justify-between rounded-md border border-slate-200 bg-white px-3 py-2 text-xs">
+                      <span className="text-slate-500">Liveness score</span>
+                      <span className="font-bold text-slate-800">{bio.liveness.liveness_score != null ? `${bio.liveness.liveness_score}%` : '—'}</span>
+                    </div>
+                    <div className="flex items-center justify-between rounded-md border border-slate-200 bg-white px-3 py-2 text-xs">
+                      <span className="text-slate-500">Screen moiré</span>
+                      <span className={bio.liveness.moire_artifact_detected ? 'font-bold text-red-600' : 'font-bold text-emerald-600'}>
+                        {bio.liveness.moire_artifact_detected ? 'Detected' : 'None'}
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between rounded-md border border-slate-200 bg-white px-3 py-2 text-xs">
+                      <span className="text-slate-500">Sharpness index</span>
+                      <span className="font-bold text-slate-800">{bio.liveness.sharpness_index ?? '—'}</span>
+                    </div>
+                  </div>
+                </div>
+              )}
 
               <div className="mt-4 flex items-center justify-end gap-3">
                 <Button variant="secondary" onClick={captureLive}><Camera className="h-4 w-4" /> {liveImage ? 'Capture new face & re-run' : 'Add live face & re-run'}</Button>
@@ -441,6 +477,8 @@ export default function Screening() {
                   <InfoRow label="Noise discrepancy" value={`${Number(forensics.noise_discrepancy_score ?? 0).toFixed(1)}%`} />
                   <InfoRow label="Photo tamper score" value={`${Number(forensics.photo_tamper_score ?? 0).toFixed(1)}%`} />
                   <InfoRow label="Metadata tamper" value={`${Number(forensics.metadata_tamper_score ?? 0).toFixed(1)}%`} />
+                  <InfoRow label="Noise anomaly blocks" value={forensics.noise_anomalies_count != null ? String(forensics.noise_anomalies_count) : '—'} />
+                  <InfoRow label="Suspicious splicing regions" value={forensics.suspicious_bboxes?.length != null ? String(forensics.suspicious_bboxes.length) : '—'} />
                   {forensics.detected_software?.length > 0 && (
                     <div className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-amber-900">
                       Editing software detected: {forensics.detected_software.join(', ')}
