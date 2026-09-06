@@ -2,6 +2,9 @@ import { useState } from 'react';
 import { BrainCircuit, Loader2, Trash2, Sparkles, FileText, ShieldAlert, CheckCircle2 } from 'lucide-react';
 import { apiAiThreat } from '../../lib/api';
 import { addThreatToHistory, riskTierFromScore } from '../../lib/store';
+import { announceThreat } from '../../lib/voiceAlert';
+import { globalBloomFilter } from '../../cyber/engine/bloomFilter';
+import { parseUrl } from '../../cyber/engine/urlDetector';
 import { Badge } from '../ui';
 import { OperationShell, OperationResultCard, OperationInput } from './OperationShared';
 import ThreatReport from './ThreatReport';
@@ -28,7 +31,7 @@ export default function AiThreatOp({ onBack, healthState, onRefresh }) {
       setDisplay(null); setResult(null);
       return;
     }
-    if (healthState?.status !== 'online') {
+    if (healthState?.state !== 'online') {
       setError('Backend offline — start the AegisBorder backend server, then Retry connection.');
       setDisplay(null); setResult(null);
       return;
@@ -40,20 +43,25 @@ export default function AiThreatOp({ onBack, healthState, onRefresh }) {
       setScanning(false);
       const meta = { provider: ai.provider, model: ai.model, summary: ai.summary };
       const score = ai.risk_score ?? 5;
+      const url = target.match(/https?:\/\/[^\s]+/i)?.[0] || null;
+      const bloom = url ? globalBloomFilter.contains(parseUrl(url).hostname) : null;
       const evidence = [
         ai.summary ? `Summary: ${ai.summary}` : null,
+        bloom?.match ? 'Embedded link is a direct match in the on-device Cyber Crime Blacklist (Bloom Filter).' : null,
         ai.provider === 'openai' ? `Analyzed by ${ai.model || 'OpenAI'} (server-side).` : 'Analyzed on-device by the local heuristic engine (no OpenAI key configured on the server).',
         ai.matched_pattern ? `Pattern detected: ${ai.matched_pattern}` : null,
         ...(ai.language ? [`Detected language: ${ai.language}`] : []),
       ].filter(Boolean);
-      setResult({ ...ai, _meta: meta });
-      setDisplay({
+      const display = {
         score,
         tier: riskTierFromScore(score),
         statusText: ai.is_threat ? 'AI pattern analysis indicates a scam attempt' : 'No scam patterns detected beyond the risk floor',
         classification: ai.category || (ai.is_threat ? 'Suspicious communication' : 'Benign communication'),
         confidence: null,
-        indicators: ai.is_threat ? [`${ai.category || 'Suspected threat'} (pattern confidence ${score}/100)`] : ['No high-risk scam pattern matched'],
+        indicators: [
+          ...(ai.is_threat ? [`${ai.category || 'Suspected threat'} (pattern confidence ${score}/100)`] : []),
+          ...(bloom?.match ? ['Link listed on Cyber Crime Blacklist (Bloom Filter)'] : []),
+        ],
         evidence,
         recommendation: ai.is_threat
           ? 'Treat this as a scam: do not send money, OTPs, or passwords. Independently contact the institution via its official channel, and report to 1930 (National Cyber Helpline).'
@@ -61,8 +69,11 @@ export default function AiThreatOp({ onBack, healthState, onRefresh }) {
         note: ai.provider === 'openai'
           ? 'Content was sent to the configured OpenAI model on the server for analysis. Do not paste sensitive personal or financial data unless you trust your own server configuration.'
           : 'No OpenAI API key is configured on the server, so analysis used the offline heuristics engine that also powers the other operations. Absence of a match does not prove the content is safe.',
-      });
-      const rec = addThreatToHistory('ai-analysis', { ...ai, _meta: meta }, {
+      };
+      setResult({ ...ai, _meta: meta, bloomLookupMs: bloom?.lookupTimeMs, riskScore: score, riskTier: display.tier });
+      setDisplay(display);
+      announceThreat(display);
+      const rec = addThreatToHistory('ai-analysis', { ...ai, _meta: meta, riskScore: score }, {
         target: target.slice(0, 80),
         classification: ai.category || (ai.is_threat ? 'Suspicious communication' : 'Benign communication'),
         indicators: ai.is_threat ? [ai.category || 'Suspected threat'] : [],
@@ -89,12 +100,12 @@ export default function AiThreatOp({ onBack, healthState, onRefresh }) {
         <div className="flex flex-wrap items-center gap-2 rounded-md border border-slate-200 bg-slate-50 px-3 py-2">
           <Sparkles className="h-3.5 w-3.5 shrink-0 text-slate-400" aria-hidden="true" />
           <p className="text-[11.5px] text-slate-500">
-            {healthState?.status === 'online'
-              ? 'Backend reachable — analysis runs on the server (local heuristic, or OpenAI if the server holds an API key).'
-              : 'Backend offline — start the backend server, then Retry connection.'}
+{healthState?.state === 'online'
+          ? 'Backend reachable — analysis runs on the server (local heuristic, or OpenAI if the server holds an API key).'
+          : 'Backend offline — start the backend server, then Retry connection.'}
           </p>
-          <Badge color={healthState?.status === 'online' ? 'green' : 'red'}>
-            {healthState?.status === 'online' ? 'Backend online' : 'Backend offline'}
+          <Badge color={healthState?.state === 'online' ? 'green' : 'red'}>
+            {healthState?.state === 'online' ? 'Backend online' : 'Backend offline'}
           </Badge>
           <button type="button" onClick={onRefresh} className="text-[11px] font-semibold text-blue-700 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600">
             Retry connection

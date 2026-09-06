@@ -3,6 +3,9 @@ import { Smartphone, ShieldAlert, Loader2, Trash2, UploadCloud, FileArchive } fr
 import { inspectApk } from '../../cyber/engine/apkInspector';
 import { apiScanApp } from '../../lib/api';
 import { addThreatToHistory, riskTierFromScore } from '../../lib/store';
+import { announceThreat } from '../../lib/voiceAlert';
+import { globalBloomFilter } from '../../cyber/engine/bloomFilter';
+import { parseUrl } from '../../cyber/engine/urlDetector';
 import { Badge } from '../ui';
 import { OperationShell, OperationResultCard, OperationInput } from './OperationShared';
 import ThreatReport from './ThreatReport';
@@ -78,14 +81,19 @@ export default function AppOp({ onBack, healthState }) {
         meta?.note ? String(meta.note) : null,
       ].filter(Boolean);
       const noMatch = score === 0;
-      const indicators = res.isRatThreat ? ['Accessibility + OTP reading (RAT pattern)'] : (noMatch ? ['Unknown signature'] : ['Known-malware signature match']);
+      const bloom = !res.isRatThreat
+        ? ([target, res.packageName, parseUrl(target).hostname].find((t) => t && globalBloomFilter.contains(t)?.match) ? { match: true } : null)
+        : null;
+      const indicators = res.isRatThreat
+        ? ['Accessibility + OTP reading (RAT pattern)']
+        : (noMatch ? ['Unknown signature'] : ['Known-malware signature match']);
+      if (bloom?.match) indicators.unshift('Listed on the on-device malware blacklist (Bloom Filter)');
       const recommendation = res.isRatThreat
         ? `Do NOT install this app. ${res.warning?.en || ''} Uninstall it if already installed and review any SMS/OTP access granted.`
         : (noMatch
           ? 'This app is not in the known-malware registry, but it is unverified. Only install APKs from official app stores and review requested permissions.'
           : 'Do not install. Remove the app and run a security review of devices it was installed on.');
-      setResult(res);
-      setDisplay({
+      const display = {
         score,
         tier: riskTierFromScore(score),
         statusText: noMatch
@@ -99,7 +107,10 @@ export default function AppOp({ onBack, healthState }) {
         note: meta
           ? `Fingerprint (SHA-256) computed on the server ${meta.virus_total?.queried ? 'and checked against VirusTotal' : ''}; risk evaluation is on-device. A "clean" hash is not a guarantee of safety.`
           : 'Permission-risk and on-device signature analysis only. No app binary is downloaded, executed or scanned here — absence from the registry is not a guarantee of safety.',
-      });
+      };
+      setResult(res);
+      setDisplay(display);
+      announceThreat(display);
       const rec = addThreatToHistory('app', res, {
         target: res.appName || target,
         classification: noMatch ? 'Unverified third-party app' : (res.isRatThreat ? 'Malware — Remote Access Trojan' : 'High-risk app'),

@@ -1,7 +1,10 @@
 import { useState } from 'react';
 import { MessageSquare, Search, Loader2, Trash2, UserX, UserCheck, Lock } from 'lucide-react';
 import { analyzeMessage } from '../../cyber/engine/codeMixedNlp';
+import { globalBloomFilter } from '../../cyber/engine/bloomFilter';
+import { parseUrl } from '../../cyber/engine/urlDetector';
 import { addThreatToHistory, riskTierFromScore } from '../../lib/store';
+import { announceThreat } from '../../lib/voiceAlert';
 import { OperationShell, OperationResultCard, OperationInput, uniq } from './OperationShared';
 import ThreatReport from './ThreatReport';
 
@@ -51,14 +54,16 @@ export default function MessageOp({ onBack }) {
         ...(res.extractedUrls?.length ? [`${res.extractedUrls.length} link(s) embedded`] : []),
         ...(res.extractedPhones?.length ? [`${res.extractedPhones.length} phone number(s) embedded`] : []),
       ]).slice(0, 8);
+      const bloomMatches = (res.extractedUrls || []).filter((u) => globalBloomFilter.contains(parseUrl(u).hostname)?.match);
+      if (bloomMatches.length) indicators.unshift(`${bloomMatches.length} link(s) listed on the Cyber Crime Blacklist (Bloom Filter)`);
       const evidence = [
         res.explanation || null,
+        ...(bloomMatches.length ? [`Blacklist match: ${bloomMatches.join(', ')}`] : []),
         res.extractedUrls?.length ? `Embedded links: ${res.extractedUrls.join(', ')}` : null,
         res.extractedPhones?.length ? `Embedded numbers: ${res.extractedPhones.join(', ')}` : null,
       ].filter(Boolean);
       const score = res.riskScore ?? 0;
-      setResult(res);
-      setDisplay({
+      const display = {
         score,
         tier: riskTierFromScore(score),
         statusText: res.isThreat ? 'Threat indicators detected' : 'No significant threat indicators detected',
@@ -68,7 +73,10 @@ export default function MessageOp({ onBack }) {
         evidence,
         recommendation: res.recommendation || 'Do not interact with unknown senders or click embedded links.',
         note: 'On-device message analysis. Message content is scanned locally and is not sent to any server.',
-      });
+      };
+      setResult(res);
+      setDisplay(display);
+      announceThreat(display);
       const rec = addThreatToHistory('message', res, {
         target: target.length > 80 ? `${target.slice(0, 77)}…` : target,
         classification: res.category || (res.isThreat ? 'Suspicious message' : 'Normal message'),

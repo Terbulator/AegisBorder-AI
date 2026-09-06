@@ -3,6 +3,7 @@ import { QrCode, Loader2, Trash2, Wallet, ImageUp } from 'lucide-react';
 import { parseUpiPayload } from '../../cyber/engine/upiQrDetector';
 import { apiDecodeQr } from '../../lib/api';
 import { addThreatToHistory, riskTierFromScore } from '../../lib/store';
+import { announceThreat } from '../../lib/voiceAlert';
 import { OperationShell, OperationResultCard, OperationInput } from './OperationShared';
 import ThreatReport from './ThreatReport';
 
@@ -82,8 +83,7 @@ export default function QrUpIOp({ onBack, healthState }) {
         res.transactionNote ? `Note: ${res.transactionNote}` : null,
         ...(res.riskReasons || []),
       ].filter(Boolean);
-      setResult(res);
-      setDisplay({
+      const display = {
         score,
         tier: riskTierFromScore(score),
         statusText: res.isThreat ? 'Deceptive / flagged payment link' : 'No deceptive indicators on this payment link',
@@ -97,7 +97,10 @@ export default function QrUpIOp({ onBack, healthState }) {
         note: fileName
           ? `QR decoded from uploaded image (${fileName}) on the server, then inspected on-device.`
           : 'Pasted deep-link analysis. You can also upload a QR image and have the server decode it.',
-      });
+      };
+      setResult(res);
+      setDisplay(display);
+      announceThreat(display);
       const rec = addThreatToHistory('qr-upi', res, {
         target: res.vpa,
         classification: res.hasDeceptiveIntent ? 'Payment Fraud — cashback/refund lure' : (res.isThreat ? 'Flagged payment link' : 'Payment link'),

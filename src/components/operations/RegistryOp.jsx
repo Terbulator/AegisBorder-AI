@@ -3,6 +3,7 @@ import { Database, Search, Loader2, Trash2, Fingerprint, CreditCard, Phone, Glob
 import knownThreats from '../../cyber/data/knownThreats.json';
 import { globalBloomFilter } from '../../cyber/engine/bloomFilter';
 import { addThreatToHistory, riskTierFromScore } from '../../lib/store';
+import { announceThreat } from '../../lib/voiceAlert';
 import { cx } from '../ui';
 import { OperationShell, OperationResultCard, OperationInput } from './OperationShared';
 import ThreatReport from './ThreatReport';
@@ -87,7 +88,7 @@ export default function RegistryOp({ onBack }) {
         ].filter(Boolean);
         const classification = hit.kind === 'apk' ? `Malware signature — ${hit.source.appName}` : 'Flagged — listed in registry';
         const recommendation = 'Do not interact with this identifier. Report to 1930 (National Cyber Helpline) and block the sender/source.';
-        setDisplay({
+        const display = {
           score: hitScore,
           tier: riskTierFromScore(hitScore),
           statusText: 'Match found in on-device registry',
@@ -97,7 +98,9 @@ export default function RegistryOp({ onBack }) {
           evidence,
           recommendation,
           note: 'The registry covers known fraud domains, VPAs, phone numbers and APK signatures. A hit does not prove identity of the person behind it; the bloom filter may also yield rare false positives.',
-        });
+        };
+        setDisplay(display);
+        announceThreat(display);
         const rec = addThreatToHistory('scam-registry', { riskScore: hitScore, isThreat: true, category: 'Registry match' }, {
           target: hit.needle,
           classification,

@@ -3,6 +3,7 @@ import { Globe, ScanLine, Loader2, Trash2, Cloud } from 'lucide-react';
 import { inspectUrl } from '../../cyber/engine/urlDetector';
 import { apiUrlReputation } from '../../lib/api';
 import { addThreatToHistory, riskTierFromScore } from '../../lib/store';
+import { announceThreat } from '../../lib/voiceAlert';
 import { Badge } from '../ui';
 import { OperationShell, OperationResultCard, OperationInput, uniq } from './OperationShared';
 import ThreatReport from './ThreatReport';
@@ -73,7 +74,7 @@ export default function WebsiteOp({ onBack, healthState }) {
     ].filter(Boolean);
 
     setResult(res);
-    setDisplay({
+    const display = {
       score,
       tier: riskTierFromScore(score),
       statusText: STATUS_LABEL[res.status] || res.status,
@@ -87,7 +88,9 @@ export default function WebsiteOp({ onBack, healthState }) {
         : (res.institution ? 'Link matches a verified official domain. Always verify the URL bar before entering credentials.'
           : `On-device blacklist returned no match. ${liveData ? 'The live check found the site reachable with a valid TLS certificate, but treat it with caution and verify before entering credentials.' : 'Live reputation could not be fetched — treat as unverified.'}`),
       note: 'Analysis combines the on-device engine (spelling, typosquatting, homograph, risky-TLD and blacklist) with a live backend reputation probe (DNS, TLS certificate, HTTP reachability and WHOIS when available).',
-    });
+    };
+    setDisplay(display);
+    announceThreat(display);
     const rec = addThreatToHistory('website', { ...res, _live: liveData }, {
       target,
       classification: res.spoofedTarget ? `Phishing — mimics ${res.spoofedTarget}` : (res.institution || (res.isThreat ? 'Suspicious link' : 'Website check')),

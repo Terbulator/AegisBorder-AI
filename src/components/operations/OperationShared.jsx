@@ -1,11 +1,14 @@
+import { useState } from 'react';
 import { Badge, Button, Card, cx } from '../ui';
-import { FileText, RefreshCw, Check, ShieldCheck, ShieldAlert, AlertTriangle, ArrowLeft } from 'lucide-react';
+import { FileText, RefreshCw, Check, ShieldCheck, ShieldAlert, AlertTriangle, ArrowLeft, Volume2, VolumeX } from 'lucide-react';
+import { setVoiceMuted, isVoiceMuted } from '../../lib/voiceAlert';
 
 export function uniq(arr) {
   return [...new Set((arr || []).filter(Boolean))];
 }
 
 export function OperationShell({ icon, title, subtitle, inputs, onBack, children }) {
+  const [muted, setMuted] = useState(isVoiceMuted());
   return (
     <div className="space-y-4">
       <button
@@ -22,6 +25,15 @@ export function OperationShell({ icon, title, subtitle, inputs, onBack, children
             <h2 className="text-base font-bold text-slate-900">{title}</h2>
             <p className="text-sm text-slate-500">{subtitle}</p>
           </div>
+          <button
+            type="button"
+            onClick={() => { const next = !muted; setMuted(next); setVoiceMuted(next); }}
+            title={muted ? 'Voice alerts muted — click to enable' : (window.speechSynthesis ? 'Voice alerts on for HIGH / CRITICAL results' : 'Voice alerts unavailable in this browser')}
+            className="inline-flex items-center gap-1.5 rounded-md border border-slate-200 bg-slate-50 px-2.5 py-1.5 text-xs font-semibold text-slate-600 transition-colors hover:border-blue-300 hover:bg-blue-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600"
+          >
+            {muted ? <VolumeX className="h-3.5 w-3.5" aria-hidden="true" /> : <Volume2 className="h-3.5 w-3.5" aria-hidden="true" />}
+            {muted ? 'Voice alert off' : 'Voice alert on'}
+          </button>
           {inputs && <Badge color="slate" className="hidden sm:inline-flex">{inputs}</Badge>}
         </div>
         <div className="mt-4">{children}</div>
