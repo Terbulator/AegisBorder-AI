@@ -46,4 +46,12 @@
 
 @layer utilities {
   .font-mono { font-family: var(--font-mono); }
+
+  @keyframes critical-flicker {
+    0%, 100% { opacity: 1; background-color: #dc2626; }
+    50% { opacity: 0.45; background-color: #b91c1c; }
+  }
+  .critical-flicker {
+    animation: critical-flicker 0.9s ease-in-out infinite;
+  }
 }

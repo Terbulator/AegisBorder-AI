@@ -1,12 +1,13 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Suspense, lazy } from 'react';
 import {
   LayoutDashboard, ScanLine, History as HistoryIcon, BellRing, BarChart3, FileText,
-  Settings as SettingsIcon, Shield, Menu, X, MoreHorizontal, Wifi
+  Settings as SettingsIcon, Shield, Menu, X, MoreHorizontal, Wifi, AlertTriangle
 } from 'lucide-react';
 import { apiHealth } from './lib/api';
-import { getAlerts } from './lib/store';
+import { getAlerts, getHistory, tierMeta } from './lib/store';
 import { cx } from './components/ui';
+import { toast, ToastHost } from './components/Toast';
 
 import Dashboard from './pages/Dashboard';
 import NewOperation from './pages/NewOperation';
@@ -31,12 +32,17 @@ const PAGE_TITLES = Object.fromEntries(PRIMARY_NAV.map((n) => [n.id, n.label]).c
 
 function useHealth() {
   const [health, setHealth] = useState({ state: 'checking', modules: [], version: null });
+  const wasOnlineRef = useRef(null);
   const check = useCallback(async () => {
     try {
       const data = await apiHealth();
       setHealth({ state: 'online', modules: data.modules_active || [], version: data.version });
+      if (wasOnlineRef.current === false) toast('Backend is back online.', { type: 'success', title: 'Connection restored' });
+      wasOnlineRef.current = true;
     } catch {
       setHealth((h) => ({ ...h, state: 'offline' }));
+      if (wasOnlineRef.current !== false) toast('Cannot reach the screening backend.', { type: 'error', title: 'Backend offline' });
+      wasOnlineRef.current = false;
     }
   }, []);
   useEffect(() => {
@@ -65,6 +71,7 @@ export default function App() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [moreSheet, setMoreSheet] = useState(false);
   const [demoMode, setDemoMode] = useState(() => localStorage.getItem('rakshak_demo') === '1');
+  const [bannerDismissed, setBannerDismissed] = useState(false);
   const health = useHealth();
 
   const officer = useMemo(() => {
@@ -76,6 +83,24 @@ export default function App() {
   }, []);
 
   const alertCount = useMemo(() => getAlerts().filter((a) => !a.resolution).length, [route]);
+
+  const scanStats = useMemo(() => {
+    const today = new Date().toDateString();
+    const list = getHistory();
+    const todayScans = list.filter((r) => new Date(r.ts).toDateString() === today);
+    return {
+      today: todayScans.length,
+      clearedToday: todayScans.filter((r) => tierMeta(r.riskTier).order === 0).length,
+      flaggedToday: todayScans.filter((r) => tierMeta(r.riskTier).order >= 2 || r.watchlistFlagged).length,
+    };
+  }, [route]);
+
+  const critical = useMemo(() => {
+    const latest = getHistory()[0];
+    if (!latest || bannerDismissed) return null;
+    if (latest.watchlistFlagged || latest.riskTier === 'CRITICAL') return latest;
+    return null;
+  }, [route, bannerDismissed]);
 
   const navigate = (id) => {
     setRoute(id);
@@ -193,8 +218,28 @@ export default function App() {
               <Wifi className={cx('h-3.5 w-3.5', health.state === 'offline' ? 'text-red-500' : 'text-emerald-600')} aria-hidden="true" />
               <span className="text-xs font-semibold text-slate-700">{officer.name}</span>
             </div>
+            <div className="hidden items-center gap-1.5 md:flex">
+              <span className="flex items-center gap-1.5 rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-1.5" title="Scans today">
+                <ScanLine className="h-3.5 w-3.5 text-blue-700" aria-hidden="true" />
+                <span className="text-xs font-bold text-slate-800">{scanStats.today}</span>
+              </span>
+              <span className={cx('flex items-center gap-1.5 rounded-lg border px-2.5 py-1.5', scanStats.flaggedToday > 0 ? 'border-red-200 bg-red-50' : 'border-slate-200 bg-slate-50')} title="Flagged today">
+                <BellRing className={cx('h-3.5 w-3.5', scanStats.flaggedToday > 0 ? 'text-red-600' : 'text-slate-400')} aria-hidden="true" />
+                <span className={cx('text-xs font-bold', scanStats.flaggedToday > 0 ? 'text-red-700' : 'text-slate-600')}>{scanStats.flaggedToday}</span>
+              </span>
+            </div>
           </div>
         </header>
+
+        {critical && (
+          <div className="critical-flicker flex items-center gap-3 px-4 py-2 text-sm font-bold text-white">
+            <AlertTriangle className="h-4 w-4 shrink-0" aria-hidden="true" />
+            <span className="flex-1 truncate">
+              CRITICAL ALERT — {critical.person || 'passenger'} · {critical.riskTier} risk ({critical.riskScore}%){critical.watchlistFlagged ? ' · WATCHLIST MATCH' : ''}
+            </span>
+            <button className="shrink-0 rounded px-2 py-0.5 text-xs font-bold text-white/90 hover:bg-white/20" onClick={() => setBannerDismissed(true)}>DISMISS</button>
+          </div>
+        )}
 
         <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-6 pb-24 lg:pb-6">
           {route === 'dashboard' && <Dashboard onNavigate={navigate} officer={officer} demoMode={demoMode} />}
@@ -240,6 +285,7 @@ export default function App() {
       </div>
 
       {MobileMoreSheet}
+      <ToastHost />
     </div>
   );
 }

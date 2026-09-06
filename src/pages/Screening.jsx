@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
+import confetti from 'canvas-confetti';
 import {
   Scan, FileText, Camera, User, FlaskConical, CheckCircle2, AlertTriangle,
   UploadCloud, RefreshCw, Loader2, ShieldCheck, Lock, ArrowRight, Eye, EyeOff, KeyRound
@@ -6,6 +7,7 @@ import {
 import { Card, Badge, Button, ProgressSteps, cx, verifyIcon } from '../components/ui';
 import { apiPresets, apiPresetDetail, apiScreenDocument } from '../lib/api';
 import { addToHistory, updateRecordStatus, tierMeta } from '../lib/store';
+import { toast } from '../components/Toast';
 import NewPassengerModal from '../components/NewPassengerModal';
 import AuditReport from '../components/AuditReport';
 
@@ -55,6 +57,7 @@ export default function Screening() {
   const videoRef = useRef(null);
   const fileRef = useRef(null);
   const liveFileRef = useRef(null);
+  const confettiFiredRef = useRef(false);
 
   useEffect(() => {
     let active = true;
@@ -99,8 +102,14 @@ export default function Screening() {
       setResult(data);
       setRecordId(rc.id);
       setStep(1);
+      const tier = data.risk_assessment?.risk_tier || 'LOW';
+      toast(
+        tier === 'LOW' ? 'All modules passed — document cleared.' : `${data.risk_assessment?.overall_risk_score}% composite risk (${tier}). Review required.`,
+        { type: tier === 'LOW' ? 'success' : tier === 'CRITICAL' ? 'error' : 'warning', title: 'Screening complete' },
+      );
     } catch (e) {
       setError(e.message || 'Screening failed. Is the backend running?');
+      toast('Screening failed — is the backend running?', { type: 'error', title: 'Screening error' });
     } finally {
       setLoading(false);
     }
@@ -166,6 +175,15 @@ export default function Screening() {
   const docVal = result?.document_validation || {};
   const watch = result?.watchlist_screening || {};
   const meta = tierMeta(risk.risk_tier);
+
+  const granted = risk.recommended_decision?.toUpperCase().includes('GRANT');
+  useEffect(() => {
+    if (step === 4 && granted && !confettiFiredRef.current) {
+      confettiFiredRef.current = true;
+      confetti({ particleCount: 120, spread: 75, origin: { y: 0.25 } });
+    }
+    if (!granted) confettiFiredRef.current = false;
+  }, [step, granted]);
 
   const checks = result ? [
     { name: 'OCR extraction', state: result?.extracted_data ? 'pass' : 'fail', desc: 'Text and fields read from document image' },
@@ -540,9 +558,16 @@ export default function Screening() {
             )}
 
             {watch.flagged && (
-              <div className="mt-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-900">
-                <strong>Watchlist alert.</strong> {watch.highest_severity} severity.{' '}
-                {(watch.alerts || []).map((a) => a.reason).join(' ')}
+              <div className="critical-flicker mt-4 flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-bold text-white">
+                <AlertTriangle className="h-4 w-4 shrink-0" aria-hidden="true" />
+                <span>WATCHLIST ALERT — {watch.highest_severity} severity. {(watch.alerts || []).map((a) => a.reason).join(' ')}</span>
+              </div>
+            )}
+
+            {risk.risk_tier === 'CRITICAL' && !watch.flagged && (
+              <div className="critical-flicker mt-4 flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-bold text-white">
+                <AlertTriangle className="h-4 w-4 shrink-0" aria-hidden="true" />
+                <span>CRITICAL — {risk.overall_risk_score}% composite risk. {risk.recommended_decision}</span>
               </div>
             )}
           </div>
