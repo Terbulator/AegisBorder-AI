@@ -122,7 +122,7 @@ function Brand({ compact }) {
   const { t } = useT();
   return (
     <div className="flex items-center gap-2.5">
-      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-navy-900 text-white shadow-sm" aria-hidden="true">
+      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-primary text-primary-900 text-white shadow-sm" aria-hidden="true">
         <Shield className="h-5 w-5" />
       </div>
       <div className={cx(compact && 'hidden sm:block')}>
@@ -296,24 +296,24 @@ export default function App() {
   );
 
   return (
-    <div className="flex min-h-screen flex-col bg-[#f4f6f9] text-slate-900">
+    <div className="flex min-h-screen flex-col bg-background text-foreground">
       {/* Utility bar */}
       <div className="util-bar">
         <div className="mx-auto flex max-w-[1400px] items-center justify-between gap-4 px-4 py-1.5 text-[11px] lg:px-6">
           <div className="flex min-w-0 items-center gap-2">
-            <Shield className="h-3 w-3 shrink-0 text-navy-400" aria-hidden="true" />
+            <Shield className="h-3 w-3 shrink-0 text-primary" aria-hidden="true" />
             <span className="truncate font-bold uppercase tracking-widest">{t('utility_portal')}</span>
-            {demoMode && <span className="hidden shrink-0 rounded-full bg-amber-400/20 px-2 py-0.5 font-bold text-amber-300 sm:inline">{t('demo_mode')}</span>}
+            {demoMode && <span className="hidden shrink-0 rounded-full bg-warning/20 px-2 py-0.5 font-bold text-warning sm:inline">{t('demo_mode')}</span>}
           </div>
           <div className="flex shrink-0 items-center gap-3">
             <span className="flex items-center gap-1.5">
               <span className={cx('h-2 w-2 rounded-full', healthDot)} aria-hidden="true" />
               <span className="hidden sm:inline">{healthLabel}</span>
             </span>
-            <span className="hidden text-slate-600 md:inline">
+            <span className="hidden text-muted-foreground md:inline">
               {t('version_label')} {health.version || '—'}
             </span>
-            <span className="hidden text-slate-600 lg:inline">
+            <span className="hidden text-muted-foreground lg:inline">
               <Clock />
             </span>
             <button onClick={helpAction} className="flex items-center gap-1 font-semibold" aria-label={t('help_support')}>
@@ -324,7 +324,7 @@ export default function App() {
       </div>
 
       {/* Institutional header */}
-      <header className="sticky top-0 z-30 border-b border-slate-200 bg-white/95 backdrop-blur">
+      <header className="sticky top-0 z-30 border-b border-border bg-white bg-opacity-95 backdrop-blur">
         <div className="mx-auto max-w-[1400px] px-4 lg:px-6">
           <div className="flex items-center justify-between gap-3 py-2.5">
             <div className="flex min-w-0 items-center gap-3">
@@ -337,8 +337,8 @@ export default function App() {
             <nav className="hidden items-center justify-center gap-0.5 lg:flex" aria-label="Site pages">
               {SITE_TABS.map(({ id, label }) => (
                 <button key={id} onClick={() => { if (id === 'profile') setProfileTab(null); navigate(id); }} aria-current={route === id ? 'page' : undefined}
-                  className={cx('rounded-md px-3 py-1.5 text-sm font-bold transition-colors',
-                    route === id ? 'bg-navy-50 text-navy-900' : 'text-slate-600 hover:bg-slate-50 hover:text-navy-900')}>
+className={cx('rounded-md px-3 py-1.5 text-sm font-bold transition-colors',
+                    route === id ? 'bg-background text-primary' : 'text-muted-foreground:hover:bg-muted:hover:text-primary')}>
                   {t(label)}
                 </button>
               ))}
@@ -347,15 +347,15 @@ export default function App() {
             <div className="flex shrink-0 items-center justify-end gap-2 sm:gap-3">
               <div className="relative hidden sm:block">
                 <button onClick={() => setNotifOpen((v) => !v)} aria-haspopup="true" aria-expanded={notifOpen} aria-label={t('nav_alerts')} title={t('nav_alerts')}
-                  className={cx('relative rounded-md p-2 text-slate-600 hover:bg-slate-100', notifOpen && 'bg-slate-100')}>
+                  className={cx('relative rounded-md p-2 text-muted-foreground hover:bg-muted', notifOpen && 'bg-muted')}>
                   <BellRing className="h-[18px] w-[18px]" />
                   {alertCount > 0 && <span className="absolute right-0.5 top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-red-600 px-1 text-[9px] font-bold text-white">{alertCount}</span>}
                 </button>
                 {notifOpen && (
-                  <div className="absolute right-0 top-full z-50 mt-2 w-80 max-w-[calc(100vw-2rem)] overflow-hidden rounded-lg border border-slate-200 bg-white shadow-xl">
-                    <div className="flex items-center justify-between border-b border-slate-200 bg-slate-50 px-4 py-2.5">
-                      <p className="text-xs font-bold text-navy-900">Notifications</p>
-                      <span className="rounded-full bg-navy-800 px-2 py-0.5 text-[10px] font-bold text-white">{alertCount} unread</span>
+                  <div className="absolute right-0 top-full z-50 mt-2 w-80 max-w-[calc(100vw-2rem)] overflow-hidden rounded-lg border border-border bg-white shadow-xl">
+                    <div className="flex items-center justify-between border-b border-border bg-muted px-4 py-2.5">
+                      <p className="text-xs font-bold text-primary">Notifications</p>
+                      <span className="rounded-full bg-destructive px-2 py-0.5 text-[10px] font-bold text-white">{alertCount} unread</span>
                     </div>
                     <div className="max-h-80 overflow-y-auto" role="list">
                       {recentAlerts.length === 0 ? (
@@ -372,33 +372,33 @@ export default function App() {
                       ))}
                     </div>
                     <button onClick={() => { setNotifOpen(false); setProfileTab('alerts'); navigate('profile'); }}
-                      className="block w-full border-t border-slate-200 bg-slate-50 px-4 py-2.5 text-center text-xs font-bold text-navy-800 hover:bg-slate-100">
+                      className="block w-full border-t border-border bg-muted px-4 py-2.5 text-center text-xs font-bold text-primary hover:bg-muted">
                       View all alerts →
                     </button>
                   </div>
                 )}
               </div>
               <LanguageSwitcher lang={lang} setLang={setLang} />
-              <div className="hidden items-center gap-1.5 rounded-md border border-slate-200 bg-slate-50 px-2.5 py-1.5 2xl:flex" title={t('scans_today')}>
-                <ScanLine className="h-3.5 w-3.5 text-navy-700" aria-hidden="true" />
-                <span className="text-xs font-bold text-slate-800">{scanStats.today}</span>
-                <span className="text-[10px] text-slate-400">{t('scans_today')}</span>
+              <div className="hidden items-center gap-1.5 rounded-md border border-border bg-muted/50 px-2.5 py-1.5 2xl:flex" title={t('scans_today')}>
+                <ScanLine className="h-3.5 w-3.5 text-primary" aria-hidden="true" />
+                <span className="text-xs font-bold text-primary">{scanStats.today}</span>
+                <span className="text-[10px] text-muted-foreground">{t('scans_today')}</span>
               </div>
-              <div className={cx('hidden items-center gap-1.5 rounded-md border px-2.5 py-1.5 2xl:flex', scanStats.flaggedToday > 0 ? 'border-red-200 bg-red-50' : 'border-slate-200 bg-slate-50')} title={t('flagged_today')}>
-                <AlertTriangle className={cx('h-3.5 w-3.5', scanStats.flaggedToday > 0 ? 'text-red-600' : 'text-slate-400')} aria-hidden="true" />
-                <span className={cx('text-xs font-bold', scanStats.flaggedToday > 0 ? 'text-red-700' : 'text-slate-600')}>{scanStats.flaggedToday}</span>
+              <div className={cx('hidden items-center gap-1.5 rounded-md border px-2.5 py-1.5 2xl:flex', scanStats.flaggedToday > 0 ? 'border-destructive bg-destructive/10' : 'border-border bg-muted/50')} title={t('flagged_today')}>
+                <AlertTriangle className={cx('h-3.5 w-3.5', scanStats.flaggedToday > 0 ? 'text-destructive' : 'text-muted-foreground')} aria-hidden="true" />
+                <span className={cx('text-xs font-bold', scanStats.flaggedToday > 0 ? 'text-destructive' : 'text-muted-foreground')}>{scanStats.flaggedToday}</span>
               </div>
               <button onClick={() => navigate('screening')}
-                className="hidden items-center gap-1.5 rounded-md bg-navy-800 px-3 py-1.5 text-xs font-bold text-white shadow-sm hover:bg-navy-900 sm:flex">
+                className="hidden items-center gap-1.5 rounded-md bg-primary px-3 py-1.5 text-xs font-bold text-white shadow-sm hover:bg-primary-700 sm:flex">
                 <Plus className="h-3.5 w-3.5" aria-hidden="true" /> {t('new_entry')}
               </button>
-              <button onClick={() => navigate('profile')} className="flex items-center gap-2 rounded-md border border-slate-200 bg-white py-1 pl-1 pr-2.5 shadow-sm transition-colors hover:bg-slate-50" title={officer.id}>
-                <span className="flex h-7 w-7 items-center justify-center rounded-md bg-navy-900 text-[10px] font-bold text-white" aria-hidden="true">
+              <button onClick={() => navigate('profile')} className="flex items-center gap-2 rounded-md border border-border bg-white py-1 pl-1 pr-2.5 shadow-sm transition-colors hover:bg-muted" title={officer.id}>
+                <span className="flex h-7 w-7 items-center justify-center rounded-md bg-primary text-primary-900 text-[10px] font-bold text-white" aria-hidden="true">
                   {(officer.name || 'O').split(' ').map((p) => p[0]).slice(0, 2).join('').toUpperCase()}
                 </span>
                 <span className="hidden text-left xl:block">
-                  <span className="block max-w-[9rem] truncate text-xs font-bold leading-tight text-slate-800">{officer.name}</span>
-                  <span className="block text-[10px] leading-tight text-slate-400">{t('role_immigration_officer')}</span>
+<span className="block max-w-[9rem] truncate text-xs font-bold leading-tight text-primary">{officer.name}</span>
+                    <span className="block text-[10px] leading-tight text-muted-foreground">{t('role_immigration_officer')}</span>
                 </span>
               </button>
             </div>
@@ -411,7 +411,7 @@ export default function App() {
       </header>
 
       {critical && (
-        <div className="critical-flicker z-20 flex items-center gap-3 bg-red-800 px-4 py-2 text-sm font-bold text-white">
+        <div className="critical-flicker z-20 flex items-center gap-3 bg-destructive px-4 py-2 text-sm font-bold text-white">
           <AlertTriangle className="h-4 w-4 shrink-0" aria-hidden="true" />
           <span className="flex-1 truncate">
             {t('critical_alert_banner', { person: critical.person || t('passenger_label'), tier: critical.riskTier, score: critical.riskScore })}{critical.watchlistFlagged ? t('watchlist_match_suffix') : ''}
@@ -421,23 +421,23 @@ export default function App() {
       )}
 
       {/* Mobile nav drawer */}
-      <div className={cx('fixed inset-y-0 left-0 z-40 flex w-72 flex-col border-r border-slate-200 bg-white transition-transform xl:hidden', sidebarOpen ? 'translate-x-0' : '-translate-x-full')}>
-        <div className="flex items-center justify-between border-b border-slate-200 px-4 py-4">
+      <div className={cx('fixed inset-y-0 left-0 z-40 flex w-72 flex-col border-r border-border bg-white transition-transform xl:hidden', sidebarOpen ? 'translate-x-0' : '-translate-x-full')}>
+        <div className="flex items-center justify-between border-b border-border px-4 py-4">
           <Brand />
-          <button className="rounded-md p-1.5 text-slate-500 hover:bg-slate-100" onClick={() => setSidebarOpen(false)} aria-label="Close menu">
+          <button className="rounded-md p-1.5 text-muted-foreground:hover:bg-muted" onClick={() => setSidebarOpen(false)} aria-label="Close menu">
             <X className="h-5 w-5" />
           </button>
         </div>
         <nav className="flex-1 overflow-y-auto px-3 py-4" aria-label="Mobile primary">
-          <p className="mb-2 px-2 text-[10px] font-bold uppercase tracking-wider text-slate-400">AegisBorder AI</p>
+          <p className="mb-2 px-2 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">AegisBorder AI</p>
           <ul className="space-y-1">
-            {SITE_TABS.map(({ id, label }) => {
+            {pSITE_TABS.map(({ id, label }) => {
               const active = route === id;
               return (
                 <li key={id}>
                   <button onClick={() => navigate(id)}
                     className={cx('flex w-full items-center gap-3 rounded-md px-3 py-2.5 text-sm font-semibold transition-colors',
-                      active ? 'bg-navy-800 text-white' : 'text-slate-600 hover:bg-slate-100')}>
+                      active ? 'bg-background text-white' : 'text-muted-foreground hover:bg-muted')}>
                     <span className="flex-1 text-left">{t(label)}</span>
                   </button>
                 </li>
@@ -453,11 +453,11 @@ export default function App() {
                 <li key={id}>
                   <button onClick={() => navigate(id)}
                     className={cx('flex w-full items-center gap-3 rounded-md px-3 py-2.5 text-sm font-semibold transition-colors',
-                      active ? 'bg-navy-800 text-white' : 'text-slate-600 hover:bg-slate-100')}>
+                      active ? 'bg-background text-white' : 'text-muted-foreground hover:bg-muted')}>
                     <Icon className={cx('h-[18px] w-[18px]', active ? 'text-white' : ac.text)} />
                     <span className="flex-1 text-left">{t('nav_' + id)}</span>
                     {id === 'alerts' && alertCount > 0 && (
-                      <span className={cx('rounded-full px-2 py-0.5 text-[10px] font-bold', active ? 'bg-white text-navy-800' : 'bg-red-100 text-red-700')}>{alertCount}</span>
+                      <span className={cx('rounded-full px-2 py-0.5 text-[10px] font-bold', active ? 'bg-white text-primary' : 'bg-muted text-destructive')}>{alertCount}</span>
                     )}
                   </button>
                 </li>
@@ -466,12 +466,12 @@ export default function App() {
           </ul>
         </nav>
         <div className="border-t border-slate-200 px-4 py-3">
-          <div className="text-xs font-semibold text-slate-800">{officer.name}</div>
-          <div className="text-[10px] font-mono text-slate-400">{officer.id}</div>
-          <div className="mt-1 text-[10px] text-slate-400">{officer.checkpoint}</div>
+          <div className="text-xs font-semibold text-primary">{officer.name}</div>
+          <div className="text-[10px] font-mono text-muted-foreground">{officer.id}</div>
+          <div className="mt-1 text-[10px] text-muted-foreground">{officer.checkpoint}</div>
         </div>
       </div>
-      {sidebarOpen && <div className="fixed inset-0 z-30 bg-navy-950/50 xl:hidden" aria-hidden="true" onClick={() => setSidebarOpen(false)} />}
+      {sidebarOpen && <div className="fixed inset-0 z-30 bg-muted/50 xl:hidden" aria-hidden="true" onClick={() => setSidebarOpen(false)} />}
 
       <main className="flex-1 pb-10">
         {route === 'home' && <Home onNavigate={navigate} />}
