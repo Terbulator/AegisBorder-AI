@@ -15,13 +15,13 @@ export default {
         // Design system colors — mapped to CSS custom properties
         primary: 'var(--color-primary)',
         'primary-hover': 'var(--color-primary-hover)',
-        on-primary: 'var(--color-on-primary)',
+        'on-primary': 'var(--color-on-primary)',
 
         secondary: 'var(--color-secondary)',
-        on-secondary: 'var(--color-on-secondary)',
+        'on-secondary': 'var(--color-on-secondary)',
 
         accent: 'var(--color-accent)',
-        on-accent: 'var(--color-on-accent)',
+        'on-accent': 'var(--color-on-accent)',
 
         background: 'var(--color-background)',
         foreground: 'var(--color-foreground)',

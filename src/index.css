@@ -1,3 +1,6 @@
+@import "tailwindcss";
+@config "../tailwind.config.js";
+
 /* Rakshak AI Integrated Screening Station — Light Design System
    Based on UI Pro Max recommendations for government/public sector professional light mode.
    Pattern: Minimalism & Swiss Style | Colors: Professional navy + blue CTA
