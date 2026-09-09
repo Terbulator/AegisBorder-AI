@@ -2,6 +2,7 @@ import { Compass, Layers, Eye, Info } from 'lucide-react';
 import { accent } from '../../components/ui';
 import { PageHeading, SectionTitle } from '../../components/PublicSite';
 import { VERIFICATIONS } from './verifications';
+import useNavigate from '../../hooks/useNavigate';
 
 const ECOSYSTEM = VERIFICATIONS.map(({ icon, accent: a, label }) => ({ icon, accent: a, label }));
 
@@ -13,7 +14,8 @@ const WORKFLOW = [
   { step: 'Audit', detail: 'A signed certificate documents the outcome.' },
 ];
 
-export default function About({ onNavigate }) {
+export default function About() {
+  const onNavigate = useNavigate();
   return (
     <div>
       <PageHeading

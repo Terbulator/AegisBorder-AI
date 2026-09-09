@@ -1,8 +1,10 @@
 import { ArrowRight, ArrowUpRight, CheckCircle2, ScanLine, Landmark } from 'lucide-react';
 import { accent, cx } from '../../components/ui';
 import { VERIFICATIONS } from './verifications';
+import useNavigate from '../../hooks/useNavigate';
 
-export default function VerificationLanding({ kind, onNavigate }) {
+export default function VerificationLanding({ kind }) {
+  const onNavigate = useNavigate();
   const v = VERIFICATIONS.find((x) => x.kind === kind) || VERIFICATIONS[0];
   const ac = accent(v.accent);
   const Icon = v.icon;

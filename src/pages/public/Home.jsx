@@ -4,6 +4,7 @@ import {
 } from 'lucide-react';
 import { accent } from '../../components/ui';
 import { VERIFICATIONS } from './verifications';
+import useNavigate from '../../hooks/useNavigate';
 
 const PROCESS = [
   { n: '01', title: 'Submit', text: 'Upload a document scan, paste text, or share a link.' },
@@ -27,7 +28,8 @@ const PIPELINE = [
   'Screening Decision',
 ];
 
-export default function Home({ onNavigate }) {
+export default function Home() {
+  const onNavigate = useNavigate();
   const enter = () => onNavigate('dashboard');
   return (
     <div>

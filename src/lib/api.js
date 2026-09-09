@@ -1,10 +1,27 @@
 const BASE = (import.meta.env.VITE_API_URL || '/api').replace(/\/$/, '');
+const TIMEOUT_MS = 30_000;
 
-async function req(path, options) {
-  const res = await fetch(`${BASE}${path}`, options);
-  const data = await res.json().catch(() => ({}));
-  if (!res.ok) throw new Error(data.detail || `Request failed (${res.status})`);
-  return data;
+async function req(path, options, { retries = 1 } = {}) {
+  let lastError;
+  for (let attempt = 0; attempt <= retries; attempt++) {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), TIMEOUT_MS);
+    try {
+      const res = await fetch(`${BASE}${path}`, { ...options, signal: controller.signal });
+      clearTimeout(timer);
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.detail || `Request failed (${res.status})`);
+      return data;
+    } catch (err) {
+      clearTimeout(timer);
+      lastError = err;
+      if (err?.name === 'AbortError') {
+        lastError = new Error('Request timed out');
+      }
+      if (attempt < retries) await new Promise(r => setTimeout(r, 500));
+    }
+  }
+  throw lastError;
 }
 
 export function apiHealth() {

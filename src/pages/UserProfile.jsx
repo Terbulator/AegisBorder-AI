@@ -12,6 +12,7 @@ import { getHistory, getAlerts, clearHistory, formatTime, tierMeta, kpisFromHist
 import { RiskBadge, SeverityBadge } from '../components/Detection';
 import { listLanguages } from '../i18n';
 import { toast } from '../components/Toast';
+import useNavigate from '../hooks/useNavigate';
 
 const TABS = [
   { id: 'overview', label: 'Overview', icon: User },
@@ -19,7 +20,8 @@ const TABS = [
   { id: 'account', label: 'Account', icon: SettingsIcon },
 ];
 
-export default function UserProfile({ onNavigate, officer, health, lang, setLang, tab: initialTab = 'overview' }) {
+export default function UserProfile({ officer, health, lang, setLang, tab: initialTab = 'overview' }) {
+  const onNavigate = useNavigate();
   const [tab, setTab] = useState(initialTab);
 
   const screenings = useMemo(() => getHistory(), []);

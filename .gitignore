@@ -47,3 +47,5 @@ __pycache__/
 backend/bcp-audit-logs/
 backend/data/biometric_audit.jsonl
 .vercel
+
+.env

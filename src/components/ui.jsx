@@ -4,10 +4,8 @@ import { twMerge } from 'tailwind-merge';
 import { motion } from 'framer-motion';
 import { CheckCircle2, Info, AlertTriangle, XCircle, X, Loader2, ArrowUp, ArrowDown, ChevronDown, ShieldAlert as ShieldAlertIcon, MapPin } from 'lucide-react';
 import { AnimatedModal, MotionButton, EASE } from './motion';
-
-export function cx(...parts) {
-  return twMerge(clsx(parts));
-}
+import { cx } from '../lib/cn';
+export { cx } from '../lib/cn';
 
 /* ------------------------------------------------------------
    Feature accent system — controlled multi-palette foundation.

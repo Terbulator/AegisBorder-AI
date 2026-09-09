@@ -3,10 +3,12 @@ import { CheckCircle2, ScanLine, Search, ArrowUpRight } from 'lucide-react';
 import { accent } from '../../components/ui';
 import { PageHeading } from '../../components/PublicSite';
 import { VERIFICATIONS } from './verifications';
+import useNavigate from '../../hooks/useNavigate';
 
 const CATEGORIES = VERIFICATIONS.map((v) => ({ label: v.label, ids: [v.kind] }));
 
-export default function Features({ onNavigate }) {
+export default function Features() {
+  const onNavigate = useNavigate();
   const [query, setQuery] = useState('');
 
   const filtered = useMemo(() => {

@@ -2,7 +2,7 @@ import { useSyncExternalStore } from 'react';
 
 const HISTORY_KEY = 'rakshak_history_v1';
 const ALERTS_KEY = 'rakshak_alerts_v1';
-const MAX_RECORDS = 60;
+const MAX_RECORDS = 200;
 
 /* ----------------------------------------------------------
    Lightweight reactive store. Pages subscribe instead of
@@ -126,7 +126,7 @@ export function addThreatToHistory(opType, result, meta = {}) {
   const list = getHistory();
   const tier = riskTierFromScore(result?.riskScore);
   const record = {
-    id: `TH-${Date.now()}`,
+    id: `TH-${crypto.randomUUID()}`,
     ts: new Date().toISOString(),
     operationType: opType,
     person: OPERATION_LABELS[opType] || opType,
@@ -208,7 +208,7 @@ export function getHistory() {
 
 export function addToHistory(screening, meta) {
   const list = getHistory();
-  const record = recordFromScreening(`SC-${Date.now()}`, screening, meta);
+  const record = recordFromScreening(`SC-${crypto.randomUUID()}`, screening, meta);
   list.unshift(record);
   write(HISTORY_KEY, list.slice(0, MAX_RECORDS));
   return record;

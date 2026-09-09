@@ -1,4 +1,7 @@
+import { useRef, useState, useEffect } from 'react';
 import { motion, AnimatePresence, MotionConfig } from 'framer-motion';
+import { cx } from '../lib/cn';
+import { useReducedMotion } from '../hooks/useReducedMotion';
 
 export const EASE = [0.22, 1, 0.36, 1];
 
@@ -123,6 +126,7 @@ export function Sheet({ open, children, onClose, position = 'bottom', className 
     <AnimatePresence>
       {open && (
         <motion.div className={`fixed inset-0 z-50 flex ${align} ${className || ''}`}
+          role="dialog" aria-modal="true" aria-label="Sheet"
           initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.15 }}>
           <div className="absolute inset-0 bg-navy-950/60" aria-hidden="true" onClick={onClose} />
           <motion.div
@@ -158,5 +162,77 @@ export function MotionButton({ children, className, ...rest }) {
     >
       {children}
     </motion.button>
+  );
+}
+
+export function ScrollReveal({ children, className, delay = 0, threshold = 0.15 }) {
+  const ref = useRef(null);
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    if (useReducedMotion()) { setVisible(true); return; }
+    const el = ref.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) { setVisible(true); obs.disconnect(); } },
+      { threshold }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, [threshold]);
+
+  return (
+    <motion.div
+      ref={ref}
+      className={className}
+      initial={{ opacity: 0, y: 12 }}
+      animate={visible ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 0.3, delay, ease: EASE }}
+    >
+      {children}
+    </motion.div>
+  );
+}
+
+export function HoverLift({ children, className, ...rest }) {
+  return (
+    <motion.div
+      className={className}
+      whileHover={{ y: -2, boxShadow: '0 4px 16px rgba(0,0,0,0.06)' }}
+      transition={{ duration: 0.18, ease: EASE }}
+      {...rest}
+    >
+      {children}
+    </motion.div>
+  );
+}
+
+export function TapScale({ children, className, ...rest }) {
+  return (
+    <motion.div
+      className={className}
+      whileTap={{ scale: 0.98 }}
+      transition={{ duration: 0.12, ease: EASE }}
+      {...rest}
+    >
+      {children}
+    </motion.div>
+  );
+}
+
+export function StatusPulse({ color = 'emerald', className }) {
+  const colorMap = {
+    emerald: 'bg-emerald-500',
+    amber: 'bg-amber-500',
+    red: 'bg-red-500',
+    blue: 'bg-blue-500',
+    slate: 'bg-slate-400',
+  };
+  const dot = colorMap[color] || colorMap.slate;
+  return (
+    <span className={cx('relative flex h-2.5 w-2.5', className)} aria-hidden="true">
+      <span className={cx('absolute inline-flex h-full w-full animate-ping rounded-full opacity-40', dot)} />
+      <span className={cx('relative inline-flex h-2.5 w-2.5 rounded-full', dot)} />
+    </span>
   );
 }

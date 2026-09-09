@@ -11,6 +11,7 @@ import { getHistory, formatTime, kpisFromHistory, tierMeta, analyticsFromHistory
 import { apiHealth } from '../lib/api';
 import { useT } from '../i18n';
 import { StaggerContainer, StaggerItem } from '../components/motion';
+import useNavigate from '../hooks/useNavigate';
 
 const TIER_FILL = { LOW: '#059669', MODERATE: '#d97706', HIGH: '#ea580c', CRITICAL: '#dc2626' };
 const TIER_ORDER = ['LOW', 'MODERATE', 'HIGH', 'CRITICAL'];
@@ -37,8 +38,9 @@ function ReviewStatus({ r, t }) {
   return <Badge color={meta.color}>{label}</Badge>;
 }
 
-export default function Dashboard({ onNavigate, demoMode }) {
+export default function Dashboard({ demoMode }) {
   const { t } = useT();
+  const onNavigate = useNavigate();
   const history = useStore(getHistory);
   const kpis = kpisFromHistory();
   const data = analyticsFromHistory();
@@ -98,20 +100,25 @@ export default function Dashboard({ onNavigate, demoMode }) {
         </StaggerItem>
 
         <StaggerItem>
-              <div className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-6">
-          <MetricCard icon={FileText} label={t('metric_docs_screened')} value={kpis.screened}
-            tone="document" delta={split(() => true).delta} hint={t('delta_24h')} />
-          <MetricCard icon={ScanFace} label={t('metric_identities_verified')} value={kpis.cleared}
-            tone="identity" delta={split((r) => tierMeta(r.riskTier).order === 0).delta} hint={t('delta_24h')} />
-          <MetricCard icon={ClipboardList} label={t('metric_pending_reviews')} value={kpis.review}
-            tone="amber" delta={split((r) => tierMeta(r.riskTier).order === 1).delta} hint={t('delta_24h')} />
-          <MetricCard icon={Flag} label={t('metric_high_risk')} value={highRisk}
-            tone="orange" delta={split((r) => r.riskTier === 'HIGH').delta} hint={t('delta_24h')} />
-          <MetricCard icon={ShieldAlert} label={t('metric_critical_flags')} value={criticalFlags}
-            tone="red" delta={split((r) => r.riskTier === 'CRITICAL' || r.watchlistFlagged).delta} hint={t('delta_24h')} />
-          <MetricCard icon={BellRing} label={t('metric_threat_signals')} value={threatSignals}
-            tone="threat" delta={split((r) => r.operationType && (tierMeta(r.riskTier).order >= 2 || r.riskScore >= 50)).delta} hint={t('delta_24h')} />
+          <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+            <MetricCard icon={FileText} label={t('metric_docs_screened')} value={kpis.screened}
+              tone="document" delta={split(() => true).delta} hint={t('delta_24h')} />
+            <MetricCard icon={ScanFace} label={t('metric_identities_verified')} value={kpis.cleared}
+              tone="identity" delta={split((r) => tierMeta(r.riskTier).order === 0).delta} hint={t('delta_24h')} />
+            <MetricCard icon={Flag} label={t('metric_high_risk')} value={highRisk}
+              tone="orange" delta={split((r) => r.riskTier === 'HIGH').delta} hint={t('delta_24h')} />
+            <MetricCard icon={ShieldAlert} label={t('metric_critical_flags')} value={criticalFlags}
+              tone="red" delta={split((r) => r.riskTier === 'CRITICAL' || r.watchlistFlagged).delta} hint={t('delta_24h')} />
           </div>
+          <details className="mt-3 rounded-lg border border-slate-200 bg-white">
+            <summary className="cursor-pointer px-4 py-2.5 text-xs font-bold text-slate-500 hover:text-slate-700">Operational detail</summary>
+            <div className="grid grid-cols-2 gap-3 border-t border-slate-100 p-4 lg:grid-cols-2">
+              <MetricCard icon={ClipboardList} label={t('metric_pending_reviews')} value={kpis.review}
+                tone="amber" delta={split((r) => tierMeta(r.riskTier).order === 1).delta} hint={t('delta_24h')} />
+              <MetricCard icon={BellRing} label={t('metric_threat_signals')} value={threatSignals}
+                tone="threat" delta={split((r) => r.operationType && (tierMeta(r.riskTier).order >= 2 || r.riskScore >= 50)).delta} hint={t('delta_24h')} />
+            </div>
+          </details>
         </StaggerItem>
 
         <StaggerItem>
