@@ -1,4 +1,4 @@
-import { Route, Switch } from 'wouter';
+import { Route, Switch, Router } from 'wouter';
 import { lazy, Suspense } from 'react';
 import PublicLayout from './layouts/PublicLayout';
 import OpsLayout from './layouts/OpsLayout';
@@ -44,6 +44,7 @@ function OpsPage({ children }) {
 
 export default function AppRouter() {
   return (
+    <Router>
     <Switch>
       <Route path="/" component={() => <PublicPage><Home /></PublicPage>} />
       <Route path="/features" component={() => <PublicPage><Features /></PublicPage>} />
@@ -70,5 +71,6 @@ export default function AppRouter() {
 
       <Route component={NotFoundPage} />
     </Switch>
+    </Router>
   );
 }
