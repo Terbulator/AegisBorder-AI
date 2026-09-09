@@ -431,7 +431,7 @@ className={cx('rounded-md px-3 py-1.5 text-sm font-bold transition-colors',
         <nav className="flex-1 overflow-y-auto px-3 py-4" aria-label="Mobile primary">
           <p className="mb-2 px-2 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">AegisBorder AI</p>
           <ul className="space-y-1">
-            {pSITE_TABS.map(({ id, label }) => {
+            {SITE_TABS.map(({ id, label }) => {
               const active = route === id;
               return (
                 <li key={id}>
