@@ -131,7 +131,7 @@ export default function NewOperation({ healthState, onRefresh }) {
                 title={group.title}
                 icon={GroupIcon(group.accent)}
               />
-              <p className="mt-1 text-[13px] leading-relaxed text-slate-500">{group.description}</p>
+              <p className="mt-1 text-[13px] leading-relaxed text-muted-foreground">{group.description}</p>
             </div>
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
               {group.ops.map((o) => (
@@ -151,7 +151,7 @@ export default function NewOperation({ healthState, onRefresh }) {
           </section>
         ))}
 
-        <p className="flex items-center gap-1.5 pt-2 text-[11.5px] text-slate-400">
+        <p className="flex items-center gap-1.5 pt-2 text-[11.5px] text-muted-foreground/60">
           <ShieldCheck className="h-3.5 w-3.5" aria-hidden="true" />
           {t('privacy_note')}
         </p>

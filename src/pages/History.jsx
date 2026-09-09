@@ -108,13 +108,13 @@ export default function History() {
             ].map((f) => (
               <button key={f.id} onClick={() => { setFilter(f.id); setPage(0); }}
                 className={cx('rounded-md px-4 py-1.5 text-sm font-semibold transition-colors',
-                  filter === f.id ? 'bg-navy-800 text-white' : 'border border-slate-300 bg-white text-slate-600 hover:bg-slate-50')}>
+                  filter === f.id ? 'bg-navy-800 text-white' : 'border border-border-strong bg-white text-foreground/70 hover:bg-surface-muted')}>
                 {f.label}
               </button>
             ))}
           </div>
           <div className="relative md:w-72">
-            <Search className="pointer-events-none absolute left-3 top-2.5 h-4 w-4 text-slate-400" />
+            <Search className="pointer-events-none absolute left-3 top-2.5 h-4 w-4 text-muted-foreground/60" />
             <input value={query} onChange={(e) => { setQuery(e.target.value); setPage(0); }} placeholder={t('search_placeholder')}
               aria-label={t('search_placeholder')}
               className="ctl-input rounded-md bg-white pl-9" />
@@ -155,20 +155,20 @@ export default function History() {
                         <tr key={r.id}>
                           <td className="font-mono text-xs text-navy-700">{r.id}</td>
                           <td>
-                            <div className="font-semibold text-slate-900">{r.person}</div>
-                            <div className="text-xs text-slate-400">{secondsAgo(r.ts)}</div>
+                            <div className="font-semibold text-foreground">{r.person}</div>
+                            <div className="text-xs text-muted-foreground/60">{secondsAgo(r.ts)}</div>
                           </td>
                           <td>
-                            <div className="font-mono text-xs text-slate-600">{r.documentNumber}</div>
-                            <div className="text-xs text-slate-400">{r.documentType} · {r.nationality || '—'}</div>
+                            <div className="font-mono text-xs text-foreground/70">{r.documentNumber}</div>
+                            <div className="text-xs text-muted-foreground/60">{r.documentType} · {r.nationality || '—'}</div>
                           </td>
                           <td>
                             <Badge color={tierSeverityColor(r.riskTier)}>{t('tier_' + r.riskTier)}</Badge>
-                            <span className="ml-1.5 text-xs font-semibold tabular-nums text-slate-400">{r.riskScore}%</span>
+                            <span className="ml-1.5 text-xs font-semibold tabular-nums text-muted-foreground/60">{r.riskScore}%</span>
                           </td>
-                          <td className="text-xs text-slate-500">{r.decision}</td>
+                          <td className="text-xs text-muted-foreground">{r.decision}</td>
                           <td>{r.source === 'scenario' ? <Badge color="amber">{t('demo')}</Badge> : <Badge color="blue">{t('live')}</Badge>}</td>
-                          <td className="text-xs tabular-nums text-slate-400">{formatTime(r.ts)}</td>
+                          <td className="text-xs tabular-nums text-muted-foreground/60">{formatTime(r.ts)}</td>
                           <td className="text-right">
                             <div className="flex items-center justify-end gap-1">
                               <Button variant="secondary" className="!px-2 !py-1 text-xs" onClick={() => setSelected(r)}>
@@ -191,19 +191,19 @@ export default function History() {
             <div className="space-y-2 lg:hidden">
               {view.map((r) => {
                 return (
-                  <div key={r.id} className="rounded-md border border-slate-200 bg-white p-4">
+                  <div key={r.id} className="rounded-md border border-border bg-white p-4">
                     <div className="flex items-center justify-between">
                       <button className="min-w-0 text-left" onClick={() => setSelected(r)}>
-                        <div className="flex items-center gap-2 font-semibold text-slate-900">
+                        <div className="flex items-center gap-2 font-semibold text-foreground">
                           <span className="truncate">{r.person}</span>
                           <Badge color={tierSeverityColor(r.riskTier)}>{t('tier_' + r.riskTier)}</Badge>
                         </div>
-                        <div className="mt-0.5 font-mono text-xs text-slate-400">{r.documentNumber} · {secondsAgo(r.ts)}</div>
+                        <div className="mt-0.5 font-mono text-xs text-muted-foreground/60">{r.documentNumber} · {secondsAgo(r.ts)}</div>
                       </button>
                       <Badge color={r.source === 'scenario' ? 'amber' : 'blue'}>{r.source === 'scenario' ? t('demo') : t('live')}</Badge>
                     </div>
-                    <div className="mt-3 flex items-center justify-between border-t border-slate-100 pt-2">
-                      <div className="text-xs text-slate-500">{r.decision} · <span className="font-bold">{r.riskScore}%</span></div>
+                    <div className="mt-3 flex items-center justify-between border-t border-border/50 pt-2">
+                      <div className="text-xs text-muted-foreground">{r.decision} · <span className="font-bold">{r.riskScore}%</span></div>
                       <div className="flex items-center gap-1">
                         <Button variant="secondary" className="!px-3 !py-1 text-xs" onClick={() => setSelected(r)}>{t('view_report')}</Button>
                         <IconButton label={t('delete_record')} onClick={() => setConfirmDelete(r)}>
@@ -244,7 +244,7 @@ export default function History() {
           </>
         }
       >
-        <p className="text-sm text-slate-600">
+        <p className="text-sm text-foreground/70">
           {t('delete_confirm', { id: confirmDelete?.id })}
         </p>
       </Modal>
@@ -318,8 +318,8 @@ function CaseDetail({ record: r, t, onClose, onConfirmDelete }) {
           </div>
         </div>
 
-        <div className="rounded-md border border-slate-200 bg-white p-5 shadow-xl sm:p-6">
-          <div className="grid grid-cols-2 gap-4 border-b border-slate-200 pb-4 md:grid-cols-4">
+        <div className="rounded-md border border-border bg-white p-5 shadow-xl sm:p-6">
+          <div className="grid grid-cols-2 gap-4 border-b border-border pb-4 md:grid-cols-4">
             <Meta k={t('status')} v={<ReviewStatusLabel r={r} t={t} />} />
             <Meta k={t('risk_level')} v={<><span className="font-bold">{r.riskScore}%</span> {t('tier_' + r.riskTier)}</>} />
             <Meta k={t('tl_created')} v={formatTime(r.ts)} />
@@ -353,20 +353,20 @@ function CaseDetail({ record: r, t, onClose, onConfirmDelete }) {
               <PanelHeading icon={Flag} text={t('risk_analysis')} />
               <div className="mt-2 space-y-2">
                 <div>
-                  <div className="flex items-center justify-between text-xs font-semibold text-slate-500">
+                  <div className="flex items-center justify-between text-xs font-semibold text-muted-foreground">
                     <span>{t('risk_score')}</span><span className="tabular-nums">{r.riskScore}/100</span>
                   </div>
-                  <div className="mt-1 h-2 overflow-hidden rounded-full bg-slate-100" aria-hidden="true">
+                  <div className="mt-1 h-2 overflow-hidden rounded-full bg-surface-muted" aria-hidden="true">
                     <div className={cx('h-full rounded-full', tierColorBar(r.riskTier))} style={{ width: `${Math.max(2, r.riskScore)}%` }} />
                   </div>
                 </div>
                 {r.confidence != null && <InfoRow label={t('confidence_label')} value={`${r.confidence}%`} />}
                 {factors.length === 0 ? (
-                  <p className="text-xs text-slate-400">{t('no_indicators')}</p>
+                  <p className="text-xs text-muted-foreground/60">{t('no_indicators')}</p>
                 ) : factors.length <= 3 ? (
                   <ul className="space-y-1.5">
                     {factors.map((f, i) => (
-                      <li key={i} className="flex items-start gap-2 rounded-md border border-slate-200 bg-slate-50 px-3 py-2 text-xs text-slate-700">
+                      <li key={i} className="flex items-start gap-2 rounded-md border border-border bg-surface-muted px-3 py-2 text-xs text-foreground/80">
                         <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-red-400" aria-hidden="true" />{f}
                       </li>
                     ))}
@@ -374,7 +374,7 @@ function CaseDetail({ record: r, t, onClose, onConfirmDelete }) {
                 ) : (
                   <ul className="space-y-1.5">
                     {factors.slice(0, 3).map((f, i) => (
-                      <li key={i} className="flex items-start gap-2 rounded-md border border-slate-200 bg-slate-50 px-3 py-2 text-xs text-slate-700">
+                      <li key={i} className="flex items-start gap-2 rounded-md border border-border bg-surface-muted px-3 py-2 text-xs text-foreground/80">
                         <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-red-400" aria-hidden="true" />{f}
                       </li>
                     ))}
@@ -384,7 +384,7 @@ function CaseDetail({ record: r, t, onClose, onConfirmDelete }) {
                   <ExpandableSection className="mt-2" title={`${t('all_indicators')} (${factors.length})`}>
                     <ul className="space-y-1.5">
                       {factors.slice(3).map((f, i) => (
-                        <li key={i} className="flex items-start gap-2 rounded-md border border-slate-200 bg-slate-50 px-3 py-2 text-xs text-slate-700">
+                        <li key={i} className="flex items-start gap-2 rounded-md border border-border bg-surface-muted px-3 py-2 text-xs text-foreground/80">
                           <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-red-400" aria-hidden="true" />{f}
                         </li>
                       ))}
@@ -395,7 +395,7 @@ function CaseDetail({ record: r, t, onClose, onConfirmDelete }) {
             </section>
           </div>
 
-          <div className="mt-6 border-t border-slate-200 pt-5">
+          <div className="mt-6 border-t border-border pt-5">
             <PanelHeading icon={Clock} text={t('activity_timeline')} />
             <ol className="mt-3 space-y-0">
               {timeline.map((x, i) => (
@@ -405,8 +405,8 @@ function CaseDetail({ record: r, t, onClose, onConfirmDelete }) {
                     {i < timeline.length - 1 && <span className="w-px flex-1 bg-slate-200" />}
                   </span>
                   <div className="min-w-0 pb-1">
-                    <p className="text-sm font-semibold text-slate-800">{x.label}</p>
-                    <p className="text-xs text-slate-500">{x.detail}</p>
+                    <p className="text-sm font-semibold text-foreground">{x.label}</p>
+                    <p className="text-xs text-muted-foreground">{x.detail}</p>
                   </div>
                 </li>
               ))}
@@ -450,8 +450,8 @@ function PanelHeading({ icon: Icon, text }) {
 function InfoRow({ label, value, mono }) {
   return (
     <div className="flex items-start justify-between gap-3 py-2">
-      <span className="shrink-0 text-xs font-medium text-slate-500">{label}</span>
-      <span className={cx('text-right text-xs font-semibold text-slate-900', mono && 'font-mono text-[11px]')}>{value || '—'}</span>
+      <span className="shrink-0 text-xs font-medium text-muted-foreground">{label}</span>
+      <span className={cx('text-right text-xs font-semibold text-foreground', mono && 'font-mono text-[11px]')}>{value || '—'}</span>
     </div>
   );
 }
@@ -459,8 +459,8 @@ function InfoRow({ label, value, mono }) {
 function Meta({ k, v }) {
   return (
     <div>
-      <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400">{k}</div>
-      <div className="mt-1 text-sm font-semibold text-slate-900">{v}</div>
+      <div className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground/60">{k}</div>
+      <div className="mt-1 text-sm font-semibold text-foreground">{v}</div>
     </div>
   );
 }

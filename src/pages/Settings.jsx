@@ -3,7 +3,7 @@ import { User, MapPin, Languages, FlaskConical, Check, Save, Shield, Server, Act
 import { Badge, Button, Card, cx, PageHeader } from '../components/ui';
 import { useT, listLanguages } from '../i18n';
 
-const labelCls = 'mb-1 block text-xs font-semibold text-slate-700';
+const labelCls = 'mb-1 block text-xs font-semibold text-foreground/80';
 
 export default function SettingsPage({ demoMode, setDemoMode, health }) {
   const { lang, setLang, t } = useT();
@@ -48,7 +48,7 @@ export default function SettingsPage({ demoMode, setDemoMode, health }) {
               <span className="flex h-8 w-8 items-center justify-center rounded-md border border-indigo-200 bg-indigo-50 text-indigo-700" aria-hidden="true">
                 <User className="h-4 w-4" />
               </span>
-              <h2 className="text-sm font-bold text-slate-900">{t('officer_profile')}</h2>
+              <h2 className="text-sm font-bold text-foreground">{t('officer_profile')}</h2>
             </div>
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
               <div>
@@ -62,7 +62,7 @@ export default function SettingsPage({ demoMode, setDemoMode, health }) {
               <div>
                 <label className={labelCls}>{t('checkpoint_counter')}</label>
                 <div className="relative">
-                  <MapPin className="pointer-events-none absolute left-3 top-2.5 h-4 w-4 text-slate-400" />
+                  <MapPin className="pointer-events-none absolute left-3 top-2.5 h-4 w-4 text-muted-foreground/60" />
                   <input value={officer.checkpoint} onChange={(e) => setOfficer({ ...officer, checkpoint: e.target.value })} className={cx('ctl-input', 'pl-9')} />
                 </div>
               </div>
@@ -76,12 +76,12 @@ export default function SettingsPage({ demoMode, setDemoMode, health }) {
           <Card className="p-5">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div className="flex items-center gap-2">
-                <span className="flex h-8 w-8 items-center justify-center rounded-md border border-slate-200 bg-slate-100 text-slate-700" aria-hidden="true">
+                <span className="flex h-8 w-8 items-center justify-center rounded-md border border-border bg-surface-muted text-foreground/80" aria-hidden="true">
                   <FlaskConical className="h-4 w-4" />
                 </span>
                 <div>
-                  <h2 className="text-sm font-bold text-slate-900">{t('demo_mode_title')}</h2>
-                  <p className="text-xs text-slate-500">{t('demo_mode_hint')}</p>
+                  <h2 className="text-sm font-bold text-foreground">{t('demo_mode_title')}</h2>
+                  <p className="text-xs text-muted-foreground">{t('demo_mode_hint')}</p>
                 </div>
               </div>
               <button onClick={toggleDemo} role="switch" aria-checked={demoMode} aria-label={t('toggle_demo')}
@@ -98,16 +98,16 @@ export default function SettingsPage({ demoMode, setDemoMode, health }) {
               <span className="flex h-8 w-8 items-center justify-center rounded-md border border-sky-200 bg-sky-50 text-sky-700" aria-hidden="true">
                 <Languages className="h-4 w-4" />
               </span>
-              <h2 className="text-sm font-bold text-slate-900">{t('language_title')}</h2>
+              <h2 className="text-sm font-bold text-foreground">{t('language_title')}</h2>
             </div>
-            <p className="mt-1 text-sm text-slate-500">{t('language_desc')}</p>
-            <div className="mt-3 grid max-h-80 grid-cols-1 overflow-y-auto gap-1 rounded-md border border-slate-200 p-2 sm:grid-cols-2 lg:grid-cols-3">
+            <p className="mt-1 text-sm text-muted-foreground">{t('language_desc')}</p>
+            <div className="mt-3 grid max-h-80 grid-cols-1 overflow-y-auto gap-1 rounded-md border border-border p-2 sm:grid-cols-2 lg:grid-cols-3">
               {listLanguages().map(({ code, name, native }) => (
                 <button key={code} onClick={() => setLang(code)}
-                  className={cx('flex items-center justify-between gap-2 rounded-md px-3 py-2 text-sm hover:bg-slate-100',
-                    lang === code ? 'bg-navy-50 font-bold text-navy-800' : 'text-slate-700')}>
+                  className={cx('flex items-center justify-between gap-2 rounded-md px-3 py-2 text-sm hover:bg-surface-muted',
+                    lang === code ? 'bg-navy-50 font-bold text-navy-800' : 'text-foreground/80')}>
                   <span>{native}</span>
-                  <span className={cx('text-[11px]', lang === code ? 'text-navy-700' : 'text-slate-400')}>{name}</span>
+                  <span className={cx('text-[11px]', lang === code ? 'text-navy-700' : 'text-muted-foreground/60')}>{name}</span>
                   {lang === code && <Check className="h-4 w-4 text-navy-800" />}
                 </button>
               ))}
@@ -117,14 +117,14 @@ export default function SettingsPage({ demoMode, setDemoMode, health }) {
           <div className="flex flex-col gap-5">
             <Card className="p-5">
               <div className="flex items-center gap-2">
-                <span className="flex h-8 w-8 items-center justify-center rounded-md border border-slate-200 bg-slate-100 text-slate-700" aria-hidden="true">
+                <span className="flex h-8 w-8 items-center justify-center rounded-md border border-border bg-surface-muted text-foreground/80" aria-hidden="true">
                   <Server className="h-4 w-4" />
                 </span>
-                <h2 className="text-sm font-bold text-slate-900">{t('system_status')}</h2>
+                <h2 className="text-sm font-bold text-foreground">{t('system_status')}</h2>
               </div>
               <dl className="mt-3 space-y-2 text-sm">
                 <div className="flex items-center justify-between">
-                  <dt className="flex items-center gap-2 text-slate-600"><Activity className="h-4 w-4 text-slate-400" /> {t('screening_engine')}</dt>
+                  <dt className="flex items-center gap-2 text-foreground/70"><Activity className="h-4 w-4 text-muted-foreground/60" /> {t('screening_engine')}</dt>
                   <dd>
                     <Badge color={healthState === 'online' ? 'green' : healthState === 'offline' ? 'red' : 'amber'}>
                       {healthState === 'online' ? t('online') : healthState === 'offline' ? t('offline') : t('checking')}
@@ -132,19 +132,19 @@ export default function SettingsPage({ demoMode, setDemoMode, health }) {
                   </dd>
                 </div>
                 <div className="flex items-center justify-between">
-                  <dt className="text-slate-600">{t('version_label')}</dt>
-                  <dd className="font-mono text-xs text-slate-500">{health?.version || '1.0.0'}</dd>
+                  <dt className="text-foreground/70">{t('version_label')}</dt>
+                  <dd className="font-mono text-xs text-muted-foreground">{health?.version || '1.0.0'}</dd>
                 </div>
                 <div className="flex items-center justify-between">
-                  <dt className="text-slate-600">{t('watchlist_verification')}</dt>
+                  <dt className="text-foreground/70">{t('watchlist_verification')}</dt>
                   <dd><Badge color={healthState === 'online' ? 'green' : 'red'}>{healthState === 'online' ? t('loaded') : t('unavailable')}</Badge></dd>
                 </div>
               </dl>
             </Card>
 
             <Card className="p-5">
-              <h2 className="mb-2 text-[13px] font-bold text-slate-900">{t('coming_soon')}</h2>
-              <ul className="space-y-1 text-sm text-slate-500">
+              <h2 className="mb-2 text-[13px] font-bold text-foreground">{t('coming_soon')}</h2>
+              <ul className="space-y-1 text-sm text-muted-foreground">
                 <li>• {t('upcoming_db')}</li>
                 <li>• {t('upcoming_watchlist')}</li>
                 <li>• {t('upcoming_batch')}</li>

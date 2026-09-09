@@ -133,8 +133,7 @@ export function Card({ className, children, tone, radius }) {
   const radiusMap = { sm: '0.375rem', md: '0.5rem', lg: '0.75rem' };
   return (
     <div className={cx(
-      'rounded-bordered bg-white',
-      radiusMap[r],
+      'rounded-lg bg-surface',
       className
     )}>
       {children}
@@ -154,7 +153,7 @@ export function SectionHeader({ accent: a = 'system', icon: Icon, title, eyebrow
         )}
         <div>
           {eyebrow && <p className={cx('text-[10px] font-bold uppercase tracking-wider', ac.text)}>{eyebrow}</p>}
-          <h2 id={id} className="text-[15px] font-bold leading-tight tracking-tight text-navy-900">{title}</h2>
+          <h2 id={id} className="text-[15px] font-bold leading-tight tracking-tight text-foreground">{title}</h2>
         </div>
       </div>
       {actions}
@@ -191,7 +190,7 @@ export function IconButton({ label, children, className, ...rest }) {
     <button
       aria-label={label}
       title={label}
-      className={cx('inline-flex h-9 w-9 items-center justify-center rounded-md text-slate-600 hover:bg-slate-100 hover:text-slate-900 disabled:opacity-40', className)}
+      className={cx('inline-flex h-9 w-9 items-center justify-center rounded-md text-foreground/70 hover:bg-surface-muted hover:text-foreground disabled:opacity-40', className)}
       {...rest}
     >
       {children}
@@ -242,16 +241,16 @@ export function Modal({ open, onClose, title, children, wide, footer }) {
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.97, y: 6 }}
         transition={{ duration: 0.18, ease: EASE }}
-        className={cx('relative flex max-h-[90vh] w-full flex-col overflow-hidden rounded-lg bg-white shadow-2xl', wide ? 'max-w-4xl' : 'max-w-lg')}
+        className={cx('relative flex max-h-[90vh] w-full flex-col overflow-hidden rounded-lg bg-surface shadow-2xl', wide ? 'max-w-4xl' : 'max-w-lg')}
       >
-        <div className="flex items-center justify-between border-b border-slate-200 bg-navy-900 px-5 py-3.5 text-white">
+        <div className="flex items-center justify-between border-b border-border bg-navy-900 px-5 py-3.5 text-white">
           <h2 className="text-base font-bold tracking-tight">{title}</h2>
-          <IconButton label="Close" onClick={onClose} className="text-slate-300 hover:bg-white/10 hover:text-white">
+          <IconButton label="Close" onClick={onClose} className="text-navy-300 hover:bg-white/10 hover:text-white">
             <X className="h-5 w-5" />
           </IconButton>
         </div>
         <div className="overflow-y-auto px-5 py-4">{children}</div>
-        {footer && <div className="flex justify-end gap-2 border-t border-slate-200 bg-slate-50 px-5 py-3">{footer}</div>}
+        {footer && <div className="flex justify-end gap-2 border-t border-border bg-surface-muted px-5 py-3">{footer}</div>}
       </motion.div>
     </AnimatedModal>
   );
@@ -272,11 +271,11 @@ export function ProgressSteps({ steps, current }) {
         const active = i === current;
         return (
           <li key={step} className="flex flex-1 items-center">
-            {i > 0 && <span className={cx('mx-2 h-0.5 flex-1 rounded', done || active ? 'bg-navy-700' : 'bg-slate-200')} aria-hidden="true" />}
+            {i > 0 && <span className={cx('mx-2 h-0.5 flex-1 rounded', done || active ? 'bg-navy-700' : 'bg-border')} aria-hidden="true" />}
             <div className={cx('flex items-center gap-2 rounded-md px-3 py-1.5 text-xs font-semibold',
-              active ? 'bg-navy-800 text-white shadow-sm' : done ? 'text-navy-800' : 'text-slate-400')}>
+              active ? 'bg-navy-800 text-white shadow-sm' : done ? 'text-navy-800' : 'text-muted-foreground/60')}>
               <span className={cx('flex h-5 w-5 items-center justify-center rounded-full text-[10px]',
-                active ? 'bg-white/20 text-white' : done ? 'bg-navy-100 text-navy-800' : 'bg-slate-100 text-slate-400')}>
+                active ? 'bg-white/20 text-white' : done ? 'bg-navy-100 text-navy-800' : 'bg-surface-muted text-muted-foreground/60')}>
                 {done ? '✓' : i + 1}
               </span>
               <span className="hidden sm:inline">{step}</span>
@@ -293,14 +292,14 @@ export function EmptyState({ icon, title, hint, className, small, actionLabel, o
     ? createElement(icon)
     : icon;
   return (
-    <div className={cx('flex flex-col items-center justify-center rounded-lg border border-dashed border-slate-300 bg-white px-6 text-center', small ? 'py-8' : 'py-12', className)}>
-      <div className={cx('flex items-center justify-center rounded-md border border-slate-200 bg-slate-50 text-slate-400', small ? 'h-10 w-10' : 'h-12 w-12')}>
+    <div className={cx('flex flex-col items-center justify-center rounded-lg border border-dashed border-border-strong bg-surface px-6 text-center', small ? 'py-8' : 'py-12', className)}>
+      <div className={cx('flex items-center justify-center rounded-md border border-border bg-surface-muted text-muted-foreground/60', small ? 'h-10 w-10' : 'h-12 w-12')}>
         {iconNode}
       </div>
-      <h3 className="mt-3 text-sm font-semibold text-slate-800">{title}</h3>
-      {hint && <p className="mt-1 max-w-sm text-sm text-slate-500">{hint}</p>}
+      <h3 className="mt-3 text-sm font-semibold text-foreground">{title}</h3>
+      {hint && <p className="mt-1 max-w-sm text-sm text-muted-foreground">{hint}</p>}
       {actionLabel && onAction && (
-        <button onClick={onAction} className="mt-4 rounded-md border border-slate-300 bg-white px-3 py-1.5 text-xs font-bold text-slate-700 hover:border-navy-400 hover:text-navy-900">
+        <button onClick={onAction} className="mt-4 rounded-md border border-border bg-surface px-3 py-1.5 text-xs font-bold text-foreground hover:border-accent hover:text-accent">
           {actionLabel}
         </button>
       )}
@@ -311,7 +310,7 @@ export function EmptyState({ icon, title, hint, className, small, actionLabel, o
 export function PageHeader({ eyebrow, title, subtitle, accent: a = 'system', icon: Icon, actions }) {
   const ac = accent(a);
   return (
-    <div className="flex flex-wrap items-end justify-between gap-3 border-b border-slate-200 pb-4">
+    <div className="flex flex-wrap items-end justify-between gap-3 border-b border-border pb-4">
       <div>
         {eyebrow && (
           <p className={cx('mb-1 flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-widest', ac.text)}>
@@ -331,7 +330,7 @@ export function MetricCard({ icon: Icon, label, value, delta, tone, hint }) {
   return (
     <div className="panel flex flex-col gap-2 p-4">
       <div className="flex items-start justify-between gap-2">
-        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md border border-slate-200 bg-slate-50" aria-hidden="true">
+        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md border border-border bg-surface-muted" aria-hidden="true">
           {Icon && <Icon className={cx('h-[18px] w-[18px]', c.text)} />}
         </span>
         {delta != null && (
@@ -346,10 +345,10 @@ export function MetricCard({ icon: Icon, label, value, delta, tone, hint }) {
         )}
       </div>
       <div>
-        <div className="text-[26px] font-extrabold leading-none tracking-tight text-navy-900 tabular-nums">{value}</div>
-        <div className="mt-1.5 text-xs font-semibold text-slate-500">{label}</div>
+        <div className="text-[26px] font-extrabold leading-none tracking-tight text-foreground tabular-nums">{value}</div>
+        <div className="mt-1.5 text-xs font-semibold text-muted-foreground">{label}</div>
       </div>
-      {hint && <p className="text-[11px] leading-snug text-slate-400">{hint}</p>}
+      {hint && <p className="text-[11px] leading-snug text-muted-foreground/60">{hint}</p>}
     </div>
   );
 }
@@ -378,8 +377,8 @@ export function DonutChart({ segments, size = 148, thickness = 14, label, center
         })}
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center">
-        <span className="text-[26px] font-extrabold leading-none text-navy-900 tabular-nums">{centerValue ?? total}</span>
-        {centerLabel && <span className="mt-0.5 text-[10px] font-semibold uppercase tracking-wider text-slate-400">{centerLabel}</span>}
+        <span className="text-[26px] font-extrabold leading-none text-foreground tabular-nums">{centerValue ?? total}</span>
+        {centerLabel && <span className="mt-0.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/60">{centerLabel}</span>}
       </div>
     </div>
   );
@@ -408,11 +407,11 @@ export function Pagination({ page, pages, total, onChange, label, prevLabel = 'P
   if (pages <= 1) return null;
   const go = (p) => onChange(Math.max(0, Math.min(pages - 1, p)));
   return (
-    <nav className="flex flex-wrap items-center justify-between gap-2 border-t border-slate-200 px-4 py-3" aria-label={label || 'Pagination'}>
-      <p className="text-[11px] text-slate-400">{total} result(s)</p>
+    <nav className="flex flex-wrap items-center justify-between gap-2 border-t border-border px-4 py-3" aria-label={label || 'Pagination'}>
+      <p className="text-[11px] text-muted-foreground/60">{total} result(s)</p>
       <div className="flex items-center gap-1">
         <Button variant="secondary" className="!px-2.5 !py-1 text-xs" disabled={page === 0} onClick={() => go(page - 1)}>{prevLabel}</Button>
-        <span className="px-2 text-xs font-semibold text-slate-600 tabular-nums">{page + 1} / {pages}</span>
+        <span className="px-2 text-xs font-semibold text-foreground/70 tabular-nums">{page + 1} / {pages}</span>
         <Button variant="secondary" className="!px-2.5 !py-1 text-xs" disabled={page === pages - 1} onClick={() => go(page + 1)}>{nextLabel}</Button>
       </div>
     </nav>
@@ -440,9 +439,9 @@ export function SeverityScale({ currentTier, labels }) {
     return map[currentTier] || 0;
   })();
   return (
-    <div className="rounded-lg border border-slate-200 bg-white p-4">
+    <div className="rounded-lg border border-border bg-surface p-4">
       <div className="mb-2 flex items-center justify-between">
-        <span className="text-xs font-bold uppercase tracking-wider text-slate-500">{labels?.title || 'Risk severity scale'}</span>
+        <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">{labels?.title || 'Risk severity scale'}</span>
         <span className="rounded bg-navy-900 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-white">
           Operating scale
         </span>
@@ -454,9 +453,9 @@ export function SeverityScale({ currentTier, labels }) {
           return (
             <div key={s.step} title={s.name}
               className={cx('flex flex-col items-center gap-1 rounded-md border px-1 py-2 text-center',
-                active ? cx('border-navy-800 ring-2 ring-navy-800/15', c.bg) : 'border-slate-200')}>
+                active ? cx('border-navy-800 ring-2 ring-navy-800/15', c.bg) : 'border-border')}>
               <span className={cx('text-[10px] font-bold', c.text)}>{s.step}</span>
-              <span className="w-full text-[9px] font-semibold leading-tight text-slate-500">{s.name}</span>
+              <span className="w-full text-[9px] font-semibold leading-tight text-muted-foreground">{s.name}</span>
               <span className={cx('h-1.5 w-full rounded-full', c.dot)} />
             </div>
           );
@@ -506,14 +505,14 @@ export function StatusGrid({ items, className }) {
         const s = CHECK_STATE_META[it.state] || CHECK_STATE_META.none;
         const c = PALETTE[s.color] || PALETTE.slate;
         return (
-          <li key={i} className="flex items-start gap-2.5 rounded-lg border border-slate-200 bg-white px-3 py-2.5">
+          <li key={i} className="flex items-start gap-2.5 rounded-lg border border-border bg-surface px-3 py-2.5">
             <span className={cx('mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full', c.dot)} aria-hidden="true" />
             <div className="min-w-0">
               <div className="flex items-center gap-2">
-                <span className="text-sm font-semibold text-slate-800">{it.label}</span>
+                <span className="text-sm font-semibold text-foreground">{it.label}</span>
                 <span className={cx('rounded px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide', c.bg, c.text)}>{s.label}</span>
               </div>
-              {it.desc && <p className="mt-0.5 text-xs leading-snug text-slate-500">{it.desc}</p>}
+              {it.desc && <p className="mt-0.5 text-xs leading-snug text-muted-foreground">{it.desc}</p>}
             </div>
           </li>
         );
@@ -525,35 +524,35 @@ export function StatusGrid({ items, className }) {
 export function FindingCard({ title, where, why, severity, confidence, evidence, className }) {
   const sevColor = { LOW: 'green', MODERATE: 'amber', HIGH: 'orange', CRITICAL: 'rose' }[severity] || 'slate';
   return (
-    <article className={cx('rounded-lg border border-slate-200 bg-white p-4', className)}>
+    <article className={cx('rounded-lg border border-border bg-surface p-4', className)}>
       <div className="flex items-start justify-between gap-2">
-        <h4 className="text-sm font-bold text-slate-900">{title}</h4>
+        <h4 className="text-sm font-bold text-foreground">{title}</h4>
         {severity && <Badge color={sevColor}>{severity}</Badge>}
       </div>
       <dl className="mt-2 space-y-1 text-xs">
         {where != null && (
           <div className="flex gap-2">
-            <dt className="shrink-0 font-semibold text-slate-400">Where</dt>
-            <dd className="text-slate-700">{where}</dd>
+            <dt className="shrink-0 font-semibold text-muted-foreground/60">Where</dt>
+            <dd className="text-foreground/80">{where}</dd>
           </div>
         )}
         {why && (
           <div className="flex gap-2">
-            <dt className="shrink-0 font-semibold text-slate-400">Why</dt>
-            <dd className="text-slate-700">{why}</dd>
+            <dt className="shrink-0 font-semibold text-muted-foreground/60">Why</dt>
+            <dd className="text-foreground/80">{why}</dd>
           </div>
         )}
         {confidence != null && (
           <div className="flex gap-2">
-            <dt className="shrink-0 font-semibold text-slate-400">Confidence</dt>
-            <dd className="font-mono text-slate-700">{confidence}</dd>
+            <dt className="shrink-0 font-semibold text-muted-foreground/60">Confidence</dt>
+            <dd className="font-mono text-foreground/80">{confidence}</dd>
           </div>
         )}
         {evidence != null && evidence.length > 0 && (
           <div className="flex gap-2">
-            <dt className="shrink-0 font-semibold text-slate-400">Evidence</dt>
+            <dt className="shrink-0 font-semibold text-muted-foreground/60">Evidence</dt>
             <dd className="flex flex-wrap gap-1">
-              {evidence.map((e, i) => <span key={i} className="rounded border border-slate-200 bg-slate-50 px-1.5 py-0.5 font-mono text-[10px] text-slate-600">{e}</span>)}
+              {evidence.map((e, i) => <span key={i} className="rounded border border-border bg-surface-muted px-1.5 py-0.5 font-mono text-[10px] text-foreground/70">{e}</span>)}
             </dd>
           </div>
         )}
@@ -569,24 +568,24 @@ export function DecisionPanel({ tier, score, decision, summary, factors, classNa
         <div>
           <div className="flex flex-wrap items-center gap-3">
             <RiskBadge tier={tier} score={score} />
-            <span className="rounded-md border border-slate-200 bg-slate-50 px-2.5 py-1 text-sm font-bold text-slate-700">{decision}</span>
+            <span className="rounded-md border border-border bg-surface-muted px-2.5 py-1 text-sm font-bold text-foreground/80">{decision}</span>
           </div>
-          {summary && <p className="mt-2 text-sm text-slate-600">{summary}</p>}
+          {summary && <p className="mt-2 text-sm text-foreground/70">{summary}</p>}
         </div>
         <div className="text-left md:text-right">
-          <div className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Composite risk</div>
-          <div className="text-3xl font-black tabular-nums text-navy-900">{score}<span className="text-lg text-slate-400">%</span></div>
+          <div className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60">Composite risk</div>
+          <div className="text-3xl font-black tabular-nums text-foreground">{score}<span className="text-lg text-muted-foreground/60">%</span></div>
         </div>
       </div>
       {factors && factors.length > 0 && (
-        <div className="border-t border-slate-200 bg-slate-50 px-5 py-3">
-          <p className="mb-2 text-[10px] font-bold uppercase tracking-widest text-slate-500">Reasons for this decision</p>
+        <div className="border-t border-border bg-surface-muted px-5 py-3">
+          <p className="mb-2 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Reasons for this decision</p>
           <ul className="space-y-1.5">
             {factors.map((f, i) => {
               return (
-                <li key={i} className="flex items-start justify-between gap-3 rounded-md border border-slate-200 bg-white px-3 py-2 text-sm">
-                  <span className="text-slate-700"><strong className="font-bold text-slate-900">{f.module}:</strong> {f.description}</span>
-                  {f.impact && <span className="shrink-0 text-xs font-bold text-slate-500">{f.impact}</span>}
+                <li key={i} className="flex items-start justify-between gap-3 rounded-md border border-border bg-surface px-3 py-2 text-sm">
+                  <span className="text-foreground/80"><strong className="font-bold text-foreground">{f.module}:</strong> {f.description}</span>
+                  {f.impact && <span className="shrink-0 text-xs font-bold text-muted-foreground">{f.impact}</span>}
                 </li>
               );
             })}
@@ -606,14 +605,14 @@ export function StepRail({ steps, current, className }) {
         const state = active ? 'Current' : done ? 'Complete' : 'Pending';
         return (
           <li key={s.key || s.label} className="flex flex-1 items-center">
-            {i > 0 && <span className={cx('mx-1.5 h-0.5 flex-1 sm:mx-2', done || active ? 'bg-navy-700' : 'bg-slate-200')} aria-hidden="true" />}
+            {i > 0 && <span className={cx('mx-1.5 h-0.5 flex-1 sm:mx-2', done || active ? 'bg-navy-700' : 'bg-border')} aria-hidden="true" />}
             <div
               className={cx('flex items-center gap-1.5 rounded-md px-1.5 py-1 text-[11px] font-semibold sm:px-2.5 sm:py-1.5 sm:text-xs',
-                active ? 'bg-navy-800 text-white shadow-sm' : done ? 'text-navy-800' : 'text-slate-400')}
+                active ? 'bg-navy-800 text-white shadow-sm' : done ? 'text-navy-800' : 'text-muted-foreground/60')}
               title={`${s.label} — ${state}`}
             >
               <span className={cx('flex h-5 w-5 items-center justify-center rounded-full text-[10px]',
-                active ? 'bg-white/20 text-white' : done ? 'bg-navy-100 text-navy-800' : 'bg-slate-100 text-slate-400')}>
+                active ? 'bg-white/20 text-white' : done ? 'bg-navy-100 text-navy-800' : 'bg-surface-muted text-muted-foreground/60')}>
                 {done ? '✓' : i + 1}
               </span>
               <span className="hidden md:inline">{s.label}</span>
@@ -654,7 +653,7 @@ export function DocInspector({ image, regions, className }) {
 
   return (
     <div className={cx('grid gap-4 lg:grid-cols-2', className)}>
-      <div className="relative overflow-hidden rounded-lg border border-slate-200 bg-slate-50">
+      <div className="relative overflow-hidden rounded-lg border border-border bg-surface-muted">
         {image ? (
           <img ref={imgRef} src={image} alt="Document under inspection" className="max-h-[420px] w-full object-contain"
             onLoad={() => {
@@ -662,7 +661,7 @@ export function DocInspector({ image, regions, className }) {
               if (imgRef.current) setViewport({ w: r.width, h: r.height, nw: imgRef.current.naturalWidth, nh: imgRef.current.naturalHeight });
             }} />
         ) : (
-          <div className="flex h-64 items-center justify-center text-sm text-slate-400">No document image</div>
+          <div className="flex h-64 items-center justify-center text-sm text-muted-foreground/60">No document image</div>
         )}
         {viewport && regions && regions.map((rg, i) => {
           const active = selected === i;
@@ -683,16 +682,16 @@ export function DocInspector({ image, regions, className }) {
       </div>
       <div className="space-y-2">
         {(!regions || regions.length === 0) && (
-          <p className="rounded-lg border border-slate-200 bg-white p-4 text-sm text-slate-500">No suspicious regions were reported by the engine.</p>
+          <p className="rounded-lg border border-border bg-surface p-4 text-sm text-muted-foreground">No suspicious regions were reported by the engine.</p>
         )}
         {regions && regions.map((rg, i) => (
           <button key={i} type="button" onClick={() => setSelected(i)}
             className={cx('w-full rounded-lg border p-3 text-left transition-colors',
-              selected === i ? 'border-red-400 bg-red-50' : 'border-slate-200 bg-white hover:bg-slate-50')}>
+              selected === i ? 'border-red-400 bg-red-50' : 'border-border bg-surface hover:bg-surface-muted')}>
             <div className="flex items-center gap-2">
               <MapPin className="h-4 w-4 text-red-600" aria-hidden="true" />
-              <span className="text-sm font-bold text-slate-900">{rg.type || 'Suspicious region'}</span>
-              <span className="ml-auto text-[10px] font-semibold text-slate-400">{i + 1}/{regions.length}</span>
+              <span className="text-sm font-bold text-foreground">{rg.type || 'Suspicious region'}</span>
+              <span className="ml-auto text-[10px] font-semibold text-muted-foreground/60">{i + 1}/{regions.length}</span>
             </div>
             {rg.local_intensity != null && (
               <p className="mt-1 text-xs text-slate-500">Local intensity: <span className="font-mono">{Number(rg.local_intensity).toFixed(0)}</span></p>
@@ -712,10 +711,10 @@ export function DocInspector({ image, regions, className }) {
 
 export function ExpandableSection({ title, children, className }) {
   return (
-    <details className={cx('bg-white border border-slate-200 rounded-md', className)}>
-      <summary className="flex items-center justify-between py-3 px-4 text-sm font-medium text-slate-900 cursor-pointer">
+    <details className={cx('bg-surface border border-border rounded-md', className)}>
+      <summary className="flex items-center justify-between py-3 px-4 text-sm font-medium text-foreground cursor-pointer">
         <span>{title}</span>
-        <ChevronDown className="h-4 w-4 text-slate-400" aria-hidden="true" />
+        <ChevronDown className="h-4 w-4 text-muted-foreground/60" aria-hidden="true" />
       </summary>
       <div className="px-4 pb-3">{children}</div>
     </details>
@@ -729,7 +728,7 @@ export function ExpandableSection({ title, children, className }) {
 
 export function FilterTabs({ items, onSelect, selected, className }) {
   return (
-    <div className={cx('flex rounded-md border border-slate-300 bg-white', className)} role="tablist" aria-label="Filter tabs">
+    <div className={cx('flex rounded-md border border-border-strong bg-surface', className)} role="tablist" aria-label="Filter tabs">
       {items.map((item, i) => (
         <button
           key={item.id}
@@ -738,8 +737,8 @@ export function FilterTabs({ items, onSelect, selected, className }) {
           aria-controls={item.contentId}
           onClick={() => onSelect(item.id)}
           className={cx(
-            'flex-1 rounded-none border-y border-slate-200 text-sm font-medium capitalize hover:text-slate-900',
-            selected === item.id && 'border-primary text-primary bg-primary/5'
+            'flex-1 rounded-none border-y border-border text-sm font-medium capitalize hover:text-foreground',
+            selected === item.id && 'border-accent text-accent bg-accent/5'
           )}
         >
           {item.label}

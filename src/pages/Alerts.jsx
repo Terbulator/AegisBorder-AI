@@ -40,10 +40,10 @@ export default function Alerts() {
         />
 
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <div className="flex rounded-md border border-slate-300 bg-white p-0.5 text-sm" role="tablist" aria-label={t('alert_title')}>
+          <div className="flex rounded-md border border-border-strong bg-white p-0.5 text-sm" role="tablist" aria-label={t('alert_title')}>
             {['open', 'resolved', 'all'].map((f) => (
               <button key={f} role="tab" aria-selected={filter === f} onClick={() => setFilter(f)}
-                className={cx('relative rounded-md px-4 py-1 font-semibold capitalize transition-colors', filter === f ? 'text-white' : 'text-slate-600 hover:text-navy-800')}>
+                className={cx('relative rounded-md px-4 py-1 font-semibold capitalize transition-colors', filter === f ? 'text-white' : 'text-foreground/70 hover:text-navy-800')}>
                 {filter === f && (
                   <motion.span layoutId="alerts-filter-pill" transition={{ type: 'spring', stiffness: 400, damping: 32 }}
                     className="absolute inset-0 rounded-md bg-navy-800" aria-hidden="true" />
@@ -66,7 +66,7 @@ export default function Alerts() {
                 const resolved = !!a.resolution;
                 return (
                   <StaggerItem key={a.id} layout role="listitem">
-                    <div className={cx('rounded-md border border-slate-200 bg-white p-4 transition-opacity', resolved && 'opacity-70')}>
+                    <div className={cx('rounded-md border border-border bg-white p-4 transition-opacity', resolved && 'opacity-70')}>
                   <div className="flex items-start gap-3">
                     <div className={cx('flex h-10 w-10 shrink-0 items-center justify-center rounded-md border',
                       resolved ? 'border-emerald-200 bg-emerald-50 text-emerald-700' : 'border-red-200 bg-red-50 text-red-600')}>
@@ -74,21 +74,21 @@ export default function Alerts() {
                     </div>
                     <div className="min-w-0 flex-1">
                       <div className="flex flex-wrap items-center gap-2">
-                        <h3 className="text-sm font-bold text-slate-900">{a.title}</h3>
+                        <h3 className="text-sm font-bold text-foreground">{a.title}</h3>
                         <Badge color={color}>{a.severity}</Badge>
                       </div>
-                      <p className="mt-0.5 text-xs text-slate-500">{a.person} · {a.documentNumber} · {a.id}</p>
+                      <p className="mt-0.5 text-xs text-muted-foreground">{a.person} · {a.documentNumber} · {a.id}</p>
                       {a.factors?.length > 0 && (
                         <ul className="mt-2 space-y-1">
                           {a.factors.map((f, i) => (
-                            <li key={i} className="flex items-start gap-1.5 text-xs text-slate-600">
+                            <li key={i} className="flex items-start gap-1.5 text-xs text-foreground/70">
                               <ShieldAlert className="mt-0.5 h-3 w-3 shrink-0 text-red-400" /> {f}
                             </li>
                           ))}
                         </ul>
                       )}
                       <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
-                        <span className="text-xs text-slate-400">
+                        <span className="text-xs text-muted-foreground/60">
                           {t('score_rec', { score: a.riskScore, rec: a.recommended })}
                         </span>
                         {!resolved ? (

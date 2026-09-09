@@ -20,7 +20,7 @@ export default function Screening({ focus = 'document' }) {
 
   return (
     <div className="space-y-5">
-      <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+      <div className="rounded-xl border border-border bg-white p-4 shadow-sm">
         <ProgressSteps steps={STEPS.map((s) => t(s))} current={wiz.step} />
       </div>
 
@@ -32,7 +32,7 @@ export default function Screening({ focus = 'document' }) {
       )}
 
       {wiz.step >= 1 && wiz.result && (
-        <div className="flex flex-wrap items-center gap-2 rounded-xl border border-slate-200 bg-white p-2 shadow-sm">
+        <div className="flex flex-wrap items-center gap-2 rounded-xl border border-border bg-white p-2 shadow-sm">
           {[
             { id: 1, label: t('mrz_validation'), icon: Scan },
             { id: 2, label: t('biometrics'), icon: Scan },
@@ -41,11 +41,11 @@ export default function Screening({ focus = 'document' }) {
           ].map(({ id, label }) => (
             <button key={id} onClick={() => { wiz.setStep(id); if (id === 3) wiz.setShowTechnical(true); }}
               className={cx('flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-bold transition-colors',
-                wiz.step === id ? 'bg-navy-800 text-white shadow-sm' : 'text-slate-600 hover:bg-slate-100')}>
+                wiz.step === id ? 'bg-navy-800 text-white shadow-sm' : 'text-foreground/70 hover:bg-surface-muted')}>
               {label}
             </button>
           ))}
-          <span className="ml-auto hidden text-[11px] font-medium text-slate-400 md:inline">{t('module_reviews')}</span>
+          <span className="ml-auto hidden text-[11px] font-medium text-muted-foreground/60 md:inline">{t('module_reviews')}</span>
         </div>
       )}
 

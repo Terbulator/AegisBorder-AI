@@ -15,11 +15,11 @@ function Bar({ label, value, max, color }) {
   const pct = max > 0 ? Math.round((value / max) * 100) : 0;
   return (
     <div className="flex items-center gap-3">
-      <span className="w-24 shrink-0 truncate text-right text-xs font-semibold text-slate-500" title={label}>{label}</span>
-      <div className="h-5 flex-1 overflow-hidden rounded-md bg-slate-100">
+      <span className="w-24 shrink-0 truncate text-right text-xs font-semibold text-muted-foreground" title={label}>{label}</span>
+      <div className="h-5 flex-1 overflow-hidden rounded-md bg-surface-muted">
         <div className={cxBar(color)} style={{ width: `${Math.max(4, pct)}%` }} title={`${value}`} />
       </div>
-      <span className="w-8 shrink-0 text-xs font-bold tabular-nums text-slate-700">{value}</span>
+      <span className="w-8 shrink-0 text-xs font-bold tabular-nums text-foreground/80">{value}</span>
     </div>
   );
 }
@@ -31,9 +31,9 @@ function cxBar(color) {
 
 function PanelHeader({ icon: Icon, children, accent }) {
   return (
-    <div className={cx('mb-4 flex items-center gap-2 border-b border-slate-200 pb-2', accent === 'analytics' && 'text-navy-900')}>
+    <div className={cx('mb-4 flex items-center gap-2 border-b border-border pb-2', accent === 'analytics' && 'text-navy-900')}>
       {Icon && <Icon className="h-4 w-4 text-sky-700" aria-hidden="true" />}
-      <h2 className="text-[13px] font-bold uppercase tracking-wider text-slate-600">{children}</h2>
+      <h2 className="text-[13px] font-bold uppercase tracking-wider text-foreground/70">{children}</h2>
     </div>
   );
 }
@@ -91,7 +91,7 @@ export default function Analytics() {
                     </div>
                   ))}
                 </div>
-                <div className="mt-2 flex justify-between text-[10px] text-slate-400"><span>00:00</span><span>06:00</span><span>12:00</span><span>18:00</span><span>23:00</span></div>
+                <div className="mt-2 flex justify-between text-[10px] text-muted-foreground/60"><span>00:00</span><span>06:00</span><span>12:00</span><span>18:00</span><span>23:00</span></div>
               </Card>
 
               <Card className="p-5">
@@ -133,8 +133,8 @@ export default function Analytics() {
 
 function FlagRow({ icon, label, count, color }) {
   return (
-    <div className="flex items-center justify-between rounded-md border border-slate-200 bg-slate-50 px-3 py-2.5">
-      <span className="flex items-center gap-2 text-sm text-slate-700">{icon} {label}</span>
+    <div className="flex items-center justify-between rounded-md border border-border bg-surface-muted px-3 py-2.5">
+      <span className="flex items-center gap-2 text-sm text-foreground/80">{icon} {label}</span>
       <span className={`rounded-full px-2.5 py-0.5 text-xs font-bold ${color === 'red' ? 'bg-red-100 text-red-700' : color === 'orange' ? 'bg-orange-100 text-orange-700' : 'bg-amber-100 text-amber-700'}`}>{count}</span>
     </div>
   );
@@ -148,10 +148,10 @@ function Stat({ icon, label, value, tone = 'navy' }) {
   return (
     <Card className="p-4">
       <div className="flex items-center gap-2">
-        <span className={cx('flex h-8 w-8 items-center justify-center rounded-md border border-slate-200 bg-slate-50', TONE_STAT[tone])} aria-hidden="true">{icon}</span>
+        <span className={cx('flex h-8 w-8 items-center justify-center rounded-md border border-border bg-surface-muted', TONE_STAT[tone])} aria-hidden="true">{icon}</span>
         <div className="text-[26px] font-extrabold leading-none tabular-nums text-navy-900">{value}</div>
       </div>
-      <div className="mt-1.5 text-xs font-semibold text-slate-500">{label}</div>
+      <div className="mt-1.5 text-xs font-semibold text-muted-foreground">{label}</div>
     </Card>
   );
 }

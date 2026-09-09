@@ -45,7 +45,7 @@ export default function UserProfile({ officer, health, lang, setLang, tab: initi
           {TABS.map(({ id, label, icon: Icon }) => (
             <button key={id} role="tab" aria-selected={tab === id} onClick={() => setTab(id)}
               className={cx('flex shrink-0 items-center gap-1.5 rounded-md px-3 py-2 text-xs font-bold transition-colors',
-                tab === id ? 'bg-navy-800 text-white shadow-sm' : 'text-slate-600 hover:bg-slate-100')}>
+                tab === id ? 'bg-navy-800 text-white shadow-sm' : 'text-foreground/70 hover:bg-surface-muted')}>
               <Icon className="h-3.5 w-3.5" aria-hidden="true" /> {label}
             </button>
           ))}
@@ -65,7 +65,7 @@ function initials(name) {
 
 function ProfileBanner({ officer, onEdit, health }) {
   return (
-    <div className="grid gap-4 rounded-lg border border-slate-200 bg-white p-5 shadow-sm lg:grid-cols-[1fr_auto] lg:items-center">
+    <div className="grid gap-4 rounded-lg border border-border bg-white p-5 shadow-sm lg:grid-cols-[1fr_auto] lg:items-center">
       <div className="flex flex-wrap items-center gap-4">
         <span className="flex h-14 w-14 items-center justify-center rounded-lg bg-navy-900 text-lg font-extrabold text-white" aria-hidden="true">
           {initials(officer.name)}
@@ -75,13 +75,13 @@ function ProfileBanner({ officer, onEdit, health }) {
             <h2 className="text-base font-extrabold text-navy-900">{officer.name}</h2>
             <Badge color="green">Active</Badge>
           </div>
-          <p className="text-xs font-mono text-slate-400">{officer.id}</p>
-          <p className="mt-0.5 text-xs text-slate-500">{officer.checkpoint} · Immigration Officer</p>
+          <p className="text-xs font-mono text-muted-foreground/60">{officer.id}</p>
+          <p className="mt-0.5 text-xs text-muted-foreground">{officer.checkpoint} · Immigration Officer</p>
         </div>
-        <div className="ml-auto flex items-center gap-2 rounded-md border border-slate-200 bg-slate-50 px-3 py-2 lg:hidden xl:flex">
+        <div className="ml-auto flex items-center gap-2 rounded-md border border-border bg-surface-muted px-3 py-2 lg:hidden xl:flex">
           <ShieldCheck className="h-4 w-4 text-navy-700" aria-hidden="true" />
-          <span className="text-xs font-bold text-slate-700">Secure session</span>
-          <span className="text-[10px] text-slate-400">· {health?.state === 'online' ? 'Backend online' : 'Session-local mode'}</span>
+          <span className="text-xs font-bold text-foreground/80">Secure session</span>
+          <span className="text-[10px] text-muted-foreground/60">· {health?.state === 'online' ? 'Backend online' : 'Session-local mode'}</span>
         </div>
       </div>
       <Button variant="secondary" onClick={onEdit} className="justify-center">
@@ -128,7 +128,7 @@ function Overview({ onNavigate, screenings, alerts, kpis }) {
                   <Fingerprint className="h-4 w-4 shrink-0 text-navy-400" aria-hidden="true" />
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-xs font-bold text-navy-900">{r.person}</p>
-                    <p className="text-[11px] text-slate-400">{r.id} · {formatTime(r.ts)} · {threatCategory(r)}</p>
+                    <p className="text-[11px] text-muted-foreground/60">{r.id} · {formatTime(r.ts)} · {threatCategory(r)}</p>
                   </div>
                   <RiskBadge tier={r.riskTier} />
                   <button onClick={() => onNavigate('history')} className="text-xs font-bold text-navy-700 hover:underline">Open</button>
@@ -147,11 +147,11 @@ function Overview({ onNavigate, screenings, alerts, kpis }) {
           ) : (
             <ul className="space-y-2">
               {pending.map((a) => (
-                <li key={a.id} className="flex items-start gap-2 rounded-md border border-slate-200 bg-slate-50 p-2.5">
+                <li key={a.id} className="flex items-start gap-2 rounded-md border border-border bg-surface-muted p-2.5">
                   <SeverityBadge severity={a.severity} />
                   <div className="min-w-0">
                     <p className="truncate text-xs font-bold text-navy-900">{a.title}</p>
-                    <p className="text-[11px] text-slate-400">{a.person || a.id}</p>
+                    <p className="text-[11px] text-muted-foreground/60">{a.person || a.id}</p>
                   </div>
                 </li>
               ))}
@@ -176,7 +176,7 @@ function Overview({ onNavigate, screenings, alerts, kpis }) {
               <DonutChart segments={riskSegments} centerValue={screenings.length} centerLabel="Total" label="Risk distribution" size={168} />
               <div className="mt-3 flex flex-wrap justify-center gap-x-4 gap-y-1">
                 {riskSegments.map((s) => (
-                  <span key={s.label} className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-slate-600">
+                  <span key={s.label} className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-foreground/70">
                     <span className="h-2 w-2 rounded-full" style={{ background: s.color }} /> {s.label} {s.value}
                   </span>
                 ))}
@@ -192,7 +192,7 @@ function Overview({ onNavigate, screenings, alerts, kpis }) {
             <Button variant="secondary" onClick={() => onNavigate('dashboard')}><LayoutDashboard className="h-4 w-4" /> Dashboard</Button>
             <Button variant="secondary" onClick={() => onNavigate('analytics')}><Activity className="h-4 w-4" /> Analytics</Button>
           </div>
-          <div className="mt-4 flex flex-wrap gap-4 text-[11px] text-slate-400">
+          <div className="mt-4 flex flex-wrap gap-4 text-[11px] text-muted-foreground/60">
             <span>{screenings.length} total screenings</span>
             <span>{alerts.length} alerts</span>
             <span>{unread} unread</span>
@@ -233,20 +233,20 @@ function ActivityTab({ screenings, alerts }) {
       </div>
       <SectionHeader icon={Activity} title="Activity timeline" />
       <div>
-        <button onClick={() => setKind('all')} className={cx('rounded-md border px-3 py-1.5 text-xs font-bold', kind === 'all' ? 'border-navy-800 bg-navy-800 text-white' : 'border-slate-300 text-slate-600 hover:bg-slate-50')}>All</button>{' '}
-        <button onClick={() => setKind('screening')} className={cx('rounded-md border px-3 py-1.5 text-xs font-bold', kind === 'screening' ? 'border-navy-800 bg-navy-800 text-white' : 'border-slate-300 text-slate-600 hover:bg-slate-50')}>Screenings</button>{' '}
-        <button onClick={() => setKind('alert')} className={cx('rounded-md border px-3 py-1.5 text-xs font-bold', kind === 'alert' ? 'border-navy-800 bg-navy-800 text-white' : 'border-slate-300 text-slate-600 hover:bg-slate-50')}>Alerts</button>
+        <button onClick={() => setKind('all')} className={cx('rounded-md border px-3 py-1.5 text-xs font-bold', kind === 'all' ? 'border-navy-800 bg-navy-800 text-white' : 'border-border-strong text-foreground/70 hover:bg-surface-muted')}>All</button>{' '}
+        <button onClick={() => setKind('screening')} className={cx('rounded-md border px-3 py-1.5 text-xs font-bold', kind === 'screening' ? 'border-navy-800 bg-navy-800 text-white' : 'border-border-strong text-foreground/70 hover:bg-surface-muted')}>Screenings</button>{' '}
+        <button onClick={() => setKind('alert')} className={cx('rounded-md border px-3 py-1.5 text-xs font-bold', kind === 'alert' ? 'border-navy-800 bg-navy-800 text-white' : 'border-border-strong text-foreground/70 hover:bg-surface-muted')}>Alerts</button>
       </div>
       {filtered.length === 0 ? (
         <Card className="p-6"><EmptyState icon={Activity} title="No activity yet" hint="Screening activity appears here as you work." /></Card>
       ) : (
-        <ol className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+        <ol className="rounded-lg border border-border bg-white p-5 shadow-sm">
           {filtered.slice(0, 40).map((x, i) => {
             const Icon = x.icon;
             return (
               <li key={i} className="relative flex gap-3 pb-5 last:pb-0">
                 <span className="flex flex-col items-center" aria-hidden="true">
-                  <span className={cx('flex h-8 w-8 items-center justify-center rounded-full border border-slate-200 bg-white', x.tone)}>
+                  <span className={cx('flex h-8 w-8 items-center justify-center rounded-full border border-border bg-white', x.tone)}>
                     <Icon className="h-4 w-4" />
                   </span>
                   {i < filtered.slice(0, 40).length - 1 && <span className="w-px flex-1 bg-slate-200" />}
@@ -254,9 +254,9 @@ function ActivityTab({ screenings, alerts }) {
                 <div className="min-w-0 flex-1 pb-1">
                   <div className="flex flex-wrap items-center justify-between gap-2">
                     <p className="text-sm font-bold text-navy-900">{x.title}</p>
-                    <span className="text-[11px] text-slate-400">{formatTime(x.ts)}</span>
+                    <span className="text-[11px] text-muted-foreground/60">{formatTime(x.ts)}</span>
                   </div>
-                  <p className="text-xs text-slate-500">{x.detail}</p>
+                  <p className="text-xs text-muted-foreground">{x.detail}</p>
                   <div className="mt-1.5">{x.badge}</div>
                 </div>
               </li>
@@ -336,9 +336,9 @@ function AccountTab({ onNavigate, officer, lang, setLang, health }) {
         <div className="mt-4 grid grid-cols-2 gap-1 sm:grid-cols-3">
           {langs.map((l) => (
             <button key={l.code} onClick={() => setLang(l.code)}
-              className={cx('rounded-md border px-2 py-1.5 text-left text-xs font-semibold', lang === l.code ? 'border-navy-400 bg-navy-50 text-navy-900' : 'border-slate-200 text-slate-600 hover:bg-slate-50')}>
+              className={cx('rounded-md border px-2 py-1.5 text-left text-xs font-semibold', lang === l.code ? 'border-navy-400 bg-navy-50 text-navy-900' : 'border-border text-foreground/70 hover:bg-surface-muted')}>
               <span className="block truncate font-bold">{l.native}</span>
-              <span className="block truncate text-[10px] text-slate-400">{l.name}</span>
+              <span className="block truncate text-[10px] text-muted-foreground/60">{l.name}</span>
             </button>
           ))}
         </div>
@@ -350,19 +350,19 @@ function AccountTab({ onNavigate, officer, lang, setLang, health }) {
           <h3 className="text-sm font-bold text-navy-900">Preferences</h3>
         </div>
         <div className="mt-4 space-y-4">
-          <div className="flex items-start justify-between gap-3 rounded-md border border-slate-200 p-3">
+          <div className="flex items-start justify-between gap-3 rounded-md border border-border p-3">
             <div>
               <p className="text-sm font-semibold text-navy-900">Reduced motion</p>
-              <p className="text-xs text-slate-500">Minimise animations and transitions across the interface.</p>
+              <p className="text-xs text-muted-foreground">Minimise animations and transitions across the interface.</p>
             </div>
             <button role="switch" aria-checked={motion} aria-label="Reduced motion" onClick={() => { setMotion(!motion); save('motion'); }}
               className={cx('relative h-6 w-11 shrink-0 rounded-full transition-colors', motion ? 'bg-navy-800' : 'bg-slate-300')}>
               <span className={cx('absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform', motion ? 'translate-x-5' : 'translate-x-0.5')} />
             </button>
           </div>
-          <div className="rounded-md border border-slate-200 p-3">
+          <div className="rounded-md border border-border p-3">
             <p className="text-sm font-semibold text-navy-900">Workspace data</p>
-            <p className="text-xs text-slate-500">All screening records are stored locally for this session only.</p>
+            <p className="text-xs text-muted-foreground">All screening records are stored locally for this session only.</p>
             <div className="mt-2 flex flex-wrap gap-2">
               <Button variant="danger" onClick={reset}><Trash2 className="h-4 w-4" /> Clear screening history</Button>
               <Button variant="secondary" onClick={() => onNavigate('settings')}><SettingsIcon className="h-4 w-4" /> System settings</Button>
@@ -377,21 +377,21 @@ function AccountTab({ onNavigate, officer, lang, setLang, health }) {
           <h3 className="text-sm font-bold text-navy-900">Security &amp; session</h3>
         </div>
         <dl className="mt-4 space-y-2 text-sm">
-          <div className="flex items-center justify-between border-b border-slate-100 pb-2">
-            <dt className="text-xs font-semibold text-slate-500">Session</dt>
+          <div className="flex items-center justify-between border-b border-border/50 pb-2">
+            <dt className="text-xs font-semibold text-muted-foreground">Session</dt>
             <dd className="flex items-center gap-1.5 text-xs font-bold text-emerald-700"><Check className="h-3.5 w-3.5" aria-hidden="true" /> Active</dd>
           </div>
-          <div className="flex items-center justify-between border-b border-slate-100 pb-2">
-            <dt className="text-xs font-semibold text-slate-500">Storage</dt>
-            <dd className="text-xs font-bold text-slate-700">Session-local (this device)</dd>
+          <div className="flex items-center justify-between border-b border-border/50 pb-2">
+            <dt className="text-xs font-semibold text-muted-foreground">Storage</dt>
+            <dd className="text-xs font-bold text-foreground/80">Session-local (this device)</dd>
           </div>
-          <div className="flex items-center justify-between border-b border-slate-100 pb-2">
-            <dt className="text-xs font-semibold text-slate-500">Backend</dt>
-            <dd className="text-xs font-bold capitalize text-slate-700">{health?.state || 'checking'}</dd>
+          <div className="flex items-center justify-between border-b border-border/50 pb-2">
+            <dt className="text-xs font-semibold text-muted-foreground">Backend</dt>
+            <dd className="text-xs font-bold capitalize text-foreground/80">{health?.state || 'checking'}</dd>
           </div>
-          <div className="flex items-center justify-between border-b border-slate-100 pb-2">
-            <dt className="text-xs font-semibold text-slate-500">Officer ID</dt>
-            <dd className="font-mono text-xs text-slate-700">{officer.id}</dd>
+          <div className="flex items-center justify-between border-b border-border/50 pb-2">
+            <dt className="text-xs font-semibold text-muted-foreground">Officer ID</dt>
+            <dd className="font-mono text-xs text-foreground/80">{officer.id}</dd>
           </div>
         </dl>
         <div className="mt-4">
@@ -403,9 +403,9 @@ function AccountTab({ onNavigate, officer, lang, setLang, health }) {
         <div className="flex items-center gap-2">
           <KeyRound className="h-4 w-4 text-navy-700" aria-hidden="true" />
           <h3 className="text-sm font-bold text-navy-900">App session</h3>
-          <span className="ml-auto text-xs text-slate-400">Current version 1.0.0</span>
+          <span className="ml-auto text-xs text-muted-foreground/60">Current version 1.0.0</span>
         </div>
-        <div className="mt-3 rounded-md border border-slate-200 bg-slate-50 p-3 text-xs leading-relaxed text-slate-500">
+        <div className="mt-3 rounded-md border border-border bg-surface-muted p-3 text-xs leading-relaxed text-muted-foreground">
           This workspace stores screening history, alerts and officer details in local browser storage so records persist for the current session.
           No data leaves this device unless an operation explicitly requires the backend. Sign out to reset the session.
         </div>

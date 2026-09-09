@@ -11,15 +11,15 @@ export default function PublicLayout({ children }) {
   const { t } = useT();
 
   return (
-    <div className="min-h-screen bg-surface-base text-foreground font-body">
+    <div className="min-h-screen bg-surface-base text-foreground font-sans">
       <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-[100] focus:bg-brand-primary focus:text-white focus:px-3 focus:py-2 focus:rounded-lg">{t('skip_to_content')}</a>
       <header className="bg-white/80 backdrop-blur-md border-b border-surface-muted sticky top-0 z-40">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-14">
           <Link href="/" className="flex items-center gap-3 group">
             <div className="w-9 h-9 bg-brand-primary rounded-lg flex items-center justify-center shadow-soft group-hover:scale-105 transition-transform">
               <Shield className="w-5 h-5 text-white" />
             </div>
-            <div className="font-display font-bold text-lg tracking-tight">AEGISBORDER</div>
+            <div className="font-display font-bold text-sm tracking-tight">AEGISBORDER</div>
           </Link>
           <nav className="hidden md:flex items-center gap-6 text-sm font-medium text-foreground/70">
             <Link href="/#features" className="hover:text-brand-primary transition-colors">{t('features')}</Link>

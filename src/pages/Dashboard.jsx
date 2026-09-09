@@ -70,7 +70,7 @@ export default function Dashboard({ demoMode }) {
     .map((tr) => ({ value: byTier[tr] || 0, color: TIER_FILL[tr], label: tr }));
 
   return (
-    <div className="workspace">
+    <div className="workplace">
       <StaggerContainer className="flex w-full flex-col gap-6">
         <StaggerItem>{demoMode && (
           <div className="flex items-center gap-2 rounded-md border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-900">
@@ -110,9 +110,9 @@ export default function Dashboard({ demoMode }) {
             <MetricCard icon={ShieldAlert} label={t('metric_critical_flags')} value={criticalFlags}
               tone="red" delta={split((r) => r.riskTier === 'CRITICAL' || r.watchlistFlagged).delta} hint={t('delta_24h')} />
           </div>
-          <details className="mt-3 rounded-lg border border-slate-200 bg-white">
-            <summary className="cursor-pointer px-4 py-2.5 text-xs font-bold text-slate-500 hover:text-slate-700">Operational detail</summary>
-            <div className="grid grid-cols-2 gap-3 border-t border-slate-100 p-4 lg:grid-cols-2">
+          <details className="mt-3 rounded-lg border border-border bg-white">
+            <summary className="cursor-pointer px-4 py-2.5 text-xs font-bold text-muted-foreground hover:text-foreground/80">Operational detail</summary>
+            <div className="grid grid-cols-2 gap-3 border-t border-border/50 p-4 lg:grid-cols-2">
               <MetricCard icon={ClipboardList} label={t('metric_pending_reviews')} value={kpis.review}
                 tone="amber" delta={split((r) => tierMeta(r.riskTier).order === 1).delta} hint={t('delta_24h')} />
               <MetricCard icon={BellRing} label={t('metric_threat_signals')} value={threatSignals}
@@ -128,7 +128,7 @@ export default function Dashboard({ demoMode }) {
               <h3 className="section-title flex items-center gap-2 text-navy-900">
                 <Radio className="h-4 w-4 text-navy-700" aria-hidden="true" /> {t('dashboard_activity')}
               </h3>
-              <span className="text-[11px] text-slate-400">{data.total} {t('sessions')}</span>
+              <span className="text-[11px] text-muted-foreground/60">{data.total} {t('sessions')}</span>
             </div>
             <div className="p-5">
               {data.total === 0 ? (
@@ -154,11 +154,11 @@ export default function Dashboard({ demoMode }) {
                   const pct = data.total ? Math.round((count / data.total) * 100) : 0;
                   return (
                     <li key={tr} className="flex items-center justify-between gap-3">
-                      <span className="flex items-center gap-2 text-xs font-semibold text-slate-600">
+                      <span className="flex items-center gap-2 text-xs font-semibold text-foreground/70">
                         <span className="h-2.5 w-2.5 rounded-sm" style={{ background: TIER_FILL[tr] }} aria-hidden="true" />
                         {t('tier_' + tr)}
                       </span>
-                      <span className="text-xs font-bold tabular-nums text-slate-700">{count} · {pct}%</span>
+                      <span className="text-xs font-bold tabular-nums text-foreground/80">{count} · {pct}%</span>
                     </li>
                   );
                 })}
@@ -208,17 +208,17 @@ export default function Dashboard({ demoMode }) {
                           <tr key={r.id}>
                             <td className="font-mono text-xs text-navy-700">{r.id}</td>
                             <td>
-                              <div className="font-semibold text-slate-900">{r.person}</div>
-                              <div className="text-xs text-slate-400">{r.documentNumber} · {r.nationality || '—'}</div>
+                              <div className="font-semibold text-foreground">{r.person}</div>
+                              <div className="text-xs text-muted-foreground/60">{r.documentNumber} · {r.nationality || '—'}</div>
                             </td>
-                            <td className="text-xs text-slate-600"><ScreeningType r={r} /></td>
+                            <td className="text-xs text-foreground/70"><ScreeningType r={r} /></td>
                             <td>
                               <Badge color={meta.color}>{t('tier_' + r.riskTier)}</Badge>
-                              <span className="ml-1.5 text-xs font-semibold tabular-nums text-slate-400">{r.riskScore}%</span>
+                              <span className="ml-1.5 text-xs font-semibold tabular-nums text-muted-foreground/60">{r.riskScore}%</span>
                             </td>
                             <td><ReviewStatus r={r} t={t} /></td>
-                            <td className="text-xs tabular-nums text-slate-500">{formatTime(r.ts)}</td>
-                            <td className="text-xs text-slate-500">{r.officerStatus ? (r.officerStatus === 'approved' ? t('verified') : r.officerStatus) : '—'}</td>
+                            <td className="text-xs tabular-nums text-muted-foreground">{formatTime(r.ts)}</td>
+                            <td className="text-xs text-muted-foreground">{r.officerStatus ? (r.officerStatus === 'approved' ? t('verified') : r.officerStatus) : '—'}</td>
                             <td className="text-right">
                               <Button variant="secondary" className="!px-2.5 !py-1 text-xs" onClick={() => onNavigate('history')}>
                                 {t('view')} <ArrowRight className="h-3 w-3" />
@@ -231,7 +231,7 @@ export default function Dashboard({ demoMode }) {
                   </table>
                 </div>
                 <div className="pointer-events-none sticky bottom-0 hidden lg:block">
-                  <div className="h-1 bg-gradient-to-t from-slate-100 to-transparent" aria-hidden="true" />
+                  <div className="h-1 bg-gradient-to-t from-surface-muted to-transparent" aria-hidden="true" />
                 </div>
               </>
             )}
@@ -249,7 +249,7 @@ export default function Dashboard({ demoMode }) {
               </div>
               {attention.length === 0 ? (
                 <Card className="p-4">
-                  <div className="flex items-center gap-2 text-sm text-slate-500">
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
                     <CheckCircle2 className="h-4 w-4 text-emerald-600" /> {t('no_pending_flags')}
                   </div>
                 </Card>
@@ -261,8 +261,8 @@ export default function Dashboard({ demoMode }) {
                       <Card key={r.id} className="flex items-center gap-3 p-3">
                         <StatusDot color={meta.color} />
                         <div className="min-w-0 flex-1">
-                          <div className="truncate text-sm font-semibold text-slate-900">{r.person}</div>
-                          <div className="text-xs text-slate-400">{r.riskScore}% {meta.short} · {r.decision}</div>
+                          <div className="truncate text-sm font-semibold text-foreground">{r.person}</div>
+                          <div className="text-xs text-muted-foreground/60">{r.riskScore}% {meta.short} · {r.decision}</div>
                         </div>
                       </Card>
                     );
@@ -277,16 +277,16 @@ export default function Dashboard({ demoMode }) {
               </h3>
               <div className="mt-3 space-y-2 text-sm">
                 <div className="flex items-center justify-between">
-                  <span className="flex items-center gap-2 text-slate-600"><Radio className="h-4 w-4 text-slate-400" /> {t('screening_engine')}</span>
+                  <span className="flex items-center gap-2 text-foreground/70"><Radio className="h-4 w-4 text-muted-foreground/60" /> {t('screening_engine')}</span>
                   <Badge color={health === 'online' ? 'green' : health === 'offline' ? 'red' : 'amber'}>
                     {health === 'online' ? t('online') : health === 'offline' ? t('offline') : t('checking')}
                   </Badge>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-slate-600">{t('watchlist_verification')}</span>
+                  <span className="text-foreground/70">{t('watchlist_verification')}</span>
                   <Badge color={health === 'online' ? 'green' : 'red'}>{health === 'online' ? t('loaded') : t('unavailable')}</Badge>
                 </div>
-                <p className="pt-1 text-xs text-slate-400">{t('history_note')}</p>
+                <p className="pt-1 text-xs text-muted-foreground/60">{t('history_note')}</p>
               </div>
             </Card>
 
@@ -301,7 +301,7 @@ export default function Dashboard({ demoMode }) {
 
 function PeriodLabels() {
   return (
-    <div className="flex justify-between text-[10px] text-slate-400">
+    <div className="flex justify-between text-[10px] text-muted-foreground/60">
       <span>00:00</span><span>06:00</span><span>12:00</span><span>18:00</span><span>23:00</span>
     </div>
   );
