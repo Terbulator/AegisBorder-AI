@@ -167,10 +167,11 @@ export function MotionButton({ children, className, ...rest }) {
 
 export function ScrollReveal({ children, className, delay = 0, threshold = 0.15 }) {
   const ref = useRef(null);
-  const [visible, setVisible] = useState(false);
+  const reducedMotion = useReducedMotion();
+  const [visible, setVisible] = useState(reducedMotion);
 
   useEffect(() => {
-    if (useReducedMotion()) { setVisible(true); return; }
+    if (reducedMotion) return;
     const el = ref.current;
     if (!el) return;
     const obs = new IntersectionObserver(
@@ -179,7 +180,7 @@ export function ScrollReveal({ children, className, delay = 0, threshold = 0.15 
     );
     obs.observe(el);
     return () => obs.disconnect();
-  }, [threshold]);
+  }, [threshold, reducedMotion]);
 
   return (
     <motion.div
