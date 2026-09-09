@@ -12,9 +12,7 @@ export default function App() {
       <MotionProvider>
         <div className="min-h-screen bg-background text-foreground font-body">
           <Suspense fallback={<div className="py-20 text-center text-sm text-muted-foreground">Loading...</div>}>
-            <AnimatePresence mode="wait">
-              <AppRouter />
-            </AnimatePresence>
+            <AppRouter />
           </Suspense>
         </div>
         <ToastHost />
