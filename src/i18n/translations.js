@@ -230,6 +230,7 @@ export const translations = {
     recommended_action: 'Recommended action',
     confidence_label: 'Confidence:',
     no_indicators: 'No specific indicators recorded.',
+    all_indicators: 'All indicators',
     high_risk_alert: 'Alert. High risk threat detected.',
     critical_risk_alert: 'Alert. Critical risk threat detected.',
     low: 'LOW',

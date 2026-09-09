@@ -10,6 +10,7 @@ import {
 import { getHistory, formatTime, kpisFromHistory, tierMeta, analyticsFromHistory, OPERATION_LABELS, useStore } from '../lib/store';
 import { apiHealth } from '../lib/api';
 import { useT } from '../i18n';
+import { StaggerContainer, StaggerItem } from '../components/motion';
 
 const TIER_FILL = { LOW: '#059669', MODERATE: '#d97706', HIGH: '#ea580c', CRITICAL: '#dc2626' };
 const TIER_ORDER = ['LOW', 'MODERATE', 'HIGH', 'CRITICAL'];
@@ -68,33 +69,36 @@ export default function Dashboard({ onNavigate, demoMode }) {
 
   return (
     <div className="workspace">
-      <div className="flex w-full flex-col gap-6">
-        {demoMode && (
+      <StaggerContainer className="flex w-full flex-col gap-6">
+        <StaggerItem>{demoMode && (
           <div className="flex items-center gap-2 rounded-md border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-900">
             <AlertTriangle className="h-4 w-4 shrink-0" />
             <span><strong>{t('demo_mode_on')}</strong> {t('demo_mode_desc')}</span>
           </div>
-        )}
+        )}</StaggerItem>
 
-        <PageHeader
-          eyebrow={t('utility_portal')}
-          title={t('operational_overview')}
-          subtitle={t('operational_overview_sub')}
-          accent="system"
-          icon={ShieldCheck}
-          actions={
-            <>
-              <Button variant="secondary" onClick={() => onNavigate('history')}>
-                <FileText className="h-4 w-4" /> {t('screening_history')}
-              </Button>
-              <Button onClick={() => onNavigate('screening')}>
-                <ScanLine className="h-4 w-4" /> {t('start_screening')}
-              </Button>
-            </>
-          }
-        />
+        <StaggerItem>
+          <PageHeader
+            eyebrow={t('utility_portal')}
+            title={t('operational_overview')}
+            subtitle={t('operational_overview_sub')}
+            accent="system"
+            icon={ShieldCheck}
+            actions={
+              <>
+                <Button variant="secondary" onClick={() => onNavigate('history')}>
+                  <FileText className="h-4 w-4" /> {t('screening_history')}
+                </Button>
+                <Button onClick={() => onNavigate('screening')}>
+                  <ScanLine className="h-4 w-4" /> {t('start_screening')}
+                </Button>
+              </>
+            }
+          />
+        </StaggerItem>
 
-        <div className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-6">
+        <StaggerItem>
+              <div className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-6">
           <MetricCard icon={FileText} label={t('metric_docs_screened')} value={kpis.screened}
             tone="document" delta={split(() => true).delta} hint={t('delta_24h')} />
           <MetricCard icon={ScanFace} label={t('metric_identities_verified')} value={kpis.cleared}
@@ -107,10 +111,12 @@ export default function Dashboard({ onNavigate, demoMode }) {
             tone="red" delta={split((r) => r.riskTier === 'CRITICAL' || r.watchlistFlagged).delta} hint={t('delta_24h')} />
           <MetricCard icon={BellRing} label={t('metric_threat_signals')} value={threatSignals}
             tone="threat" delta={split((r) => r.operationType && (tierMeta(r.riskTier).order >= 2 || r.riskScore >= 50)).delta} hint={t('delta_24h')} />
-        </div>
+          </div>
+        </StaggerItem>
 
-        <div className="grid gap-6 lg:grid-cols-3">
-          <Card className="lg:col-span-2">
+        <StaggerItem>
+          <div className="grid gap-6 lg:grid-cols-3">
+            <Card className="lg:col-span-2">
             <div className="section-head px-5 pt-4">
               <h3 className="section-title flex items-center gap-2 text-navy-900">
                 <Radio className="h-4 w-4 text-navy-700" aria-hidden="true" /> {t('dashboard_activity')}
@@ -152,10 +158,12 @@ export default function Dashboard({ onNavigate, demoMode }) {
               </ul>
             </div>
           </Card>
-        </div>
+          </div>
+        </StaggerItem>
 
-        <div className="grid gap-6 lg:grid-cols-3">
-          <Card className="overflow-hidden lg:col-span-2">
+        <StaggerItem>
+          <div className="grid gap-6 lg:grid-cols-3">
+            <Card className="overflow-hidden lg:col-span-2">
             <div className="section-head px-5 pt-4">
               <h3 className="section-title flex items-center gap-2 text-navy-900">
                 <ShieldCheck className="h-4 w-4 text-navy-700" aria-hidden="true" /> {t('recent_screening')}
@@ -278,7 +286,8 @@ export default function Dashboard({ onNavigate, demoMode }) {
             <SeverityScale currentTier={history[0]?.riskTier} labels={{ title: t('risk_scale_title') }} />
           </div>
         </div>
-      </div>
+        </StaggerItem>
+      </StaggerContainer>
     </div>
   );
 }

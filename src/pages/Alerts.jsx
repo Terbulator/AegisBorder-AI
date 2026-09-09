@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { BellRing, ShieldAlert, ShieldCheck, CheckCircle2, Shield, AlertTriangle } from 'lucide-react';
 import { Badge, Button, EmptyState, cx, PageHeader } from '../components/ui';
+import { StaggerContainer, StaggerItem } from '../components/motion';
 import { getAlerts, getHistory, resolveAlert, syncAlertsFromHistory, useStore } from '../lib/store';
 import { useT } from '../i18n';
 
@@ -41,8 +43,12 @@ export default function Alerts() {
           <div className="flex rounded-md border border-slate-300 bg-white p-0.5 text-sm" role="tablist" aria-label={t('alert_title')}>
             {['open', 'resolved', 'all'].map((f) => (
               <button key={f} role="tab" aria-selected={filter === f} onClick={() => setFilter(f)}
-                className={cx('rounded-md px-4 py-1 font-semibold capitalize', filter === f ? 'bg-navy-800 text-white' : 'text-slate-600 hover:text-navy-800')}>
-                {t('filter_' + f)}
+                className={cx('relative rounded-md px-4 py-1 font-semibold capitalize transition-colors', filter === f ? 'text-white' : 'text-slate-600 hover:text-navy-800')}>
+                {filter === f && (
+                  <motion.span layoutId="alerts-filter-pill" transition={{ type: 'spring', stiffness: 400, damping: 32 }}
+                    className="absolute inset-0 rounded-md bg-navy-800" aria-hidden="true" />
+                )}
+                <span className="relative">{t('filter_' + f)}</span>
               </button>
             ))}
           </div>
@@ -52,13 +58,15 @@ export default function Alerts() {
           <EmptyState icon={<ShieldCheck className="h-8 w-8 text-slate-300" />} title={t('no_alerts')}
             hint={openCount === 0 ? t('no_alerts_handled') : t('no_alerts_filter')} />
         ) : (
-          <div className="grid grid-cols-1 gap-3 lg:grid-cols-2" role="list">
-            {rows.map((a) => {
-              const color = SEVERITY_COLOR[a.severity] || 'slate';
-              const Icon = SEVERITY_ICON[a.severity] || ShieldAlert;
-              const resolved = !!a.resolution;
-              return (
-                <div key={a.id} role="listitem" className={cx('rounded-md border border-slate-200 bg-white p-4 transition-opacity', resolved && 'opacity-70')}>
+          <StaggerContainer className="grid grid-cols-1 gap-3 lg:grid-cols-2" stagger={0.05}>
+            <AnimatePresence initial={false}>
+              {rows.map((a) => {
+                const color = SEVERITY_COLOR[a.severity] || 'slate';
+                const Icon = SEVERITY_ICON[a.severity] || ShieldAlert;
+                const resolved = !!a.resolution;
+                return (
+                  <StaggerItem key={a.id} layout role="listitem">
+                    <div className={cx('rounded-md border border-slate-200 bg-white p-4 transition-opacity', resolved && 'opacity-70')}>
                   <div className="flex items-start gap-3">
                     <div className={cx('flex h-10 w-10 shrink-0 items-center justify-center rounded-md border',
                       resolved ? 'border-emerald-200 bg-emerald-50 text-emerald-700' : 'border-red-200 bg-red-50 text-red-600')}>
@@ -99,9 +107,11 @@ export default function Alerts() {
                     </div>
                   </div>
                 </div>
+                </StaggerItem>
               );
             })}
-          </div>
+            </AnimatePresence>
+          </StaggerContainer>
         )}
       </div>
     </div>

@@ -4,9 +4,11 @@ import {
   LayoutDashboard, ScanLine, History as HistoryIcon, BellRing, BarChart3,
   Settings as SettingsIcon, Shield, Menu, X, MoreHorizontal, AlertTriangle, Plus, Globe, LifeBuoy, User, Home as HomeIcon
 } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { apiHealth } from './lib/api';
 import { getAlerts, getHistory, tierMeta, useStore } from './lib/store';
 import { cx, accent } from './components/ui';
+import { PageTransition, MotionProvider, Sheet } from './components/motion';
 import { SeverityBadge } from './components/Detection';
 import { toast, ToastHost } from './components/Toast';
 import { useT, listLanguages } from './i18n';
@@ -257,6 +259,8 @@ export default function App() {
     return null;
   }, [history, bannerDismissed]);
 
+  const isOp = PRIMARY_NAV.some((n) => n.id === route);
+
   const navigate = (id) => {
     setRoute(id);
     setSidebarOpen(false);
@@ -268,10 +272,9 @@ export default function App() {
   const healthLabel = t(health.state === 'online' ? 'all_operational' : health.state === 'offline' ? 'backend_offline' : 'checking');
   const helpAction = () => toast(t('guide_hello'), { type: 'info', title: t('guide_title') });
 
-  const MobileMoreSheet = moreSheet && (
-    <div className="fixed inset-0 z-50 flex items-end lg:hidden" role="dialog" aria-modal="true" aria-label="More options">
-      <div className="absolute inset-0 bg-navy-950/60" aria-hidden="true" onClick={() => setMoreSheet(false)} />
-      <div className="relative z-10 w-full rounded-t-xl bg-white p-4 pb-8 shadow-2xl">
+  const MobileMoreSheet = (
+    <Sheet open={moreSheet} onClose={() => setMoreSheet(false)} className="lg:hidden">
+      <div role="dialog" aria-modal="true" aria-label="More options" className="w-full rounded-t-xl bg-white p-4 pb-8 shadow-2xl">
         <div className="mb-2 flex items-center justify-between">
           <h2 className="text-sm font-bold text-slate-900">{t('more')}</h2>
           <button onClick={() => setMoreSheet(false)} aria-label="Close" className="rounded-md p-2 text-slate-500 hover:bg-slate-100"><X className="h-5 w-5" /></button>
@@ -292,11 +295,12 @@ export default function App() {
           ))}
         </div>
       </div>
-    </div>
+    </Sheet>
   );
 
   return (
-    <div className="flex min-h-screen flex-col bg-background text-foreground">
+    <MotionProvider>
+      <div className={cx('flex min-h-screen flex-col bg-background text-foreground', isOp && 'xl:pl-60')}>
       {/* Utility bar */}
       <div className="util-bar">
         <div className="mx-auto flex max-w-[1400px] items-center justify-between gap-4 px-4 py-1.5 text-[11px] lg:px-6">
@@ -473,27 +477,77 @@ className={cx('rounded-md px-3 py-1.5 text-sm font-bold transition-colors',
       </div>
       {sidebarOpen && <div className="fixed inset-0 z-30 bg-muted/50 xl:hidden" aria-hidden="true" onClick={() => setSidebarOpen(false)} />}
 
+      {/* Desktop operations sidebar (xl+) — persists on operations routes */}
+      {isOp && (
+        <motion.aside
+          initial={{ opacity: 0, x: -16 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.3, ease: 'easeOut' }}
+          className="fixed inset-y-0 left-0 z-40 hidden w-60 flex-col border-r border-border bg-white xl:flex"
+          aria-label="Operations">
+          <div className="flex h-14 shrink-0 items-center px-4">
+            <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">{t('operations')}</span>
+          </div>
+          <nav className="flex-1 overflow-y-auto px-3 pb-4" aria-label="Operations primary">
+            <ul className="space-y-1">
+              {PRIMARY_NAV.map(({ id, icon: Icon, accent: a }) => {
+                const active = route === id;
+                const ac = accent(a);
+                return (
+                  <li key={id} className="relative">
+                    <button onClick={() => navigate(id)} aria-current={active ? 'page' : undefined}
+                      className={cx('flex w-full items-center gap-3 rounded-md px-3 py-2.5 text-sm font-semibold transition-colors',
+                        active ? 'text-primary' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-800')}>
+                      {active && (
+                        <motion.span layoutId="desktop-nav-pill" transition={{ type: 'spring', stiffness: 400, damping: 32 }}
+                          className="absolute inset-0 rounded-md bg-slate-100" aria-hidden="true" />
+                      )}
+                      <span className={cx('relative flex w-full items-center gap-3', active && '')}>
+                        <Icon className={cx('h-[18px] w-[18px]', active ? 'text-primary' : ac.text)} aria-hidden="true" />
+                        <span className="flex-1 text-left">{t('nav_' + id)}</span>
+                        {id === 'alerts' && alertCount > 0 && (
+                          <span className="rounded-full bg-destructive px-2 py-0.5 text-[10px] font-bold text-white">{alertCount}</span>
+                        )}
+                      </span>
+                    </button>
+                  </li>
+                );
+              })}
+            </ul>
+          </nav>
+          <div className="border-t border-border px-4 py-3">
+            <div className="text-xs font-bold leading-tight text-slate-800">{officer.name}</div>
+            <div className="text-[10px] font-mono text-slate-400">{officer.id}</div>
+            <div className="mt-1 text-[10px] leading-tight text-slate-400">{officer.checkpoint}</div>
+          </div>
+        </motion.aside>
+      )}
+
       <main className="flex-1 pb-10">
-        {route === 'home' && <Home onNavigate={navigate} />}
-        {route === 'features' && <Features onNavigate={navigate} />}
-        {route === 'about' && <About onNavigate={navigate} />}
-        {route === 'contact' && <Contact />}
-        {VERIFICATIONS.map((v) => route === v.kind && <VerificationLanding key={v.kind} kind={v.kind} onNavigate={navigate} />)}
-        {route === 'profile' && (
-          <ErrorBoundary key={profileTab || 'default'}>
-            <UserProfile onNavigate={navigate} officer={officer} health={health} lang={lang} setLang={setLang} tab={profileTab} />
-          </ErrorBoundary>
-        )}
-        {route === 'dashboard' && <Dashboard onNavigate={navigate} officer={officer} demoMode={demoMode} />}
-        {route === 'screening' && <NewOperation healthState={health} onRefresh={health.refresh} />}
-        {route === 'history' && <History />}
-        {route === 'alerts' && <Alerts />}
-        {route === 'settings' && <SettingsPage demoMode={demoMode} setDemoMode={setDemoMode} health={health} />}
-        {route === 'analytics' && (
-          <Suspense fallback={<div className="py-20 text-center text-sm text-slate-500">{t('loading_analytics')}</div>}>
-            <Analytics />
-          </Suspense>
-        )}
+        <AnimatePresence mode="wait" initial={false}>
+          <PageTransition key={route}>
+            {route === 'home' && <Home onNavigate={navigate} />}
+            {route === 'features' && <Features onNavigate={navigate} />}
+            {route === 'about' && <About onNavigate={navigate} />}
+            {route === 'contact' && <Contact />}
+            {VERIFICATIONS.map((v) => route === v.kind && <VerificationLanding key={v.kind} kind={v.kind} onNavigate={navigate} />)}
+            {route === 'profile' && (
+              <ErrorBoundary key={profileTab || 'default'}>
+                <UserProfile onNavigate={navigate} officer={officer} health={health} lang={lang} setLang={setLang} tab={profileTab} />
+              </ErrorBoundary>
+            )}
+            {route === 'dashboard' && <Dashboard onNavigate={navigate} officer={officer} demoMode={demoMode} />}
+            {route === 'screening' && <NewOperation healthState={health} onRefresh={health.refresh} />}
+            {route === 'history' && <History />}
+            {route === 'alerts' && <Alerts />}
+            {route === 'settings' && <SettingsPage demoMode={demoMode} setDemoMode={setDemoMode} health={health} />}
+            {route === 'analytics' && (
+              <Suspense fallback={<div className="py-20 text-center text-sm text-slate-500">{t('loading_analytics')}</div>}>
+                <Analytics />
+              </Suspense>
+            )}
+          </PageTransition>
+        </AnimatePresence>
       </main>
 
       <Footer navigate={navigate} health={health} version={health.version} officer={officer} lang={lang} />
@@ -522,6 +576,7 @@ className={cx('rounded-md px-3 py-1.5 text-sm font-bold transition-colors',
       {MobileMoreSheet}
       <ToastHost />
       <GuideChat />
-    </div>
+      </div>
+    </MotionProvider>
   );
 }

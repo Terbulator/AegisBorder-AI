@@ -5,6 +5,7 @@ import {
   UploadCloud, RefreshCw, Loader2, ShieldCheck, Lock, ArrowRight, Eye, EyeOff, KeyRound, X
 } from 'lucide-react';
 import { Card, Badge, Button, ProgressSteps, cx, verifyIcon } from '../components/ui';
+import { StaggerContainer, StaggerItem, RiskReveal, StatusTransition, FadeIn } from '../components/motion';
 import { apiPresets, apiPresetDetail, apiScreenDocument, apiDeletePassenger } from '../lib/api';
 import { addToHistory, updateRecordStatus, tierMeta } from '../lib/store';
 import { toast } from '../components/Toast';
@@ -19,16 +20,18 @@ const STEPS = ['step_document', 'step_information', 'step_face_short', 'step_ana
 
 function StepCard({ children, step, title, desc, id }) {
   return (
-    <Card id={id} className="p-5">
-      <div className="mb-4 flex items-center gap-3">
-        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-navy-900 text-sm font-extrabold text-white">{step}</div>
-        <div>
-          <h2 className="text-sm font-bold text-slate-900">{title}</h2>
-          {desc && <p className="text-xs text-slate-500">{desc}</p>}
+    <FadeIn y={10}>
+      <Card id={id} className="p-5">
+        <div className="mb-4 flex items-center gap-3">
+          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-navy-900 text-sm font-extrabold text-white">{step}</div>
+          <div>
+            <h2 className="text-sm font-bold text-slate-900">{title}</h2>
+            {desc && <p className="text-xs text-slate-500">{desc}</p>}
+          </div>
         </div>
-      </div>
-      {children}
-    </Card>
+        {children}
+      </Card>
+    </FadeIn>
   );
 }
 
@@ -60,6 +63,7 @@ export default function Screening({ focus = 'document' }) {
   const [showRegister, setShowRegister] = useState(false);
   const [showMrz, setShowMrz] = useState(false);
   const [docCamOn, setDocCamOn] = useState(false);
+  const [dragOver, setDragOver] = useState(false);
   const [guidedBio, setGuidedBio] = useState(null);
   const fileRef = useRef(null);
   const liveFileRef = useRef(null);
@@ -174,20 +178,22 @@ export default function Screening({ focus = 'document' }) {
     setResult((prev) => (prev ? { ...prev, biometrics: { ...prev.biometrics, ...bio } } : prev));
   }, []);
 
+  const readDocFile = (file) => {
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      setDocumentImage(ev.target?.result);
+      setUploadName(file.name);
+      setActivePreset(null);
+      setResult(null);
+      setRecordId(null);
+      setGuidedBio(null);
+    };
+    reader.readAsDataURL(file);
+  };
+
   const handleUpload = (e) => {
     const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (ev) => {
-        setDocumentImage(ev.target?.result);
-        setUploadName(file.name);
-        setActivePreset(null);
-        setResult(null);
-        setRecordId(null);
-        setGuidedBio(null);
-      };
-      reader.readAsDataURL(file);
-    }
+    if (file) readDocFile(file);
   };
 
   const takeAction = (status) => {
@@ -282,32 +288,34 @@ export default function Screening({ focus = 'document' }) {
               <Loader2 className="h-4 w-4 animate-spin" /> {t('loading_scenarios')}
             </div>
           ) : (
-            <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
+            <StaggerContainer className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3" stagger={0.04}>
               {presets.map((p) => (
-                <button key={p.id} type="button" onClick={() => loadPreset(p.id)}
-                  className={cx('group relative rounded-lg border p-3 text-left transition-colors',
-                    activePreset?.id === p.id ? 'border-navy-800 bg-navy-50 ring-1 ring-navy-800' : 'border-slate-200 bg-slate-50 hover:border-slate-300')}>
-                  {p.is_custom && (
-                    <span
-                      role="button"
-                      tabIndex={0}
-                      aria-label={`Delete ${p.holder_name}`}
-                      onClick={(e) => deletePassenger(p.id, p.holder_name, e)}
-                      onKeyDown={(e) => e.key === 'Enter' && deletePassenger(p.id, p.holder_name, e)}
-                      className="absolute -right-1.5 -top-1.5 flex h-5 w-5 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-400 opacity-0 shadow transition-opacity hover:text-red-600 group-hover:opacity-100"
-                    >
-                      <X className="h-3 w-3" />
-                    </span>
-                  )}
-                  <div className="flex items-center justify-between gap-2">
-                    <span className="truncate text-xs font-bold text-slate-800">{p.holder_name}</span>
-                    <Badge color={p.badge_color || 'slate'}>{p.badge}</Badge>
-                  </div>
-                  <div className="mt-1 text-[11px] text-slate-500">{p.document_type} · {p.nationality || '—'} · {p.doc_number}</div>
-                  <p className="mt-1 line-clamp-1 text-[11px] text-slate-400">{p.description}</p>
-                </button>
+                <StaggerItem key={p.id}>
+                  <button type="button" onClick={() => loadPreset(p.id)}
+                    className={cx('group relative h-full w-full rounded-lg border p-3 text-left transition-colors',
+                      activePreset?.id === p.id ? 'border-navy-800 bg-navy-50 ring-1 ring-navy-800' : 'border-slate-200 bg-slate-50 hover:border-slate-300')}>
+                    {p.is_custom && (
+                      <span
+                        role="button"
+                        tabIndex={0}
+                        aria-label={`Delete ${p.holder_name}`}
+                        onClick={(e) => deletePassenger(p.id, p.holder_name, e)}
+                        onKeyDown={(e) => e.key === 'Enter' && deletePassenger(p.id, p.holder_name, e)}
+                        className="absolute -right-1.5 -top-1.5 flex h-5 w-5 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-400 opacity-0 shadow transition-opacity hover:text-red-600 group-hover:opacity-100"
+                      >
+                        <X className="h-3 w-3" />
+                      </span>
+                    )}
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="truncate text-xs font-bold text-slate-800">{p.holder_name}</span>
+                      <Badge color={p.badge_color || 'slate'}>{p.badge}</Badge>
+                    </div>
+                    <div className="mt-1 text-[11px] text-slate-500">{p.document_type} · {p.nationality || '—'} · {p.doc_number}</div>
+                    <p className="mt-1 line-clamp-1 text-[11px] text-slate-400">{p.description}</p>
+                  </button>
+                </StaggerItem>
               ))}
-            </div>
+            </StaggerContainer>
           )}
 
           <div className="my-5 grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -326,11 +334,19 @@ export default function Screening({ focus = 'document' }) {
                   <input type="file" ref={fileRef} onChange={handleUpload} accept="image/*" className="hidden" />
                 </div>
               </div>
-              <div className="flex min-h-[190px] items-center justify-center rounded-lg border border-dashed border-slate-300 bg-slate-50">
+              <div
+                className={cx('flex min-h-[190px] items-center justify-center rounded-lg border border-dashed',
+                  dragOver ? 'border-navy-600 bg-navy-50 ring-1 ring-navy-500' : 'border-slate-300 bg-slate-50')}
+                onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
+                onDragLeave={() => setDragOver(false)}
+                onDrop={(e) => { e.preventDefault(); setDragOver(false); const f = e.dataTransfer.files?.[0]; if (f) readDocFile(f); }}
+              >
                 {documentImage ? (
                   <img src={documentImage} alt={t('document_scan')} className="max-h-[190px] rounded object-contain" />
                 ) : docCamOn ? (
                   <CameraCapture onCapture={(b64) => { setDocumentImage(b64); setUploadName('Webcam capture'); setActivePreset(null); setResult(null); setRecordId(null); setDocCamOn(false); }} onCancel={() => setDocCamOn(false)} className="py-4" />
+                ) : dragOver ? (
+                  <p className="px-4 text-center text-sm font-semibold text-navy-800">Drop document to upload</p>
                 ) : (
                   <p className="px-4 text-center text-sm text-slate-400">{t('select_scenario_hint')}</p>
                 )}
@@ -379,10 +395,12 @@ export default function Screening({ focus = 'document' }) {
             {showMrz ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
             {showMrz ? t('hide') : t('show')} {t('raw_mrz_string')}
           </button>
-          {showMrz && (
-            <textarea rows={3} value={mrzText} onChange={(e) => setMrzText(e.target.value)}
-              placeholder="MRZ Line 1&#10;MRZ Line 2" className="mb-4 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 font-mono text-xs focus:border-navy-500 focus:outline-none" />
-          )}
+          <RiskReveal show={showMrz}>
+            {showMrz && (
+              <textarea rows={3} value={mrzText} onChange={(e) => setMrzText(e.target.value)}
+                placeholder="MRZ Line 1&#10;MRZ Line 2" className="mb-4 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 font-mono text-xs focus:border-navy-500 focus:outline-none" />
+            )}
+          </RiskReveal>
 
           <div className="flex items-center justify-end gap-3 border-t border-slate-200 pt-4">
             <div className="mr-auto text-xs text-slate-400">
@@ -577,7 +595,7 @@ export default function Screening({ focus = 'document' }) {
                 {showTechnical ? 'Hide' : 'View'} technical forensics detail
               </button>
 
-              {showTechnical && result?.forensics?.visuals && (
+              <RiskReveal show={showTechnical && !!result?.forensics?.visuals}>
                 <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-4">
                   {Object.entries(result.forensics.visuals).filter(([k]) => k !== 'original' && result.forensics.visuals[k]).slice(0, 4).map(([k, v]) => (
                     <figure key={k} className="rounded-lg border border-slate-200 p-2">
@@ -586,9 +604,9 @@ export default function Screening({ focus = 'document' }) {
                     </figure>
                   ))}
                 </div>
-              )}
+              </RiskReveal>
 
-              {showTechnical && (
+              <RiskReveal show={showTechnical}>
                 <div className="mt-3 space-y-2 text-sm">
                   <InfoRow label="ELA score" value={`${Number(forensics.ela_score ?? 0).toFixed(1)}%`} />
                   <InfoRow label="Noise discrepancy" value={`${Number(forensics.noise_discrepancy_score ?? 0).toFixed(1)}%`} />
@@ -602,7 +620,7 @@ export default function Screening({ focus = 'document' }) {
                     </div>
                   )}
                 </div>
-              )}
+              </RiskReveal>
 
               <div className="mt-5 flex justify-end border-t border-slate-200 pt-4">
                 <Button onClick={() => setStep(4)}>Continue to result <ArrowRight className="h-4 w-4" /></Button>
@@ -613,7 +631,8 @@ export default function Screening({ focus = 'document' }) {
       )}
 
       {step === 4 && result && (
-        <Card className="overflow-hidden">
+        <FadeIn y={12}>
+          <Card className="overflow-hidden">
           <div className={cx('p-5', meta.color === 'green' && 'border-t-4 border-emerald-500', meta.color === 'amber' && 'border-t-4 border-amber-500', meta.color === 'orange' && 'border-t-4 border-orange-500', meta.color === 'red' && 'border-t-4 border-red-600')}>
             <div className="flex flex-col justify-between gap-4 md:flex-row md:items-center">
               <div className="flex items-center gap-4">
@@ -687,16 +706,19 @@ export default function Screening({ focus = 'document' }) {
             <Button variant="secondary" onClick={() => setShowReport(true)}><KeyRound className="h-4 w-4" /> Audit report</Button>
           </div>
           {officerStatus && (
-            <div className="flex items-center justify-between gap-3 border-t border-slate-100 px-5 py-3">
-              <span className="text-sm text-slate-600">
-                Case recorded as <strong>{officerStatus === 'approved' ? 'Verified & cleared' : officerStatus === 'review' ? 'Sent to secondary inspection' : 'Escalated / detain'}</strong>.
-              </span>
-              <Button variant="secondary" onClick={() => { setResult(null); setRecordId(null); setOfficerStatus(null); setStep(0); setActivePreset(null); setDocumentImage(null); setLiveImage(null); setMrzText(''); }}>
-                <RefreshCw className="h-4 w-4" /> New screening
-              </Button>
-            </div>
+            <StatusTransition code={officerStatus}>
+              <div className="flex items-center justify-between gap-3 border-t border-slate-100 px-5 py-3">
+                <span className="text-sm text-slate-600">
+                  Case recorded as <strong>{officerStatus === 'approved' ? 'Verified & cleared' : officerStatus === 'review' ? 'Sent to secondary inspection' : 'Escalated / detain'}</strong>.
+                </span>
+                <Button variant="secondary" onClick={() => { setResult(null); setRecordId(null); setOfficerStatus(null); setStep(0); setActivePreset(null); setDocumentImage(null); setLiveImage(null); setMrzText(''); }}>
+                  <RefreshCw className="h-4 w-4" /> New screening
+                </Button>
+              </div>
+            </StatusTransition>
           )}
         </Card>
+        </FadeIn>
       )}
 
       {step >= 1 && step < 4 && result && (

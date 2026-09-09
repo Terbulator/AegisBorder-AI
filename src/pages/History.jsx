@@ -4,7 +4,7 @@ import {
   ShieldCheck, ScanLine, Flag, KeyRound, UserCheck, FileCheck2
 } from 'lucide-react';
 import {
-  Badge, Button, EmptyState, cx, IconButton, Modal, PageHeader, Pagination, downloadCSV, tierSeverityColor
+  Badge, Button, EmptyState, cx, ExpandableSection, IconButton, Modal, PageHeader, Pagination, downloadCSV, tierSeverityColor
 } from '../components/ui';
 import { getHistory, deleteRecord, formatTime, secondsAgo, tierMeta, OPERATION_LABELS, useStore } from '../lib/store';
 import AuditReport from '../components/AuditReport';
@@ -363,14 +363,33 @@ function CaseDetail({ record: r, t, onClose, onConfirmDelete }) {
                 {r.confidence != null && <InfoRow label={t('confidence_label')} value={`${r.confidence}%`} />}
                 {factors.length === 0 ? (
                   <p className="text-xs text-slate-400">{t('no_indicators')}</p>
-                ) : (
+                ) : factors.length <= 3 ? (
                   <ul className="space-y-1.5">
-                    {factors.slice(0, 6).map((f, i) => (
+                    {factors.map((f, i) => (
                       <li key={i} className="flex items-start gap-2 rounded-md border border-slate-200 bg-slate-50 px-3 py-2 text-xs text-slate-700">
                         <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-red-400" aria-hidden="true" />{f}
                       </li>
                     ))}
                   </ul>
+                ) : (
+                  <ul className="space-y-1.5">
+                    {factors.slice(0, 3).map((f, i) => (
+                      <li key={i} className="flex items-start gap-2 rounded-md border border-slate-200 bg-slate-50 px-3 py-2 text-xs text-slate-700">
+                        <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-red-400" aria-hidden="true" />{f}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+                {factors.length > 3 && (
+                  <ExpandableSection className="mt-2" title={`${t('all_indicators')} (${factors.length})`}>
+                    <ul className="space-y-1.5">
+                      {factors.slice(3).map((f, i) => (
+                        <li key={i} className="flex items-start gap-2 rounded-md border border-slate-200 bg-slate-50 px-3 py-2 text-xs text-slate-700">
+                          <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-red-400" aria-hidden="true" />{f}
+                        </li>
+                      ))}
+                    </ul>
+                  </ExpandableSection>
                 )}
               </div>
             </section>

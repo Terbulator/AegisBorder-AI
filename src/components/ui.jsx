@@ -1,7 +1,9 @@
 import { createElement, useEffect, useRef, useState } from 'react';
 import { clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
-import { CheckCircle2, Info, AlertTriangle, XCircle, X, Loader2, ArrowUp, ArrowDown, ShieldAlert as ShieldAlertIcon, MapPin } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { CheckCircle2, Info, AlertTriangle, XCircle, X, Loader2, ArrowUp, ArrowDown, ChevronDown, ShieldAlert as ShieldAlertIcon, MapPin } from 'lucide-react';
+import { AnimatedModal, MotionButton, EASE } from './motion';
 
 export function cx(...parts) {
   return twMerge(clsx(parts));
@@ -128,9 +130,15 @@ export function StatusDot({ color = 'slate', className }) {
   return <span className={cx('inline-block h-2 w-2 rounded-full', c.dot, className)} aria-hidden="true" />;
 }
 
-export function Card({ className, children, tone }) {
+export function Card({ className, children, tone, radius }) {
+  const r = radius || 'md';
+  const radiusMap = { sm: '0.375rem', md: '0.5rem', lg: '0.75rem' };
   return (
-    <div className={cx('rounded-lg border border-slate-200 bg-white', className)}>
+    <div className={cx(
+      'rounded-bordered bg-white',
+      radiusMap[r],
+      className
+    )}>
       {children}
     </div>
   );
@@ -166,7 +174,7 @@ const BUTTON_VARIANTS = {
 
 export function Button({ variant = 'primary', className, loading, disabled, children, ...rest }) {
   return (
-    <button
+    <MotionButton
       className={cx(
         BUTTON_VARIANTS[variant] || BUTTON_VARIANTS.primary,
         className
@@ -176,7 +184,7 @@ export function Button({ variant = 'primary', className, loading, disabled, chil
     >
       {loading && <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />}
       {children}
-    </button>
+    </MotionButton>
   );
 }
 
@@ -224,11 +232,20 @@ export function Modal({ open, onClose, title, children, wide, footer }) {
     };
   }, [open, onClose]);
 
-  if (!open) return null;
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-label={title}>
+    <AnimatedModal open={open}>
       <div className="absolute inset-0 bg-navy-950/60" aria-hidden="true" onClick={onClose} />
-      <div ref={panelRef} className={cx('relative flex max-h-[90vh] w-full flex-col overflow-hidden rounded-lg bg-white shadow-2xl', wide ? 'max-w-4xl' : 'max-w-lg')}>
+      <motion.div
+        ref={panelRef}
+        role="dialog"
+        aria-modal="true"
+        aria-label={title}
+        initial={{ opacity: 0, scale: 0.96, y: 8 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.97, y: 6 }}
+        transition={{ duration: 0.18, ease: EASE }}
+        className={cx('relative flex max-h-[90vh] w-full flex-col overflow-hidden rounded-lg bg-white shadow-2xl', wide ? 'max-w-4xl' : 'max-w-lg')}
+      >
         <div className="flex items-center justify-between border-b border-slate-200 bg-navy-900 px-5 py-3.5 text-white">
           <h2 className="text-base font-bold tracking-tight">{title}</h2>
           <IconButton label="Close" onClick={onClose} className="text-slate-300 hover:bg-white/10 hover:text-white">
@@ -237,8 +254,8 @@ export function Modal({ open, onClose, title, children, wide, footer }) {
         </div>
         <div className="overflow-y-auto px-5 py-4">{children}</div>
         {footer && <div className="flex justify-end gap-2 border-t border-slate-200 bg-slate-50 px-5 py-3">{footer}</div>}
-      </div>
-    </div>
+      </motion.div>
+    </AnimatedModal>
   );
 }
 
@@ -688,3 +705,52 @@ export function DocInspector({ image, regions, className }) {
     </div>
   );
 }
+
+/* ------------------------------------------------------------
+   NEW — Expandable Section for case details / evidence panels.
+   Uses detail/summary with minimal styling; motion animate possible
+   via parent AnimatePresence if needed.
+   ------------------------------------------------------------ */
+
+export function ExpandableSection({ title, children, className }) {
+  return (
+    <details className={cx('bg-white border border-slate-200 rounded-md', className)}>
+      <summary className="flex items-center justify-between py-3 px-4 text-sm font-medium text-slate-900 cursor-pointer">
+        <span>{title}</span>
+        <ChevronDown className="h-4 w-4 text-slate-400" aria-hidden="true" />
+      </summary>
+      <div className="px-4 pb-3">{children}</div>
+    </details>
+  );
+}
+
+/* ------------------------------------------------------------
+   NEW — Filter Tabs for dashboard / lists.
+   Keyboard-navitable, aria-pressed, single selection.
+   ------------------------------------------------------------ */
+
+export function FilterTabs({ items, onSelect, selected, className }) {
+  return (
+    <div className={cx('flex rounded-md border border-slate-300 bg-white', className)} role="tablist" aria-label="Filter tabs">
+      {items.map((item, i) => (
+        <button
+          key={item.id}
+          role="tab"
+          aria-selected={selected === item.id}
+          aria-controls={item.contentId}
+          onClick={() => onSelect(item.id)}
+          className={cx(
+            'flex-1 rounded-none border-y border-slate-200 text-sm font-medium capitalize hover:text-slate-900',
+            selected === item.id && 'border-primary text-primary bg-primary/5'
+          )}
+        >
+          {item.label}
+        </button>
+      ))}
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------
+   END — ui.jsx design-system primitives
+   ------------------------------------------------------------ */

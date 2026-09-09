@@ -1,13 +1,12 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
 @import "tailwindcss";
 @config "../tailwind.config.js";
 
 /* Rakshak AI Integrated Screening Station — Light Design System
-   Based on UI Pro Max recommendations for government/public sector professional light mode.
+   Based on UI UX Pro Max (Minimalism & Swiss Style) + OpenDesign (government security)
    Pattern: Minimalism & Swiss Style | Colors: Professional navy + blue CTA
    Tailwind CSS v4 compatible — native CSS, no @apply directives.
 */
-
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
 
 /* ---------- Design Tokens ---------- */
 
@@ -28,13 +27,20 @@
   --color-muted: #E8ECF1;
   --color-muted-foreground: #475569;
   --color-border: #E2E8F0;
+  --color-border-strong: #CBD5E1;
   --color-destructive: #DC2626;
   --color-on-destructive: #FFFFFF;
   --color-ring: #0F172A;
+  --color-ring-subtle: rgba(15, 23, 42, 0.15);
 
   --color-success: #15803D;
   --color-warning: #B45309;
   --color-info: #0891B2;
+
+  /* Status surface tokens */
+  --color-surface: #FFFFFF;
+  --color-surface-elevated: #F8FAFC;
+  --color-surface-muted: #F1F5F9;
 
   /* Risk tier colors */
   --color-risk-low: #15803D;
@@ -43,7 +49,8 @@
   --color-risk-critical: #DC2626;
 
   /* Typography */
-  --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-sans: 'Source Sans 3', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-display: 'Lexend', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 }
 
@@ -60,6 +67,23 @@ body {
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-display);
+  letter-spacing: -0.02em;
+}
+
+/* OpenDesign (tech-utility): tabular numerics for all data surfaces */
+table,
+.num,
+.metric {
+  font-variant-numeric: tabular-nums;
 }
 
 /* Focus-visible accessibility */
@@ -294,8 +318,9 @@ body {
 
 .tbl tbody td {
   border-bottom: 1px solid var(--color-border);
-  padding: 0.75rem 1rem;
+  padding: 0.625rem 0.75rem;
   vertical-align: middle;
+  font-variant-numeric: tabular-nums;
 }
 
 .tbl tbody tr {
@@ -303,7 +328,7 @@ body {
 }
 
 .tbl tbody tr:hover {
-  background-color: var(--color-muted);
+  background-color: var(--color-surface-muted);
 }
 
 .tbl tbody tr:last-child td {
