@@ -10,7 +10,7 @@ export default function OpsLayout({ children }) {
   const [location] = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
-  const t = useT();
+  const { t } = useT();
 
   const isPath = (p) => location === p;
   const isActive = (p) => location === p || (p !== '/dashboard' && location.startsWith(p));

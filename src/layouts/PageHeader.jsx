@@ -1,7 +1,7 @@
 import { useT } from '../i18n';
 
 export default function PageHeader({ title, subtitle, children }) {
-  const t = useT();
+  const { t } = useT();
   return (
     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
       <div>

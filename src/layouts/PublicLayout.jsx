@@ -8,7 +8,7 @@ import { Button } from '../components/ui';
 export default function PublicLayout({ children }) {
   const [open, setOpen] = useState(false);
   const { user, logout } = useAuth();
-  const t = useT();
+  const { t } = useT();
 
   return (
     <div className="min-h-screen bg-surface-base text-foreground font-body">

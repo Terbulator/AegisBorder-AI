@@ -3,7 +3,7 @@ import { Button } from '../components/ui';
 import { useT } from '../i18n';
 
 export default function NotFoundPage() {
-  const t = useT();
+  const { t } = useT();
   return (
     <div className="min-h-screen bg-surface-base flex items-center justify-center p-4">
       <div className="text-center max-w-md">
