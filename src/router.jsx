@@ -61,6 +61,9 @@ export default function AppRouter() {
       <Route path="/reset-password" component={() => <PublicPage><ResetPassword /></PublicPage>} />
       <Route path="/otp" component={() => <PublicPage><OTPVerification /></PublicPage>} />
 
+      <Route path="/dashboard/document-identity" component={() => <OpsPage><VerificationLanding kind="document-identity" /></OpsPage>} />
+      <Route path="/dashboard/threat-detection" component={() => <OpsPage><VerificationLanding kind="threat-detection" /></OpsPage>} />
+      <Route path="/dashboard/ai-analysis" component={() => <OpsPage><VerificationLanding kind="ai-analysis" /></OpsPage>} />
       <Route path="/dashboard" component={() => <OpsPage><Dashboard /></OpsPage>} />
       <Route path="/dashboard/new" component={() => <OpsPage><NewOperation /></OpsPage>} />
       <Route path="/dashboard/screening/:id" component={() => <OpsPage><Screening /></OpsPage>} />
