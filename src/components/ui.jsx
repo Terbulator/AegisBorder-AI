@@ -1,6 +1,4 @@
 import { createElement, useEffect, useRef, useState } from 'react';
-import { clsx } from 'clsx';
-import { twMerge } from 'tailwind-merge';
 import { motion } from 'framer-motion';
 import { CheckCircle2, Info, AlertTriangle, XCircle, X, Loader2, ArrowUp, ArrowDown, ChevronDown, ShieldAlert as ShieldAlertIcon, MapPin } from 'lucide-react';
 import { AnimatedModal, MotionButton, EASE } from './motion';
@@ -128,9 +126,7 @@ export function StatusDot({ color = 'slate', className }) {
   return <span className={cx('inline-block h-2 w-2 rounded-full', c.dot, className)} aria-hidden="true" />;
 }
 
-export function Card({ className, children, tone, radius }) {
-  const r = radius || 'md';
-  const radiusMap = { sm: '0.375rem', md: '0.5rem', lg: '0.75rem' };
+export function Card({ className, children, tone }) {
   return (
     <div className={cx(
       'rounded-lg bg-surface',

@@ -16,6 +16,7 @@ export default {
           primary: 'var(--color-accent)',
         },
         surface: {
+          DEFAULT: 'var(--color-surface)',
           base: 'var(--color-surface)',
           muted: 'var(--color-surface-muted)',
           elevated: 'var(--color-surface-elevated)',
